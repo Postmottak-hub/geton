@@ -1,0 +1,6 @@
+{
+  "name": "Geton - Creative Digital Solutions",
+  "description": "High-fidelity cyberpunk hero section with neon glassmorphism, interactive showcase, and digital services presentation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

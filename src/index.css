@@ -7,10 +7,19 @@
     color: #ffffff;
     overflow-x: hidden;
   }
+
+  /* Prevent typewriter monospace styling across all elements */
+  code, pre, kbd, samp, .font-mono, [class*="font-mono"] {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+  }
 }
 
 .font-display {
   font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+}
+
+.font-mono, [class*="font-mono"] {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
 }
 
 /* Custom Neon & Glassmorphic Utilities */

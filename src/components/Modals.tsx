@@ -207,14 +207,37 @@ export const ServiceDetailModal: React.FC<ServiceModalProps> = ({ service, onClo
 interface InquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialPackage?: string | null;
 }
 
-export const ProjectInquiryModal: React.FC<InquiryModalProps> = ({ isOpen, onClose }) => {
+export const ProjectInquiryModal: React.FC<InquiryModalProps> = ({
+  isOpen,
+  onClose,
+  initialPackage = null,
+}) => {
   const { t, language } = useLanguage();
   const [selectedType, setSelectedType] = useState('web');
   const [submitted, setSubmitted] = useState(false);
   const [email, setEmail] = useState('');
   const [projectNote, setProjectNote] = useState('');
+
+  useEffect(() => {
+    if (initialPackage) {
+      const lower = initialPackage.toLowerCase();
+      if (lower.includes('app') || lower.includes('mobil')) {
+        setSelectedType('app');
+      } else if (lower.includes('webapp') || lower.includes('system') || lower.includes('sky')) {
+        setSelectedType('saas');
+      } else {
+        setSelectedType('web');
+      }
+      setProjectNote(
+        language === 'no'
+          ? `Jeg ønsker et tilbud på pakken: ${initialPackage}.`
+          : `I am interested in getting a quote for: ${initialPackage}.`
+      );
+    }
+  }, [initialPackage, language, isOpen]);
 
   if (!isOpen) return null;
 
@@ -364,34 +387,42 @@ export const PortfolioModal: React.FC<PortfolioModalProps> = ({
 
   const portfolioProjects = [
     {
-      id: 'swallet',
-      title: 'Swallet',
-      category: t.projects.cards.swallet.industry,
-      metric: 'PSD2 · DNB · Adtraction',
-      desc: t.projects.cards.swallet.subtitle,
-      tag: 'Web & Mobile · Flagship',
-    },
-    {
       id: 'frakt360',
       title: 'Frakt360',
-      category: t.projects.cards.frakt360.industry,
+      category: language === 'no' ? 'Logistikk & E-handel' : 'Logistics & E-commerce',
       metric: 'Bring · PostNord · Ongoing WMS',
-      desc: t.projects.cards.frakt360.subtitle,
+      desc: language === 'no' ? 'En komplett digital fraktplattform for moderne bedrifter' : 'Complete digital logistics platform for modern business',
       tag: 'Web & Mobile · Flagship',
     },
     {
-      id: 'newsec',
-      title: 'Newsec',
-      category: t.projects.cards.newsec.industry,
-      metric: 'PropTech · Yield Engine',
-      desc: t.projects.cards.newsec.subtitle,
-      tag: 'React Native · Institutional',
+      id: 'swallet',
+      title: 'Swallet',
+      category: language === 'no' ? 'Fintech & Personlig Økonomi' : 'Fintech & Personal Finance',
+      metric: 'PSD2 · BankID · 4 320 kr/år',
+      desc: language === 'no' ? 'Full kontroll på abonnementer og faste månedlige utgifter' : 'One place to manage subscriptions and recurring expenses',
+      tag: 'Web & Mobile · Flagship',
+    },
+    {
+      id: 'hentli',
+      title: 'Hentli',
+      category: language === 'no' ? 'Logistikk & Mobilitet' : 'Logistics & On-Demand Delivery',
+      metric: 'Kartbasert matching · Sanntid',
+      desc: language === 'no' ? 'Lokal transport redesignet med kartmatching for kunde og sjåfør' : 'Map-based delivery connecting customers with nearby drivers',
+      tag: 'iOS & Android · Mobile',
+    },
+    {
+      id: 'vestlandsk-hjertesenter',
+      title: 'Vestlandsk Hjertesenter',
+      category: language === 'no' ? 'Spesialisthelsetjeneste' : 'Cardiology & Healthcare',
+      metric: 'vestlandskhjertesenter.no · 0 ventetid',
+      desc: language === 'no' ? 'Spesialistklinikk for hjertehelse med direkte timebooking' : 'Premier cardiac diagnostic portal with direct online booking',
+      tag: 'Web & Pasientportal',
     },
   ];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200">
-      <div className="relative w-full max-w-3xl rounded-3xl bg-[#080d1e] border border-cyan-400/40 p-6 sm:p-8 shadow-[0_0_50px_rgba(6,182,212,0.3)] max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full max-w-4xl rounded-3xl bg-[#080d1e] border border-cyan-400/40 p-6 sm:p-8 shadow-[0_0_50px_rgba(6,182,212,0.3)] max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10"
@@ -413,7 +444,7 @@ export const PortfolioModal: React.FC<PortfolioModalProps> = ({
           {t.projects.subtitle}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {portfolioProjects.map((proj, idx) => (
             <div
               key={idx}
@@ -427,7 +458,7 @@ export const PortfolioModal: React.FC<PortfolioModalProps> = ({
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-mono text-cyan-300">{proj.tag}</span>
+                  <span className="text-[11px] font-semibold text-cyan-300">{proj.tag}</span>
                   <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-300 transition-colors" />
                 </div>
                 <h4 className="text-base font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">
@@ -438,8 +469,8 @@ export const PortfolioModal: React.FC<PortfolioModalProps> = ({
               </div>
 
               <div className="pt-3 border-t border-white/10 flex items-center justify-between">
-                <span className="text-xs font-mono font-semibold text-cyan-300">{proj.metric}</span>
-                <span className="text-[10px] font-mono text-slate-400 group-hover:text-white transition-colors">
+                <span className="text-xs font-semibold text-cyan-300">{proj.metric}</span>
+                <span className="text-[10px] font-medium text-slate-400 group-hover:text-white transition-colors">
                   {t.projects.readFullStudy} →
                 </span>
               </div>

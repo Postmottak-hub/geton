@@ -50,11 +50,11 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onGetStarted }) => 
 
             {/* Nordic Hub Status & System Indicator */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-400/35 text-[11px] font-mono text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.25)]">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-400/35 text-[11px] font-semibold text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.25)]">
                 <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
                 <span>{t.footer.nordicNode}</span>
               </div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-400/35 text-[11px] font-mono text-emerald-300">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-400/35 text-[11px] font-semibold text-emerald-300">
                 <Clock className="w-3 h-3 text-emerald-400" />
                 <span>{t.footer.sreOnCall}</span>
               </div>
@@ -74,7 +74,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onGetStarted }) => 
 
           {/* Column 2 (4 cols): Head Office & Direct Contact Info */}
           <div className="lg:col-span-4 space-y-4">
-            <span className="text-xs font-mono font-bold text-cyan-300 uppercase tracking-widest block">
+            <span className="text-xs font-semibold text-cyan-300 uppercase tracking-widest block">
               {t.footer.headquartersTitle}
             </span>
 
@@ -136,7 +136,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onGetStarted }) => 
 
           {/* Column 3 (3 cols): Quick Navigation & Technologies */}
           <div className="lg:col-span-3 space-y-4">
-            <span className="text-xs font-mono font-bold text-cyan-300 uppercase tracking-widest block">
+            <span className="text-xs font-semibold text-cyan-300 uppercase tracking-widest block">
               {t.footer.navigationTitle}
             </span>
 

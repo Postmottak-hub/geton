@@ -9,6 +9,7 @@ import { HeroCard, ServiceItemData } from './components/HeroCard.tsx';
 import { FloatingBadge } from './components/FloatingBadge.tsx';
 import { ScrollIndicator } from './components/ScrollIndicator.tsx';
 import { SoftwareShowcaseSection } from './components/SoftwareShowcaseSection.tsx';
+import { PricingPackagesSection } from './components/PricingPackagesSection.tsx';
 import { DigitalSolutionsSection } from './components/DigitalSolutionsSection.tsx';
 import { ProcessRouteSection } from './components/ProcessRouteSection.tsx';
 import { ProjectsShowcaseSection } from './components/ProjectsShowcaseSection.tsx';
@@ -21,17 +22,31 @@ import {
 } from './components/Modals.tsx';
 import { Frakt360CaseStudyPage } from './pages/Frakt360CaseStudyPage.tsx';
 import { SwalletCaseStudyPage } from './pages/SwalletCaseStudyPage.tsx';
+import { HentliCaseStudyPage } from './pages/HentliCaseStudyPage.tsx';
+import { VestlandskHjertesenterCaseStudyPage } from './pages/VestlandskHjertesenterCaseStudyPage.tsx';
+import { AboutPage } from './pages/AboutPage.tsx';
+import { InsightsPage } from './pages/InsightsPage.tsx';
+import { ContactPage } from './pages/ContactPage.tsx';
 
 const VIDEO_URL =
   'https://res.cloudinary.com/dl7lmhbg/video/upload/v1793281647/b_generate_a_video_and.mp4';
 
-type PageView = 'home' | 'frakt360' | 'swallet';
+type PageView =
+  | 'home'
+  | 'frakt360'
+  | 'swallet'
+  | 'hentli'
+  | 'vestlandsk-hjertesenter'
+  | 'about'
+  | 'insights'
+  | 'contact';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [currentView, setCurrentView] = useState<PageView>('home');
   const [isShowreelOpen, setIsShowreelOpen] = useState(false);
   const [isInquiryOpen, setIsInquiryOpen] = useState(false);
+  const [selectedPricingPackage, setSelectedPricingPackage] = useState<string | null>(null);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<ServiceItemData | null>(null);
 
@@ -80,6 +95,50 @@ export default function App() {
       ) {
         setCurrentView('swallet');
         window.scrollTo({ top: 0, behavior: 'instant' });
+      } else if (
+        hash === '#/case-study/hentli' ||
+        hash === '#/prosjekt/hentli' ||
+        hash === '#hentli'
+      ) {
+        setCurrentView('hentli');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      } else if (
+        hash === '#/case-study/vestlandsk-hjertesenter' ||
+        hash === '#/prosjekt/vestlandsk-hjertesenter' ||
+        hash === '#vestlandsk-hjertesenter' ||
+        hash === '#vestlandsk'
+      ) {
+        setCurrentView('vestlandsk-hjertesenter');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      } else if (
+        hash === '#about' ||
+        hash === '#/about' ||
+        hash === '#om-oss' ||
+        hash === '#/om-oss'
+      ) {
+        setCurrentView('about');
+        setActiveTab('about');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      } else if (
+        hash === '#insights' ||
+        hash === '#/insights' ||
+        hash === '#blogs' ||
+        hash === '#/blogs' ||
+        hash === '#innsikt' ||
+        hash === '#/innsikt'
+      ) {
+        setCurrentView('insights');
+        setActiveTab('blogs');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      } else if (
+        hash === '#contact' ||
+        hash === '#/contact' ||
+        hash === '#kontakt' ||
+        hash === '#/kontakt'
+      ) {
+        setCurrentView('contact');
+        setActiveTab('contact');
+        window.scrollTo({ top: 0, behavior: 'instant' });
       } else {
         setCurrentView('home');
       }
@@ -99,76 +158,64 @@ export default function App() {
       window.location.hash = '#/case-study/swallet';
       setCurrentView('swallet');
       window.scrollTo({ top: 0, behavior: 'instant' });
+    } else if (projectId === 'hentli') {
+      window.location.hash = '#/case-study/hentli';
+      setCurrentView('hentli');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    } else if (projectId === 'vestlandsk-hjertesenter' || projectId === 'vestlandsk') {
+      window.location.hash = '#/case-study/vestlandsk-hjertesenter';
+      setCurrentView('vestlandsk-hjertesenter');
+      window.scrollTo({ top: 0, behavior: 'instant' });
     }
   };
 
   const navigateBackToHome = () => {
-    window.location.hash = '#projects';
+    window.location.hash = '#home';
     setCurrentView('home');
-    setTimeout(() => {
-      const el = document.getElementById('projects');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }, 50);
+    setActiveTab('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleTabSelect = (tab: string) => {
     setActiveTab(tab);
-    if (tab === 'services') {
-      const section = document.getElementById('software-systems');
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
+    if (tab === 'home') {
+      navigateBackToHome();
+    } else if (tab === 'about') {
+      window.location.hash = '#/about';
+      setCurrentView('about');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    } else if (tab === 'blogs' || tab === 'insights') {
+      window.location.hash = '#/insights';
+      setCurrentView('insights');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    } else if (tab === 'contact') {
+      window.location.hash = '#/contact';
+      setCurrentView('contact');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    } else if (tab === 'services') {
+      if (currentView !== 'home') {
+        setCurrentView('home');
+        window.location.hash = '#services';
+        setTimeout(() => {
+          const section = document.getElementById('software-systems');
+          if (section) section.scrollIntoView({ behavior: 'smooth' });
+        }, 80);
       } else {
-        setSelectedService({
-          id: 'overview',
-          title: 'Full-Spectrum Digital Services',
-          subtitle: 'App · Web · Brand · Cloud',
-          description:
-            'Geton delivers end-to-end digital engineering and brand architecture. From high-throughput APIs to immersive WebGL interactions, we elevate every touchpoint.',
-          features: [
-            'Enterprise Architecture & Microservices',
-            'Mobile iOS & Android Engineering',
-            'Cyberpunk & Futuristic Design Systems',
-            'Automated Cloud Scaling & Security Audits',
-          ],
-        });
+        const section = document.getElementById('software-systems');
+        if (section) section.scrollIntoView({ behavior: 'smooth' });
       }
     } else if (tab === 'projects') {
-      const section = document.getElementById('projects');
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
+      if (currentView !== 'home') {
+        setCurrentView('home');
+        window.location.hash = '#projects';
+        setTimeout(() => {
+          const section = document.getElementById('projects');
+          if (section) section.scrollIntoView({ behavior: 'smooth' });
+        }, 80);
       } else {
-        setIsPortfolioOpen(true);
+        const section = document.getElementById('projects');
+        if (section) section.scrollIntoView({ behavior: 'smooth' });
       }
-    } else if (tab === 'about') {
-      setSelectedService({
-        id: 'about',
-        title: 'About Geton Digital',
-        subtitle: 'Next-Gen Creative Technology Studio',
-        description:
-          'We are a team of visionary designers, creative engineers, and distributed systems architects shaping the next wave of web and mobile experiences.',
-        features: [
-          'Global studio with distributed engineering nodes',
-          'Over 140+ deployed applications worldwide',
-          'Obsessed with micro-interactions and raw speed',
-          'Recognized by top design and tech publications',
-        ],
-      });
-    } else if (tab === 'blogs') {
-      setSelectedService({
-        id: 'blogs',
-        title: 'Engineering & Design Insights',
-        subtitle: 'Tech Journal // 2026',
-        description:
-          'Deep dives into modern web performance, spatial UI design, low-latency microservices, and AI-driven workflow optimization.',
-        features: [
-          'Designing for Sub-Second Perceived Latency',
-          'The Rise of Cyberpunk & Glassmorphism in Enterprise UI',
-          'Deploying Multi-Region Edge Functions with Zero Cold Starts',
-          'From Figma Tokens to Production Tailwind V4 Systems',
-        ],
-      });
-    } else if (tab === 'contact') {
-      setIsInquiryOpen(true);
     }
   };
 
@@ -204,6 +251,90 @@ export default function App() {
           onBack={navigateBackToHome}
           onNavigateToProject={navigateToProject}
           onStartProject={() => setIsInquiryOpen(true)}
+        />
+        <ProjectInquiryModal
+          isOpen={isInquiryOpen}
+          onClose={() => setIsInquiryOpen(false)}
+        />
+      </>
+    );
+  }
+
+  // Dedicated full-page view for Hentli Delivery App Case Study
+  if (currentView === 'hentli') {
+    return (
+      <>
+        <HentliCaseStudyPage
+          onBack={navigateBackToHome}
+          onNavigateToProject={navigateToProject}
+          onStartProject={() => setIsInquiryOpen(true)}
+        />
+        <ProjectInquiryModal
+          isOpen={isInquiryOpen}
+          onClose={() => setIsInquiryOpen(false)}
+        />
+      </>
+    );
+  }
+
+  // Dedicated full-page view for Vestlandsk Hjertesenter Case Study
+  if (currentView === 'vestlandsk-hjertesenter') {
+    return (
+      <>
+        <VestlandskHjertesenterCaseStudyPage
+          onBack={navigateBackToHome}
+          onNavigateToProject={navigateToProject}
+          onStartProject={() => setIsInquiryOpen(true)}
+        />
+        <ProjectInquiryModal
+          isOpen={isInquiryOpen}
+          onClose={() => setIsInquiryOpen(false)}
+        />
+      </>
+    );
+  }
+
+  // Dedicated full-page view for About Page
+  if (currentView === 'about') {
+    return (
+      <>
+        <AboutPage
+          onBack={navigateBackToHome}
+          onNavigateToTab={handleTabSelect}
+          onStartProject={() => setIsInquiryOpen(true)}
+        />
+        <ProjectInquiryModal
+          isOpen={isInquiryOpen}
+          onClose={() => setIsInquiryOpen(false)}
+        />
+      </>
+    );
+  }
+
+  // Dedicated full-page view for Insights Page
+  if (currentView === 'insights') {
+    return (
+      <>
+        <InsightsPage
+          onBack={navigateBackToHome}
+          onNavigateToTab={handleTabSelect}
+          onStartProject={() => setIsInquiryOpen(true)}
+        />
+        <ProjectInquiryModal
+          isOpen={isInquiryOpen}
+          onClose={() => setIsInquiryOpen(false)}
+        />
+      </>
+    );
+  }
+
+  // Dedicated full-page view for Contact Page (with Google Maps & inquiry form)
+  if (currentView === 'contact') {
+    return (
+      <>
+        <ContactPage
+          onBack={navigateBackToHome}
+          onNavigateToTab={handleTabSelect}
         />
         <ProjectInquiryModal
           isOpen={isInquiryOpen}
@@ -322,9 +453,19 @@ export default function App() {
       />
 
       {/* ========================================================
+          THIRD SECTION: PRICING & PACKAGES ("Hva ønsker du å utvikle?")
+          (Placed directly before Technology that turns ideas into reality)
+      ======================================================== */}
+      <PricingPackagesSection
+        onSelectPackage={(pkgName) => {
+          setSelectedPricingPackage(pkgName);
+          setIsInquiryOpen(true);
+        }}
+      />
+
+      {/* ========================================================
           PREMIUM SCANDINAVIAN SECTION: DIGITAL SOLUTIONS & DESIGN
-          "Technology that turns ideas into reality"
-          (Placed between second section and before How we start...)
+          "Technology that turns ideas into reality" (4 Cards)
       ======================================================== */}
       <DigitalSolutionsSection
         onGetStarted={() => setIsInquiryOpen(true)}
@@ -339,7 +480,7 @@ export default function App() {
       />
 
       {/* ========================================================
-          THIRD SECTION: OUR PROJECTS (Våre tidligere prosjekter)
+          PROJECTS SECTION: OUR PROJECTS (Våre tidligere prosjekter)
           Light, clean editorial showcase matching reference image
       ======================================================== */}
       <ProjectsShowcaseSection
@@ -350,6 +491,14 @@ export default function App() {
           }
           if (project.id === 'swallet') {
             navigateToProject('swallet');
+            return;
+          }
+          if (project.id === 'hentli') {
+            navigateToProject('hentli');
+            return;
+          }
+          if (project.id === 'vestlandsk-hjertesenter') {
+            navigateToProject('vestlandsk-hjertesenter');
             return;
           }
           setSelectedService({
@@ -388,7 +537,11 @@ export default function App() {
 
       <ProjectInquiryModal
         isOpen={isInquiryOpen}
-        onClose={() => setIsInquiryOpen(false)}
+        onClose={() => {
+          setIsInquiryOpen(false);
+          setSelectedPricingPackage(null);
+        }}
+        initialPackage={selectedPricingPackage}
       />
 
       <PortfolioModal

@@ -37,6 +37,34 @@ export interface TranslationSchema {
       saas: { title: string; subtitle: string; desc: string; features: string[] };
     };
   };
+  pricing: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    footnote: string;
+    popularBadge: string;
+    website: {
+      title: string;
+      price: string;
+      description: string;
+      features: string[];
+      button: string;
+    };
+    mobileApp: {
+      title: string;
+      price: string;
+      description: string;
+      features: string[];
+      button: string;
+    };
+    webApp: {
+      title: string;
+      price: string;
+      description: string;
+      features: string[];
+      button: string;
+    };
+  };
   digitalSolutions: {
     eyebrow: string;
     headline: string;
@@ -389,6 +417,66 @@ export const translations: Record<'no' | 'en', TranslationSchema> = {
         },
       },
     },
+    pricing: {
+      badge: 'PROSJEKTTYPER & PRISER',
+      title: 'Hva ønsker du å utvikle?',
+      subtitle:
+        'Fra idé til ferdig digital løsning. Velg det som passer prosjektet ditt – vi tilpasser funksjonalitet, teknologi og pris etter dine behov.',
+      footnote:
+        '*Prisene er veiledende startpriser. Endelig pris avhenger av prosjektets omfang, funksjonalitet og integrasjoner.*',
+      popularBadge: 'POPULÆR',
+      website: {
+        title: 'Nettside',
+        price: 'Fra 15 000 kr',
+        description:
+          'For bedrifter som ønsker en moderne, rask og profesjonell nettside som skaper tillit og konverterer besøkende til kunder.',
+        features: [
+          'Moderne og responsivt design',
+          'Opptil 5 sider',
+          'Kontaktskjema',
+          'Grunnleggende SEO',
+          'SSL og sikkerhet',
+          'CMS / enkel innholdsredigering',
+          'Analyse og sporing',
+          'Opplæring ved lansering',
+        ],
+        button: 'Få et tilbud',
+      },
+      mobileApp: {
+        title: 'Mobilapp',
+        price: 'Fra 300 000 kr',
+        description:
+          'Fra MVP til komplett iOS- og Android-app. Vi hjelper deg med design, utvikling, backend og lansering.',
+        features: [
+          'iOS og Android',
+          'Moderne UI/UX',
+          'Backend og database',
+          'API-integrasjoner',
+          'Innlogging og brukerprofiler',
+          'Push-varsler',
+          'Adminpanel',
+          'Publisering i App Store & Google Play',
+        ],
+        button: 'Diskuter app-idéen din',
+      },
+      webApp: {
+        title: 'Webapplikasjon',
+        price: 'Fra 250 000 kr',
+        description:
+          'Skreddersydde webbaserte systemer for bedrifter, startups og digitale tjenester – bygget for å kunne vokse med virksomheten.',
+        features: [
+          'Skreddersydd frontend & backend',
+          'Dashboard og adminpanel',
+          'Bruker- og rollehåndtering',
+          'API-integrasjoner',
+          'Database og skyløsning',
+          'Automatisering av arbeidsprosesser',
+          'Sikkerhet og skalerbarhet',
+          'Responsive design',
+        ],
+        button: 'Få et tilbud',
+      },
+    },
     digitalSolutions: {
       eyebrow: 'DIGITALE LØSNINGER • DESIGN • UTVIKLING',
       headline: 'Teknologi som forvandler idéer til virkelighet',
@@ -418,6 +506,14 @@ export const translations: Record<'no' | 'en', TranslationSchema> = {
             'Vi tar prosjekter fra konsept og design gjennom utvikling, lansering og kontinuerlig vekst.',
           pillars: ['Rask prototyping', 'Agile sprintleveranser', 'Produksjonsutrulling', '24/7 videreutvikling & vekst'],
           highlight: 'Helhetlig partnerskap',
+        },
+        {
+          number: '04',
+          title: 'KONTINUERLIG VEKST & PARTNERSKAP',
+          description:
+            'Vi er en langsiktig teknologipartner. Dedikert oppfølging, sikkerhet og videreutvikling etter lansering.',
+          pillars: ['24/7 overvåking & feilretting', 'Månedlige sikkerhetsoppdateringer', 'Videreutvikling av funksjoner', 'Garantert responstid SLA'],
+          highlight: 'Langsiktig trygghet',
         },
       ],
       consultationCTA: 'Diskuter ditt prosjekt med oss',
@@ -1055,6 +1151,66 @@ export const translations: Record<'no' | 'en', TranslationSchema> = {
         },
       },
     },
+    pricing: {
+      badge: 'PACKAGES & PRICING',
+      title: 'What do you want to build?',
+      subtitle:
+        'From concept to production-ready digital solution. Choose the package that fits your project – we tailor functionality, tech stack, and scope to your needs.',
+      footnote:
+        '*Prices are indicative starting estimates. Final quote depends on project scope, custom features, and third-party integrations.*',
+      popularBadge: 'POPULAR',
+      website: {
+        title: 'Website',
+        price: 'From 15 000 NOK',
+        description:
+          'For businesses seeking a modern, fast, and professional website that establishes trust and converts visitors into clients.',
+        features: [
+          'Modern and responsive layout',
+          'Up to 5 pages / sections',
+          'Lead capture contact form',
+          'Core technical SEO structure',
+          'SSL encryption & security',
+          'CMS / effortless content editing',
+          'Analytics and event tracking',
+          'Handover training upon launch',
+        ],
+        button: 'Request a Quote',
+      },
+      mobileApp: {
+        title: 'Mobile App',
+        price: 'From 300 000 NOK',
+        description:
+          'From MVP to complete native iOS and Android application. We guide you through UX design, mobile engineering, backend, and app store launch.',
+        features: [
+          'iOS and Android parity',
+          'Modern, human-centric UI/UX',
+          'Backend API & cloud database',
+          'Third-party API integrations',
+          'Auth, BankID & user profiles',
+          'Real-time push notifications',
+          'Admin control dashboard',
+          'App Store & Google Play distribution',
+        ],
+        button: 'Discuss Your App Idea',
+      },
+      webApp: {
+        title: 'Web Application',
+        price: 'From 250 000 NOK',
+        description:
+          'Bespoke web-based software for businesses, startups, and digital operations – engineered to scale seamlessly with your growth.',
+        features: [
+          'Tailored frontend & scalable backend',
+          'Executive dashboard & admin panel',
+          'Role-based access & permissions',
+          'REST & GraphQL API integrations',
+          'Database & managed cloud hosting',
+          'Operational workflow automation',
+          'Enterprise security & scalability',
+          'Fully responsive fluid design',
+        ],
+        button: 'Request a Quote',
+      },
+    },
     digitalSolutions: {
       eyebrow: 'DIGITAL SOLUTIONS • DESIGN • DEVELOPMENT',
       headline: 'Technology that turns ideas into reality',
@@ -1084,6 +1240,14 @@ export const translations: Record<'no' | 'en', TranslationSchema> = {
             'We take projects from concept and design through development, launch, and continuous growth.',
           pillars: ['Rapid Prototyping', 'Agile Sprint Delivery', 'Production Go-Live', '24/7 Post-Launch Evolution'],
           highlight: 'End-to-End Partnership',
+        },
+        {
+          number: '04',
+          title: 'CONTINUOUS GROWTH & PARTNERSHIP',
+          description:
+            'We serve as your long-term technology partner. Dedicated support, proactive security, and ongoing feature growth.',
+          pillars: ['24/7 Monitoring & Alerting', 'Monthly Security Updates', 'Continuous Feature Roadmap', 'Guaranteed Response SLA'],
+          highlight: 'Long-Term Security',
         },
       ],
       consultationCTA: 'Discuss Your Product with Us',

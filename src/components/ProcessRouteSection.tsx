@@ -325,14 +325,14 @@ export const ProcessRouteSection: React.FC<ProcessRouteSectionProps> = ({
                 {/* Column 3: Tools & Action */}
                 <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col justify-between">
                   <div>
-                    <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-1">
+                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
                       TOOLCHAIN & PLATFORMS
                     </span>
-                    <div className="text-sm font-semibold text-white mb-6 font-mono">
+                    <div className="text-sm font-semibold text-white mb-6">
                       {currentStage.tools}
                     </div>
 
-                    <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-1">
+                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
                       DIRECT ARCHITECT CONTACT
                     </span>
                     <p className="text-xs text-slate-300 mb-6 leading-relaxed">

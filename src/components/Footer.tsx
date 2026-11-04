@@ -206,7 +206,6 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onGetStarted }) => 
           
           {/* Left: Exact Copyright Line */}
           <div className="flex items-center gap-3">
-            <GetonLogo size="default" />
             <span className="text-slate-300 font-medium">
               © 2026 Geton AS, org. nummer 926117076. All rights reserved.
             </span>

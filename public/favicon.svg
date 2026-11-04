@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <!-- Dark slate rounded square background for high contrast in all tabs -->
+    <linearGradient id="fav-bg" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#08102a"/>
+      <stop offset="100%" stopColor="#020617"/>
+    </linearGradient>
+
+    <!-- Upper Crescent Gradient -->
+    <linearGradient id="fav-top" x1="15" y1="12" x2="88" y2="45" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#38bdf8"/>
+      <stop offset="40%" stopColor="#06b6d4"/>
+      <stop offset="80%" stopColor="#0284c7"/>
+      <stop offset="100%" stopColor="#0c1938"/>
+    </linearGradient>
+
+    <!-- Lower Blade Gradient -->
+    <linearGradient id="fav-bot" x1="6" y1="66" x2="88" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#34d399"/>
+      <stop offset="25%" stopColor="#38bdf8"/>
+      <stop offset="60%" stopColor="#0284c7"/>
+      <stop offset="85%" stopColor="#1e1b4b"/>
+      <stop offset="100%" stopColor="#0a122e"/>
+    </linearGradient>
+
+    <!-- Laser Blade Line Highlight -->
+    <linearGradient id="fav-laser" x1="6" y1="66" x2="88" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#ffffff"/>
+      <stop offset="30%" stopColor="#34d399"/>
+      <stop offset="70%" stopColor="#38bdf8"/>
+      <stop offset="100%" stopColor="#818cf8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Container Tile with Subtle Neon Border -->
+  <rect width="100" height="100" rx="24" fill="url(#fav-bg)"/>
+  <rect width="96" height="96" x="2" y="2" rx="22" fill="none" stroke="#38bdf8" stroke-opacity="0.35" stroke-width="2"/>
+
+  <!-- 1. Upper Crescent Piece of the G -->
+  <path d="M 87 35.5 A 38 38 0 0 0 13 52 L 31 48 A 20 20 0 0 1 69 39.5 Z" fill="url(#fav-top)"/>
+
+  <!-- 2. Lower Piece: Needle Blade Crossbar + Bottom Rim with genuine cutout -->
+  <path fill-rule="evenodd" clip-rule="evenodd" d="
+    M 6 66
+    L 88 44
+    A 38 38 0 0 1 20 76.5
+    C 14 74 9 70 6 66
+    Z
+    M 31 62
+    L 69 51
+    A 20 20 0 0 1 31 62
+    Z
+  " fill="url(#fav-bot)"/>
+
+  <!-- 3. Glowing Razor Hairline along the blade -->
+  <line x1="6" y1="66" x2="88" y2="44" stroke="url(#fav-laser)" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- 4. Needle Spark Point -->
+  <circle cx="6" cy="66" r="3.2" fill="#ffffff"/>
+  <circle cx="87" cy="35.5" r="2.2" fill="#38bdf8"/>
+</svg>

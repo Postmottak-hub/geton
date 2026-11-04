@@ -26,7 +26,9 @@ import { HentliCaseStudyPage } from './pages/HentliCaseStudyPage.tsx';
 import { VestlandskHjertesenterCaseStudyPage } from './pages/VestlandskHjertesenterCaseStudyPage.tsx';
 import { AboutPage } from './pages/AboutPage.tsx';
 import { InsightsPage } from './pages/InsightsPage.tsx';
+import { ArticleDetailPage } from './pages/ArticleDetailPage.tsx';
 import { ContactPage } from './pages/ContactPage.tsx';
+import { ARTICLES } from './data/articles.ts';
 
 const VIDEO_URL =
   'https://res.cloudinary.com/dl7lmhbg/video/upload/v1793281647/b_generate_a_video_and.mp4';
@@ -39,11 +41,13 @@ type PageView =
   | 'vestlandsk-hjertesenter'
   | 'about'
   | 'insights'
+  | 'article'
   | 'contact';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [currentView, setCurrentView] = useState<PageView>('home');
+  const [activeArticleId, setActiveArticleId] = useState<string>('ai-agents-in-production');
   const [isShowreelOpen, setIsShowreelOpen] = useState(false);
   const [isInquiryOpen, setIsInquiryOpen] = useState(false);
   const [selectedPricingPackage, setSelectedPricingPackage] = useState<string | null>(null);
@@ -130,6 +134,14 @@ export default function App() {
         setCurrentView('insights');
         setActiveTab('blogs');
         window.scrollTo({ top: 0, behavior: 'instant' });
+      } else if (hash.startsWith('#/article/')) {
+        const slug = hash.replace('#/article/', '').trim();
+        if (slug) {
+          setActiveArticleId(slug);
+          setCurrentView('article');
+          setActiveTab('blogs');
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        }
       } else if (
         hash === '#contact' ||
         hash === '#/contact' ||
@@ -319,6 +331,46 @@ export default function App() {
           onBack={navigateBackToHome}
           onNavigateToTab={handleTabSelect}
           onStartProject={() => setIsInquiryOpen(true)}
+          onSelectArticle={(articleId) => {
+            setActiveArticleId(articleId);
+            setCurrentView('article');
+            window.location.hash = `#/article/${articleId}`;
+            window.scrollTo({ top: 0, behavior: 'instant' });
+          }}
+        />
+        <ProjectInquiryModal
+          isOpen={isInquiryOpen}
+          onClose={() => setIsInquiryOpen(false)}
+        />
+      </>
+    );
+  }
+
+  // Dedicated full-page view for Article Detail Page
+  if (currentView === 'article') {
+    const article =
+      ARTICLES.find((a) => a.id === activeArticleId) || ARTICLES[0];
+
+    return (
+      <>
+        <ArticleDetailPage
+          article={article}
+          onBack={() => {
+            setCurrentView('insights');
+            window.location.hash = '#/insights';
+            window.scrollTo({ top: 0, behavior: 'instant' });
+          }}
+          onSelectArticle={(articleId) => {
+            setActiveArticleId(articleId);
+            window.location.hash = `#/article/${articleId}`;
+            window.scrollTo({ top: 0, behavior: 'instant' });
+          }}
+          onStartProject={() => {
+            setCurrentView('contact');
+            window.location.hash = '#/contact';
+            window.scrollTo({ top: 0, behavior: 'instant' });
+          }}
+          onNavigateToTab={handleTabSelect}
         />
         <ProjectInquiryModal
           isOpen={isInquiryOpen}

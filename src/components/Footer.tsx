@@ -99,7 +99,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onGetStarted }) => 
 
             {/* Email Card */}
             <a
-              href="mailto:hello@geton.agency"
+              href="mailto:contact@getontechs.com"
               className="p-3.5 rounded-2xl bg-white/[0.03] hover:bg-cyan-950/40 border border-cyan-400/25 hover:border-cyan-400/50 transition-all flex items-center gap-3 group text-left block"
             >
               <div className="w-9 h-9 rounded-xl bg-cyan-950/70 border border-cyan-400/40 flex items-center justify-center text-cyan-300 group-hover:scale-105 transition-transform shrink-0">
@@ -117,7 +117,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onGetStarted }) => 
 
             {/* Telephone Card */}
             <a
-              href="tel:+4792611707"
+              href="tel:+4740584817"
               className="p-3.5 rounded-2xl bg-white/[0.03] hover:bg-cyan-950/40 border border-cyan-400/25 hover:border-cyan-400/50 transition-all flex items-center gap-3 group text-left block"
             >
               <div className="w-9 h-9 rounded-xl bg-cyan-950/70 border border-cyan-400/40 flex items-center justify-center text-cyan-300 group-hover:scale-105 transition-transform shrink-0">
@@ -125,7 +125,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onGetStarted }) => 
               </div>
               <div>
                 <div className="text-sm font-bold text-white group-hover:text-cyan-200 transition-colors">
-                  +47 926 11 707
+                  +47 405 84 817
                 </div>
                 <div className="text-xs text-slate-400">
                   {language === 'no' ? 'Hovedkontor Norge (Man – Fre 08:00 – 17:00)' : 'Norway HQ Line (Mon – Fri 08:00 – 17:00 CET)'}

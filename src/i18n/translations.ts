@@ -444,7 +444,7 @@ export const translations: Record<'no' | 'en', TranslationSchema> = {
       },
       mobileApp: {
         title: 'Mobilapp',
-        price: 'Fra 300 000 kr',
+        price: 'Fra 500 000 kr',
         description:
           'Fra MVP til komplett iOS- og Android-app. Vi hjelper deg med design, utvikling, backend og lansering.',
         features: [
@@ -461,7 +461,7 @@ export const translations: Record<'no' | 'en', TranslationSchema> = {
       },
       webApp: {
         title: 'Webapplikasjon',
-        price: 'Fra 250 000 kr',
+        price: 'Fra 350 000 kr',
         description:
           'Skreddersydde webbaserte systemer for bedrifter, startups og digitale tjenester – bygget for å kunne vokse med virksomheten.',
         features: [
@@ -1063,7 +1063,7 @@ export const translations: Record<'no' | 'en', TranslationSchema> = {
       headquartersTitle: 'HOVEDKONTOR & KONTAKT',
       addressStreet: 'Trollhaugmyra 15, 5353 Straume',
       addressRegion: 'Vestland, Norge · Nordic Innovation Park',
-      emailLabel: 'hello@geton.agency',
+      emailLabel: 'contact@getontechs.com',
       navigationTitle: 'NAVIGASJON',
       servicesTitle: 'TJENESTER',
       legalTitle: 'JURIDISK & SIKKERHET',
@@ -1178,7 +1178,7 @@ export const translations: Record<'no' | 'en', TranslationSchema> = {
       },
       mobileApp: {
         title: 'Mobile App',
-        price: 'From 300 000 NOK',
+        price: 'From 500 000 NOK',
         description:
           'From MVP to complete native iOS and Android application. We guide you through UX design, mobile engineering, backend, and app store launch.',
         features: [
@@ -1195,7 +1195,7 @@ export const translations: Record<'no' | 'en', TranslationSchema> = {
       },
       webApp: {
         title: 'Web Application',
-        price: 'From 250 000 NOK',
+        price: 'From 350 000 NOK',
         description:
           'Bespoke web-based software for businesses, startups, and digital operations – engineered to scale seamlessly with your growth.',
         features: [
@@ -1798,7 +1798,7 @@ export const translations: Record<'no' | 'en', TranslationSchema> = {
       headquartersTitle: 'HEADQUARTERS & CONTACT',
       addressStreet: 'Trollhaugmyra 15, 5353 Straume',
       addressRegion: 'Vestland, Norway · Nordic Innovation Park',
-      emailLabel: 'hello@geton.agency',
+      emailLabel: 'contact@getontechs.com',
       navigationTitle: 'NAVIGATION',
       servicesTitle: 'SERVICES',
       legalTitle: 'LEGAL & COMPLIANCE',

@@ -400,7 +400,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 px-2 pt-1">
-              <span>Direct Brief: hello@geton.agency</span>
+              <span>Direct Brief: contact@getontechs.com</span>
               <span className="text-cyan-300">Q1/Q2 Availability</span>
             </div>
           </div>

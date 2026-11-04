@@ -215,7 +215,7 @@ export const VestlandskHjertesenterCaseStudyPage: React.FC<VestlandskHjertesente
         <div className="max-w-7xl mx-auto">
           <div className="relative rounded-3xl overflow-hidden border border-teal-500/30 shadow-[0_20px_60px_rgba(20,184,166,0.2)] bg-slate-950">
             <img
-              src="/src/assets/images/vestlandsk_hjertesenter_mockup_1793710496839.jpg"
+              src="/assets/images/vestlandsk_hjertesenter_mockup_1793710496839.jpg"
               alt="Vestlandsk Hjertesenter Modern iMac and iPad Clinic Mockup"
               className="w-full h-auto object-cover"
             />

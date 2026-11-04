@@ -60,6 +60,11 @@ export const ContactPage: React.FC<ContactPageProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitted(true);
+    const subject = encodeURIComponent(`Prosjektforespørsel: ${company || name} (${selectedBudget})`);
+    const body = encodeURIComponent(
+      `Hei Geton AS,\n\nNavn: ${name}\nE-post: ${email}\nFirmanavn: ${company}\nTelefon: ${phone}\nEstimert budsjett: ${selectedBudget}\n\nProsjektdetaljer:\n${details || 'Ingen ytterligere detaljer oppgitt.'}\n\nMvh,\n${name}`
+    );
+    window.location.href = `mailto:contact@getontechs.com?subject=${subject}&body=${body}`;
     setTimeout(() => {
       setIsSubmitted(false);
       setName('');
@@ -67,7 +72,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
       setCompany('');
       setPhone('');
       setDetails('');
-    }, 4000);
+    }, 6000);
   };
 
   const budgetOptions = [
@@ -120,8 +125,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({
           : 'Have a question or concept? Reach out anytime – our team is here to listen, advise and help you succeed.',
       fullDetails: [
         'Rask responstid: Vi svarer normalt innen 2 timer i åpningstiden',
-        'E-post: post@geton.no / info@getons.no',
-        'Telefon: +47 412 34 567',
+        'E-post: contact@getontechs.com',
+        'Telefon: +47 405 84 817',
         'Uforpliktende arkitektur- og løsningsgjennomgang',
       ],
       actionLabel: language === 'no' ? 'Send henvendelse' : 'Send Message',
@@ -138,7 +143,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
         'Ledige stillinger: Senior React / React Native utvikler',
         'Ledige stillinger: Full-stack Node.js / .NET 9 arkitekt',
         'Kultur: Fleksibel arbeidshverdag, moderne lokaler på Straume/Bergen',
-        'Send søknad og portfolio direkte til karriere@geton.no',
+        'Send søknad og portfolio direkte til contact@getontechs.com',
       ],
       actionLabel: language === 'no' ? 'Se ledige stillinger' : 'Explore Careers',
       actionType: 'email' as const,
@@ -166,11 +171,11 @@ export const ContactPage: React.FC<ContactPageProps> = ({
             <GetonLogo className="w-7 h-7" />
             <LanguageSwitcher />
             <a
-              href="tel:+4741234567"
+              href="tel:+4740584817"
               className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-emerald-600/30 transition-all cursor-pointer inline-flex items-center gap-1.5"
             >
               <Phone className="w-3.5 h-3.5" />
-              <span>+47 412 34 567</span>
+              <span>+47 405 84 817</span>
             </a>
           </div>
         </div>
@@ -207,7 +212,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
               {/* Primary Photo */}
               <div className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900 group relative">
                 <img
-                  src="/src/assets/images/contact_team_consultation_1793711783282.jpg"
+                  src="/assets/images/contact_team_consultation_1793711783282.jpg"
                   alt="Geton AS Tech Entrepreneur talking on phone"
                   className="w-full h-auto object-cover group-hover:scale-102 transition-transform duration-500"
                 />
@@ -221,7 +226,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
               <div className="grid grid-cols-2 gap-4">
                 <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-slate-900 aspect-video flex items-center justify-center group cursor-pointer">
                   <img
-                    src="/src/assets/images/about_geton_studio_1793711805670.jpg"
+                    src="/assets/images/about_geton_studio_1793711805670.jpg"
                     alt="Geton AS team session"
                     className="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all"
                   />
@@ -232,7 +237,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
                 <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-slate-900 aspect-video flex items-center justify-center group cursor-pointer">
                   <img
-                    src="/src/assets/images/contact_developer_laptop_1793711783791.jpg"
+                    src="/assets/images/contact_developer_laptop_1793711783791.jpg"
                     alt="Geton AS developer at work"
                     className="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all"
                   />
@@ -247,7 +252,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                 
                 {/* Phone */}
                 <a
-                  href="tel:+4741234567"
+                  href="tel:+4740584817"
                   className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-emerald-500/40 hover:bg-white/[0.04] transition-all group"
                 >
                   <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -258,14 +263,14 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                       {language === 'no' ? 'Telefon' : 'Phone number'}
                     </div>
                     <div className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
-                      +47 412 34 567 / +47 (405) 84817
+                      +47 405 84 817
                     </div>
                   </div>
                 </a>
 
                 {/* Email */}
                 <a
-                  href="mailto:post@geton.no"
+                  href="mailto:contact@getontechs.com"
                   className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-emerald-500/40 hover:bg-white/[0.04] transition-all group"
                 >
                   <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -276,7 +281,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                       {language === 'no' ? 'E-postadresse' : 'Email address'}
                     </div>
                     <div className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
-                      post@geton.no / info@getons.no
+                      contact@getontechs.com
                     </div>
                   </div>
                 </a>
@@ -317,8 +322,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                     </h3>
                     <p className="text-slate-300 text-sm max-w-md mx-auto leading-relaxed">
                       {language === 'no'
-                        ? 'En av våre seniorutviklere eller prosjektledere i Geton AS tar kontakt med deg innen kort tid.'
-                        : 'A lead architect from Geton AS will review your project brief and get in touch shortly.'}
+                        ? 'Henvendelsen din er sendt direkte til contact@getontechs.com. En av våre seniorutviklere eller prosjektledere i Geton AS tar kontakt med deg innen kort tid.'
+                        : 'Your inquiry has been addressed directly to contact@getontechs.com. A lead architect from Geton AS will review your project brief and get in touch shortly.'}
                     </p>
                   </div>
                 ) : (
@@ -522,7 +527,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
               <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg max-h-56">
                 <img
-                  src="/src/assets/images/contact_developer_laptop_1793711783791.jpg"
+                  src="/assets/images/contact_developer_laptop_1793711783791.jpg"
                   alt="Geton AS team member working in Bergen"
                   className="w-full h-full object-cover"
                 />
@@ -629,7 +634,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
               {activeInfoCard.actionType === 'email' && (
                 <a
-                  href="mailto:post@geton.no"
+                  href="mailto:contact@getontechs.com"
                   className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition-all inline-flex items-center gap-1.5"
                 >
                   <span>{activeInfoCard.actionLabel}</span>

@@ -54,8 +54,8 @@ export const PricingPackagesSection: React.FC<PricingPackagesSectionProps> = ({
         {/* ========================================================
             3 PRICING CARDS (Desktop 3 Columns, matching user's reference)
             - Card 1: Nettside (Fra 15 000 kr)
-            - Card 2: Mobilapp (Fra 300 000 kr) - POPULÆR with emerald highlight
-            - Card 3: Webapplikasjon (Fra 250 000 kr)
+            - Card 2: Mobilapp (Fra 500 000 kr) - POPULÆR with emerald highlight
+            - Card 3: Webapplikasjon (Fra 350 000 kr)
         ======================================================== */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch mb-12">
           

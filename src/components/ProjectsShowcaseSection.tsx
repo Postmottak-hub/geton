@@ -212,7 +212,7 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
           : 'Optimized regional search presence across Western Norway',
       ],
       techStack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Booking API', 'SEO Engine'],
-      imageSrc: '/src/assets/images/vestlandsk_hjertesenter_mockup_1793710496839.jpg',
+      imageSrc: '/assets/images/vestlandsk_hjertesenter_mockup_1793710496839.jpg',
       isFullCaseStudy: true,
     },
   ];

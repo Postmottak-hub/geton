@@ -255,7 +255,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
         <div className="max-w-7xl mx-auto">
           <div className="relative rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_20px_60px_rgba(6,182,212,0.18)] bg-slate-950">
             <img
-              src="/src/assets/images/about_geton_studio_1793711805670.jpg"
+              src="/assets/images/about_geton_studio_1793711805670.jpg"
               alt="Geton AS team studio in Bergen Norway"
               className="w-full h-auto object-cover"
             />

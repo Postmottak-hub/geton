@@ -1,213 +1,319 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://getontechs.com/</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
     <loc>https://getontechs.com/prosjekter</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/prosjekter" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/prosjekter?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/prosjekter" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://getontechs.com/om-oss</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/om-oss" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/om-oss?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/om-oss" />
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://getontechs.com/artikler</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/artikler" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/artikler?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/artikler" />
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://getontechs.com/kontakt</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/kontakt" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/kontakt?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/kontakt" />
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://getontechs.com/tjenester/nettsideutvikling</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/nettsideutvikling" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/nettsideutvikling?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/nettsideutvikling" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester/mobilapputvikling</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/mobilapputvikling" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/mobilapputvikling?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/mobilapputvikling" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester/webapplikasjoner-og-systemutvikling</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/webapplikasjoner-og-systemutvikling" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/webapplikasjoner-og-systemutvikling?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/webapplikasjoner-og-systemutvikling" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester/sky-losninger</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/sky-losninger" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/sky-losninger?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/sky-losninger" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester/produktdesign-ux-ui</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/produktdesign-ux-ui" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/produktdesign-ux-ui?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/produktdesign-ux-ui" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester/digital-markedsforing</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/digital-markedsforing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/digital-markedsforing?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/digital-markedsforing" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester/nettbutikk-og-ehandel</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/nettbutikk-og-ehandel" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/nettbutikk-og-ehandel?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/nettbutikk-og-ehandel" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester/systemintegrasjoner-og-api</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/systemintegrasjoner-og-api" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/systemintegrasjoner-og-api?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/systemintegrasjoner-og-api" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester/kunstig-intelligens-og-automasjon</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/kunstig-intelligens-og-automasjon" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/kunstig-intelligens-og-automasjon?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/kunstig-intelligens-og-automasjon" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester/vedlikehold-og-support</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/vedlikehold-og-support" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/vedlikehold-og-support?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/vedlikehold-og-support" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester/merkevare-og-visuell-profil</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/merkevare-og-visuell-profil" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/merkevare-og-visuell-profil?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/merkevare-og-visuell-profil" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://getontechs.com/tjenester/seo-og-ytelsesoptimalisering</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/tjenester/seo-og-ytelsesoptimalisering" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/tjenester/seo-og-ytelsesoptimalisering?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/tjenester/seo-og-ytelsesoptimalisering" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://getontechs.com/arbeidsmate/tverrfaglig-utvikling</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/arbeidsmate/tverrfaglig-utvikling" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/arbeidsmate/tverrfaglig-utvikling?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/arbeidsmate/tverrfaglig-utvikling" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getontechs.com/arbeidsmate/skreddersydde-losninger</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/arbeidsmate/skreddersydde-losninger" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/arbeidsmate/skreddersydde-losninger?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/arbeidsmate/skreddersydde-losninger" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getontechs.com/arbeidsmate/fra-ide-til-lansering</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/arbeidsmate/fra-ide-til-lansering" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/arbeidsmate/fra-ide-til-lansering?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/arbeidsmate/fra-ide-til-lansering" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getontechs.com/arbeidsmate/videreutvikling-og-support</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/arbeidsmate/videreutvikling-og-support" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/arbeidsmate/videreutvikling-og-support?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/arbeidsmate/videreutvikling-og-support" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getontechs.com/prosjekter/frakt360</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/prosjekter/frakt360" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/prosjekter/frakt360?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/prosjekter/frakt360" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getontechs.com/prosjekter/swallet</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/prosjekter/swallet" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/prosjekter/swallet?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/prosjekter/swallet" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getontechs.com/prosjekter/hentli</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/prosjekter/hentli" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/prosjekter/hentli?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/prosjekter/hentli" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getontechs.com/prosjekter/vestlandsk-hjertesenter</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/prosjekter/vestlandsk-hjertesenter" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/prosjekter/vestlandsk-hjertesenter?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/prosjekter/vestlandsk-hjertesenter" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://getontechs.com/om-oss</loc>
-    <lastmod>2026-11-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getontechs.com/artikler</loc>
-    <lastmod>2026-11-20</lastmod>
-    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getontechs.com/artikler/ai-agents-in-production</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/artikler/ai-agents-in-production" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/artikler/ai-agents-in-production?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/artikler/ai-agents-in-production" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.65</priority>
   </url>
   <url>
     <loc>https://getontechs.com/artikler/modular-monolith-architecture</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/artikler/modular-monolith-architecture" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/artikler/modular-monolith-architecture?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/artikler/modular-monolith-architecture" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.65</priority>
   </url>
   <url>
     <loc>https://getontechs.com/artikler/nextgen-web-performance-2026</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/artikler/nextgen-web-performance-2026" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/artikler/nextgen-web-performance-2026?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/artikler/nextgen-web-performance-2026" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.65</priority>
   </url>
   <url>
     <loc>https://getontechs.com/artikler/offline-first-mobile-architecture</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/artikler/offline-first-mobile-architecture" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/artikler/offline-first-mobile-architecture?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/artikler/offline-first-mobile-architecture" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.65</priority>
   </url>
   <url>
     <loc>https://getontechs.com/artikler/zero-trust-passkeys-security</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/artikler/zero-trust-passkeys-security" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/artikler/zero-trust-passkeys-security?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/artikler/zero-trust-passkeys-security" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.65</priority>
   </url>
   <url>
     <loc>https://getontechs.com/artikler/design-engineering-micro-interactions</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/artikler/design-engineering-micro-interactions" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/artikler/design-engineering-micro-interactions?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/artikler/design-engineering-micro-interactions" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.65</priority>
   </url>
   <url>
     <loc>https://getontechs.com/artikler/postgres-spatial-scale</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/artikler/postgres-spatial-scale" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/artikler/postgres-spatial-scale?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/artikler/postgres-spatial-scale" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.65</priority>
   </url>
   <url>
     <loc>https://getontechs.com/artikler/cloud-finops-cost-optimization</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/artikler/cloud-finops-cost-optimization" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/artikler/cloud-finops-cost-optimization?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/artikler/cloud-finops-cost-optimization" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.65</priority>
   </url>
   <url>
     <loc>https://getontechs.com/artikler/scalable-saas-mvp-to-enterprise</loc>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://getontechs.com/artikler/scalable-saas-mvp-to-enterprise" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://getontechs.com/artikler/scalable-saas-mvp-to-enterprise?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getontechs.com/artikler/scalable-saas-mvp-to-enterprise" />
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://getontechs.com/kontakt</loc>
-    <lastmod>2026-11-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.65</priority>
   </url>
 </urlset>

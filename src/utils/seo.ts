@@ -193,6 +193,7 @@ export function applyRouteSEO(config: SEOConfig, language: 'no' | 'en'): void {
     foundingDate: '2020',
     priceRange: '$$$',
     hasMap: 'https://maps.google.com/?q=Trollhaugmyra+15,+5353+Straume,+Norway',
+    sameAs: ['https://maps.google.com/?q=Trollhaugmyra+15,+5353+Straume,+Norway'],
     geo: {
       '@type': 'GeoCoordinates',
       latitude: 60.3547,

@@ -1,4 +1,6 @@
-# Hostinger (LiteSpeed / Apache) SPA, Canonical HTTPS & Caching Configuration
+# Hostinger (LiteSpeed / Apache) Pre-Rendered SEO, SPA Fallback, Canonical HTTPS & Caching Configuration
+DirectorySlash Off
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
@@ -8,12 +10,22 @@
   RewriteCond %{HTTP_HOST} ^www\.getontechs\.com$ [NC]
   RewriteRule ^(.*)$ https://getontechs.com/$1 [L,R=301]
 
-  # Serve existing files and directories directly (assets, robots.txt, sitemap.xml, favicons)
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
+  # Normalize trailing slash on subpaths (e.g. /om-oss/ -> /om-oss) to match canonical URLs
+  RewriteCond %{REQUEST_URI} ^/(.+)/$
+  RewriteRule ^(.+)/$ https://getontechs.com/$1 [L,R=301]
+
+  # Serve existing files directly (assets, robots.txt, sitemap.xml, favicons)
+  RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
 
-  # Route all clean SPA paths to index.html
+  # Root domain serves built index.html directly
+  RewriteRule ^$ index.html [L]
+
+  # Serve pre-rendered static SEO HTML for clean routes (e.g. /tjenester -> tjenester/index.html)
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.*)$ $1/index.html [L]
+
+  # Fallback any dynamic or unknown routes to root SPA index.html
   RewriteRule ^ index.html [L]
 </IfModule>
 
@@ -23,8 +35,8 @@
   Header set X-Frame-Options "SAMEORIGIN"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
 
-  # Prevent stale HTML caching across deployments
-  <FilesMatch "\.(html)$">
+  # Prevent stale HTML or sitemap caching across deployments
+  <FilesMatch "\.(html|xml)$">
     Header set Cache-Control "no-cache, no-store, must-revalidate"
   </FilesMatch>
 

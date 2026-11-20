@@ -193,8 +193,11 @@ export const Frakt360CaseStudyModal: React.FC<Frakt360CaseStudyModalProps> = ({
           {/* 1. HERO BANNER WITH THE UPLOADED HIGH-RES GRAPHIC */}
           <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-cyan-500/30 shadow-2xl group bg-slate-950">
             <img
-              src="/assets/aistudio/Frakt360__Komplett_norsk_fraktplattform_6546bb91.png"
+              src="/assets/aistudio/Frakt360__Komplett_norsk_fraktplattform_6546bb91.webp"
               alt="Frakt360 Komplett Norsk Fraktplattform"
+              width={1200}
+              height={675}
+              decoding="async"
               className="w-full h-auto object-cover max-h-[460px] transform group-hover:scale-[1.01] transition-transform duration-700"
             />
             {/* Subtle bottom gradient to merge into dark container */}
@@ -214,7 +217,7 @@ export const Frakt360CaseStudyModal: React.FC<Frakt360CaseStudyModalProps> = ({
             <div>
               <div className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider mb-1">Developed by</div>
               <div className="text-sm font-semibold text-white flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-cyan-400" />
                 <span>Geton AS</span>
               </div>
             </div>

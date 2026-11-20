@@ -50,7 +50,7 @@ export const ARTICLES: Article[] = [
     author: 'Eivind Lunde',
     authorRoleNo: 'Sjefsingeniør AI & Data',
     authorRoleEn: 'Principal AI Architect',
-    imageSrc: '/assets/images/software_multidisciplinary_ui_1793710478928.jpg',
+    imageSrc: '/assets/images/software_multidisciplinary_ui_1793710478928.webp',
     tags: ['AI Agents', 'Function Calling', 'LangGraph', 'Python/TypeScript', 'Structured Outputs'],
     subsectionsNo: [
       {
@@ -136,7 +136,7 @@ const generateInvoiceSchema = z.object({
     author: 'Marius Holmen',
     authorRoleNo: 'Sjefsarkitekt Skysystemer',
     authorRoleEn: 'Lead Cloud Architect',
-    imageSrc: '/assets/images/software_bespoke_architecture_1793710479073.jpg',
+    imageSrc: '/assets/images/software_bespoke_architecture_1793710479073.webp',
     tags: ['Architecture', 'Modular Monolith', 'Domain-Driven Design', 'PostgreSQL', 'Performance'],
     subsectionsNo: [
       {
@@ -212,7 +212,7 @@ export interface BillingModule {
     author: 'Sofia Vik',
     authorRoleNo: 'Senior Frontend Arkitekt',
     authorRoleEn: 'Staff Frontend Architect',
-    imageSrc: '/assets/images/software_idea_to_launch_1793710481314.jpg',
+    imageSrc: '/assets/images/software_idea_to_launch_1793710481314.webp',
     tags: ['React 19', 'Next.js 15', 'Core Web Vitals', 'Edge CDN', 'WebAssembly'],
     subsectionsNo: [
       {
@@ -276,7 +276,7 @@ export interface BillingModule {
     author: 'Kristian Bøe',
     authorRoleNo: 'Senior Mobilutvikler',
     authorRoleEn: 'Lead Mobile Engineer',
-    imageSrc: '/assets/images/software_devops_monitoring_1793710481343.jpg',
+    imageSrc: '/assets/images/software_devops_monitoring_1793710481343.webp',
     tags: ['React Native', 'SQLite', 'CRDT', 'Offline Sync', 'Background Tasks'],
     subsectionsNo: [
       {
@@ -340,7 +340,7 @@ export interface BillingModule {
     author: 'Henrik Nygård',
     authorRoleNo: 'Sikkerhetsleder & Arkitekt',
     authorRoleEn: 'Chief Security Architect',
-    imageSrc: '/assets/images/creative_growth_partnership_1793709073304.jpg',
+    imageSrc: '/assets/images/creative_growth_partnership_1793709073304.webp',
     tags: ['WebAuthn', 'Passkeys', 'Zero Trust', 'GDPR', 'Cryptography'],
     subsectionsNo: [
       {
@@ -404,7 +404,7 @@ export interface BillingModule {
     author: 'Astrid Moen',
     authorRoleNo: 'Leder for Design Engineering',
     authorRoleEn: 'Lead Design Engineer',
-    imageSrc: '/assets/images/creative_idea_to_launch_1793709073861.jpg',
+    imageSrc: '/assets/images/creative_idea_to_launch_1793709073861.webp',
     tags: ['Design Systems', 'Micro-Interactions', 'Spring Physics', 'Framer Motion', 'Accessibility'],
     subsectionsNo: [
       {
@@ -468,7 +468,7 @@ export interface BillingModule {
     author: 'Jonas Strand',
     authorRoleNo: 'Leder Dataplattform',
     authorRoleEn: 'Principal Data Architect',
-    imageSrc: '/assets/images/software_bespoke_architecture_1793710479073.jpg',
+    imageSrc: '/assets/images/software_bespoke_architecture_1793710479073.webp',
     tags: ['PostgreSQL', 'PostGIS', 'PgBouncer', 'Database Optimization', 'Spatial Queries'],
     subsectionsNo: [
       {
@@ -532,7 +532,7 @@ export interface BillingModule {
     author: 'Fredrik Dahl',
     authorRoleNo: 'Leder for Sky & DevOps',
     authorRoleEn: 'DevOps & Infrastructure Lead',
-    imageSrc: '/assets/images/creative_multidisciplinary_prism_1793709072258.jpg',
+    imageSrc: '/assets/images/creative_multidisciplinary_prism_1793709072258.webp',
     tags: ['FinOps', 'AWS', 'Azure', 'Kubernetes', 'Serverless', 'Cost Optimization'],
     subsectionsNo: [
       {
@@ -575,6 +575,76 @@ export interface BillingModule {
       'Transition container workloads to ARM64 for immediate compute savings',
       'Automate shutdown of staging and development clusters outside active sprint hours',
       'Institute automated spend anomaly alerts to detect data egress surges immediately',
+    ],
+  },
+
+  // 9. SCALABLE SAAS FROM MVP TO ENTERPRISE
+  {
+    id: 'scalable-saas-mvp-to-enterprise',
+    category: 'architecture',
+    categoryLabelNo: 'SaaS & Vekst',
+    categoryLabelEn: 'SaaS & Growth',
+    titleNo: 'Fra MVP til skalerbar SaaS-plattform: Slik bygger norske vekstselskaper uten å måtte skrive om alt',
+    titleEn: 'From MVP to Scalable SaaS: How Nordic Growth Companies Architect Without Costly Rewrites',
+    excerptNo:
+      'Hvordan unngå at suksess stopper veksten? Slik designer vi multi-tenant datamodeller, fleksibel tilgangsstyring (RBAC) og modulær arkitektur som vokser sømløst fra første kunde til tusenvis av bedrifter.',
+    excerptEn:
+      'How do you prevent early traction from stalling engineering velocity? Learn how we design multi-tenant data models, clean RBAC permissions, and modular architecture that scales effortlessly from customer one to enterprise.',
+    readTime: '6 min read',
+    dateNo: 'November 2026',
+    dateEn: 'November 2026',
+    author: 'Eivind Lunde',
+    authorRoleNo: 'Teknisk Arkitekt',
+    authorRoleEn: 'Principal Architect',
+    imageSrc: '/assets/images/nordic_saas_showcase_1793707988142.webp',
+    tags: ['SaaS', 'Multi-Tenant', 'MVP', 'RBAC', 'TypeScript', 'PostgreSQL'],
+    subsectionsNo: [
+      {
+        heading: 'Fellen mange gründere går i: Hastverk uten fundament',
+        text: 'Når målet er å lansere en MVP raskt, er det fristende å hoppe over datamodellering, tilgangskontroll og automatiske tester. Resultatet er ofte at produktet må bygges helt på nytt idet de første store bedriftskundene krever roller, revisjonslogg og sikker dataseparasjon.',
+      },
+      {
+        heading: 'Multi-tenant isolasjon som skalerer fra dag én',
+        text: 'Med PostgreSQL Row-Level Security (RLS) og en tydelig tenant_id på alle kjerneentiteter får du banknivå dataseparasjon fra første linje kode – uten å komplisere utviklingshastigheten i tidlig fase.',
+        codeSnippet: `// PostgreSQL Row-Level Security for trygg multi-tenant SaaS
+CREATE POLICY tenant_isolation ON projects
+  USING (tenant_id = current_setting('app.current_tenant_id')::uuid);`,
+      },
+      {
+        heading: 'Lansér raskt, men bygg med utskiftbare moduler',
+        text: 'Nøkkelen til lønnsom produktutvikling er å holde første versjon fokusert på kjerneløsningen, samtidig som autentisering, betaling (Vipps/Stripe) og API-lag er rent separert slik at nye moduler kan legges til uten teknisk gjeld.',
+      },
+    ],
+    subsectionsEn: [
+      {
+        heading: 'The Early-Stage Trap: Speed Without Structural Hygiene',
+        text: 'When racing to launch an MVP, teams often bypass clean domain modeling, role-based access control, and automated checks. As soon as enterprise buyers arrive requesting audit trails and strict tenant isolation, the platform hits a wall requiring an expensive rewrite.',
+      },
+      {
+        heading: 'Multi-Tenant Isolation Built In From Day One',
+        text: 'Combining PostgreSQL Row-Level Security (RLS) with an explicit tenant_id across core entities provides airtight customer data isolation from the very first commit—without slowing down product iteration.',
+        codeSnippet: `// PostgreSQL Row-Level Security for safe multi-tenant SaaS
+CREATE POLICY tenant_isolation ON projects
+  USING (tenant_id = current_setting('app.current_tenant_id')::uuid);`,
+      },
+      {
+        heading: 'Ship Lean Today, Expand Without Debt Tomorrow',
+        text: 'Sustainable SaaS velocity comes from keeping v1 laser-focused on the primary customer problem while cleanly isolating billing (Vipps/Stripe), identity, and API contracts so new capabilities slot in smoothly.',
+      },
+    ],
+    quoteCalloutNo:
+      '«En god MVP handler ikke om å skrive slurvete kode raskt – den handler om å bygge akkurat de riktige funksjonene på et solid, utvidbart fundament.»',
+    quoteCalloutEn:
+      '"A great MVP is never about shipping sloppy code fast — it is about building the exact right scope on a clean, extensible foundation."',
+    keyTakeawaysNo: [
+      'Innfør tenant-isolasjon og tydelig RBAC-rollemodell allerede i første iterasjon',
+      'Hold domenelogikk adskilt fra tredjepartsintegrasjoner som betaling og e-post',
+      'Bruk automatisert CI/CD og typesikre API-kontrakter for raske, trygge lanseringer',
+    ],
+    keyTakeawaysEn: [
+      'Establish tenant isolation and clean RBAC roles during the very first sprint',
+      'Decouple core business logic from external payment, billing, and notification providers',
+      'Automate CI/CD and end-to-end type safety so every release ships predictably',
     ],
   },
 ];

@@ -17,20 +17,21 @@ import {
   Layers,
   HeartHandshake,
 } from 'lucide-react';
-import { GetonLogo } from '../components/Logo.tsx';
+import { Navbar } from '../components/Navbar.tsx';
 import { Footer } from '../components/Footer.tsx';
 import { useLanguage } from '../context/LanguageContext.tsx';
-import { LanguageSwitcher } from '../components/LanguageSwitcher.tsx';
+import { ServiceSlug } from '../data/services.ts';
 
 interface AboutPageProps {
   onBack: () => void;
   onNavigateToTab: (tab: string) => void;
+  onNavigateToService?: (slug: ServiceSlug) => void;
   onStartProject: () => void;
 }
 
 export const AboutPage: React.FC<AboutPageProps> = ({
-  onBack,
   onNavigateToTab,
+  onNavigateToService,
   onStartProject,
 }) => {
   const { language } = useLanguage();
@@ -41,35 +42,35 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
   const stats = [
     {
-      value: '2018',
+      value: '2020',
       label: language === 'no' ? 'Etablert i Norge' : 'Founded in Norway',
-      sub: language === 'no' ? 'Over 8 års innovasjon' : '8+ years of innovation',
+      sub: language === 'no' ? 'Erfarent teknologimiljø' : 'Established engineering studio',
     },
     {
-      value: '50+',
-      label: language === 'no' ? 'Vellykkede leveranser' : 'Shipped Platforms',
+      value: 'Fullstack',
+      label: language === 'no' ? 'Nettsider, apper & systemer' : 'Web, Apps & Systems',
       sub: language === 'no' ? 'Frakt360, Swallet, Hentli' : 'Fintech, Logistics & Health',
     },
     {
-      value: '99.99%',
-      label: language === 'no' ? 'Infrastruktur oppetid' : 'System Availability',
-      sub: language === 'no' ? 'Bedrifts-SLA' : 'Enterprise Grade SLA',
+      value: 'Vestland',
+      label: language === 'no' ? 'Straume / Bergen' : 'Straume / Bergen',
+      sub: language === 'no' ? 'Leverer i hele Norge' : 'Serving all of Norway',
     },
     {
       value: '100%',
       label: language === 'no' ? 'Norskeid selskap' : 'Norwegian Owned',
-      sub: 'Org. nr. 926117076',
+      sub: 'Org. nr. 926 117 076',
     },
   ];
 
   const milestones = language === 'no' ? [
     {
-      year: '2018',
+      year: '2020',
       title: 'Geton AS etableres',
       desc: 'Grunnlagt med et krystallklart oppdrag: Å bygge kompromissløse digitale produkter med fokus på ekte forretningsverdi, rå ytelse og sublimt design.',
     },
     {
-      year: '2020',
+      year: '2021',
       title: 'Mobilapp- og Skyløft',
       desc: 'Utvidet satsingen på kryssplattform mobilutvikling (React Native & Flutter) samt skytjenester i AWS og Azure for norske vekstbedrifter.',
     },
@@ -90,12 +91,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({
     },
   ] : [
     {
-      year: '2018',
+      year: '2020',
       title: 'Geton AS Founded',
       desc: 'Established with a sharp mission: Building uncompromising digital products prioritizing business impact, extreme speed, and sublime design.',
     },
     {
-      year: '2020',
+      year: '2021',
       title: 'Mobile & Cloud Expansion',
       desc: 'Scaled cross-platform mobile engineering (React Native & Flutter) and enterprise cloud architectures on AWS & Azure for fast-growing businesses.',
     },
@@ -116,88 +117,92 @@ export const AboutPage: React.FC<AboutPageProps> = ({
     },
   ];
 
-  const pillars = language === 'no' ? [
+  const pillars: {
+    icon: React.ComponentType<{ className?: string }>;
+    slug: ServiceSlug;
+    href: string;
+    title: string;
+    desc: string;
+  }[] = language === 'no' ? [
     {
       icon: Smartphone,
+      slug: 'mobilapputvikling',
+      href: '/tjenester/mobilapputvikling',
       title: 'Mobilapplikasjoner',
       desc: 'Banebrytende native og kryssplattform-apper for iOS og Android. Fra MVP til skalerbare markedsplasser med millioner av transaksjoner.',
     },
     {
       icon: Cpu,
+      slug: 'kunstig-intelligens-og-automasjon',
+      href: '/tjenester/kunstig-intelligens-og-automasjon',
       title: 'Kunstig Intelligens (AI)',
       desc: 'Autonome agenter, naturlig språkbehandling og skreddersydde AI-modeller som automatiserer manuelle prosesser og øker lønnsomheten.',
     },
     {
       icon: Globe,
+      slug: 'webapplikasjoner-og-systemutvikling',
+      href: '/tjenester/webapplikasjoner-og-systemutvikling',
       title: 'Web & Skysystemer',
-      desc: 'Moderne webapplikasjoner i React 19, Next.js, Node.js og .NET 9. Skalerbar mikrotjeneste-arkitektur hostet på AWS og Azure med 99.99% oppetid.',
+      desc: 'Moderne webapplikasjoner i React, Next.js, Node.js og .NET. Skalerbar skyarkitektur tilpasset langsiktig vekst, sikkerhet og stabil drift.',
     },
     {
       icon: Layers,
+      slug: 'produktdesign-ux-ui',
+      href: '/tjenester/produktdesign-ux-ui',
       title: 'Design & Brukeropplevelse',
       desc: 'Menneskesentrert design som kombinerer estetikk med konvertering. Våre designsystemer sikrer sømløs konsistens på tvers av alle flater.',
     },
   ] : [
     {
       icon: Smartphone,
+      slug: 'mobilapputvikling',
+      href: '/tjenester/mobilapputvikling',
       title: 'Mobile Applications',
       desc: 'Groundbreaking native and cross-platform apps for iOS & Android. From early MVPs to high-throughput platforms handling heavy volume.',
     },
     {
       icon: Cpu,
+      slug: 'kunstig-intelligens-og-automasjon',
+      href: '/tjenester/kunstig-intelligens-og-automasjon',
       title: 'Artificial Intelligence (AI)',
       desc: 'Autonomous agents, customized model workflows, and smart automation turning manual tasks into competitive business advantages.',
     },
     {
       icon: Globe,
+      slug: 'webapplikasjoner-og-systemutvikling',
+      href: '/tjenester/webapplikasjoner-og-systemutvikling',
       title: 'Web & Cloud Systems',
       desc: 'State-of-the-art web platforms built on React 19, Next.js, Node.js and .NET 9. Microservices hosted on AWS & Azure with enterprise SLAs.',
     },
     {
       icon: Layers,
+      slug: 'produktdesign-ux-ui',
+      href: '/tjenester/produktdesign-ux-ui',
       title: 'Design & Experience',
       desc: 'Human-centered aesthetics prioritizing intuition and conversion. Modular design systems maintaining brand integrity everywhere.',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-[#040816] text-white selection:bg-cyan-500 selection:text-black">
-      {/* 
-        STICKY NAVIGATION BAR
-      */}
-      <header className="sticky top-0 z-50 w-full bg-[#040816]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-8 py-4 transition-all">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-xs sm:text-sm font-medium text-slate-200 transition-colors cursor-pointer group"
-            >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span>{language === 'no' ? 'Tilbake til forsiden' : 'Back to Home'}</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-4 sm:gap-6">
-            <GetonLogo className="w-7 h-7" />
-            <LanguageSwitcher />
-            <button
-              onClick={onStartProject}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all cursor-pointer"
-            >
-              {language === 'no' ? 'Start et prosjekt' : 'Start a Project'}
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#040816] text-white selection:bg-cyan-500 selection:text-black overflow-x-hidden">
+      {/* Persistent Top Menu */}
+      <div className="sticky top-0 z-50 w-full bg-[#040816]/90 backdrop-blur-xl border-b border-white/10">
+        <Navbar
+          activeTab="about"
+          onSelectTab={onNavigateToTab}
+          onSelectServiceSlug={onNavigateToService}
+          onGetStarted={onStartProject}
+        />
+      </div>
 
       {/* 
         HERO SECTION: ABOUT GETON AS
       */}
-      <section className="relative pt-12 pb-16 sm:py-20 px-4 sm:px-8 border-b border-white/10 overflow-hidden">
+      <section className="relative pt-12 pb-16 sm:py-20 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10 overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-cyan-600/15 rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute top-10 right-10 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[130px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto relative z-10">
+        <div className="max-w-[1440px] mx-auto relative z-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/70 border border-cyan-400/40 text-[11px] font-semibold tracking-wider text-cyan-300 uppercase mb-6">
             <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
             <span>OM OSS // GETON AS</span>
@@ -205,8 +210,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-white mb-8 leading-[1.15] max-w-5xl [text-wrap:balance]">
             {language === 'no'
-              ? 'Ledende innen innovasjon i mobilapper, kunstig intelligens og virtuell virkelighet siden 2018'
-              : 'Pioneering mobile innovation, artificial intelligence and spatial computing since 2018'}
+              ? 'Ledende innen innovasjon i mobilapper, kunstig intelligens og digitale løsninger siden 2020'
+              : 'Pioneering mobile innovation, artificial intelligence and digital platforms since 2020'}
           </h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
@@ -251,13 +256,17 @@ export const AboutPage: React.FC<AboutPageProps> = ({
       {/* 
         STUDIO TEAM PHOTOGRAPHY SHOWCASE
       */}
-      <section className="py-12 px-4 sm:px-8 border-b border-white/10 bg-[#060c20]">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-12 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10 bg-[#060c20]">
+        <div className="max-w-[1440px] mx-auto">
           <div className="relative rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_20px_60px_rgba(6,182,212,0.18)] bg-slate-950">
             <img
-              src="/assets/images/about_geton_studio_1793711805670.jpg"
-              alt="Geton AS team studio in Bergen Norway"
-              className="w-full h-auto object-cover"
+              src="/assets/images/about_geton_studio_1793711805670.webp"
+              alt="Geton AS teamstudio på Straume ved Bergen"
+              width={1200}
+              height={675}
+              loading="lazy"
+              decoding="async"
+              className="w-full h-auto object-contain"
             />
             <div className="p-4 sm:p-6 bg-slate-950/85 backdrop-blur-md border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-300">
               <div className="flex items-center gap-2">
@@ -276,8 +285,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({
       {/* 
         CORE EXPERTISE PILLARS
       */}
-      <section className="py-24 px-4 sm:px-8 border-b border-white/10">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-24 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10">
+        <div className="max-w-[1440px] mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-950/60 border border-blue-400/30 text-xs font-semibold text-blue-300 uppercase tracking-wider mb-4">
               {language === 'no' ? 'KJERNEKOMPETANSE' : 'CORE CAPABILITIES'}
@@ -296,9 +305,18 @@ export const AboutPage: React.FC<AboutPageProps> = ({
             {pillars.map((item, idx) => {
               const IconComp = item.icon;
               return (
-                <div
+                <a
                   key={idx}
-                  className="p-7 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group"
+                  href={item.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onNavigateToService) {
+                      onNavigateToService(item.slug);
+                    } else {
+                      onNavigateToTab(`service:${item.slug}`);
+                    }
+                  }}
+                  className="p-7 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer"
                 >
                   <div>
                     <div className="w-12 h-12 rounded-xl bg-cyan-950/80 border border-cyan-400/30 flex items-center justify-center text-cyan-300 mb-5 group-hover:scale-110 transition-transform">
@@ -311,7 +329,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                     <span>{language === 'no' ? 'Les mer om tjenesten' : 'Learn more'}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </div>
-                </div>
+                </a>
               );
             })}
           </div>
@@ -319,7 +337,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
       </section>
 
       {/* 
-        MILESTONES & TIMELINE SINCE 2018
+        MILESTONES & TIMELINE SINCE 2020
       */}
       <section className="py-24 px-4 sm:px-8 border-b border-white/10 bg-[#060c20]">
         <div className="max-w-4xl mx-auto">
@@ -328,7 +346,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
               {language === 'no' ? 'VÅR HISTORIE' : 'OUR JOURNEY'}
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold font-display text-white tracking-tight mb-4">
-              {language === 'no' ? 'Vår reise fra 2018 til i dag' : 'Milestones from 2018 to Today'}
+              {language === 'no' ? 'Vår reise fra 2020 til i dag' : 'Milestones from 2020 to Today'}
             </h2>
             <p className="text-slate-300 text-sm sm:text-base">
               {language === 'no'
@@ -363,9 +381,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({
             {language === 'no' ? 'VIL DU SAMARBEIDE MED OSS?' : 'READY TO WORK WITH US?'}
           </div>
 
-          <h3 className="text-2xl sm:text-4xl font-extrabold font-display text-white mb-4">
+          <h2 className="text-2xl sm:text-4xl font-extrabold font-display text-white mb-4">
             {language === 'no' ? 'La oss skape fremtiden sammen' : 'Let’s Build the Future Together'}
-          </h3>
+          </h2>
 
           <p className="text-slate-300 text-sm sm:text-base max-w-xl mx-auto mb-8 leading-relaxed">
             {language === 'no'
@@ -374,19 +392,27 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={onStartProject}
+            <a
+              href="/kontakt"
+              onClick={(e) => {
+                e.preventDefault();
+                onStartProject();
+              }}
               className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-sm shadow-xl shadow-cyan-500/30 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <span>{language === 'no' ? 'Ta kontakt med oss' : 'Contact Us Today'}</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onNavigateToTab('projects')}
+            </a>
+            <a
+              href="/prosjekter"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigateToTab('projects-page');
+              }}
               className="w-full sm:w-auto px-6 py-4 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-sm border border-white/15 transition-all cursor-pointer"
             >
               {language === 'no' ? 'Utforsk våre prosjekter' : 'Explore Our Projects'}
-            </button>
+            </a>
           </div>
         </div>
       </section>

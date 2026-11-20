@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   body {
@@ -6,6 +7,7 @@
     background-color: #03050c;
     color: #ffffff;
     overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   /* Prevent typewriter monospace styling across all elements */
@@ -63,4 +65,736 @@
 
 .animate-pulse-glow {
   animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* ============================================================================
+   MODERN NORDIC LIGHT MODE (html.theme-light)
+   Inspired by DigitalSolutionsSection (#fafaf9 / #f4f3f0 / #ffffff / #171717)
+   - Base text/border rules wrapped in :where() (zero ID specificity) so dark
+     buttons, active tabs, and hover states ALWAYS keep crisp #ffffff text!
+   - Preserves atmospheric dark Hero (#hero-section) and Geton Game (#geton-game-modal).
+   ============================================================================ */
+
+html.theme-light,
+html.theme-light body {
+  background-color: #fafaf9 !important;
+  color: #171717 !important;
+}
+
+/* 1. Hide Muddy Dark-Mode Ambient Glow Orbs & Rainbow Card Hairlines on Light Mode */
+html.theme-light :where(section:not(#hero-section) .blur-\[120px\]),
+html.theme-light :where(section:not(#hero-section) .blur-\[130px\]),
+html.theme-light :where(section:not(#hero-section) .blur-\[140px\]),
+html.theme-light :where(section:not(#hero-section) .blur-\[150px\]),
+html.theme-light :where(section:not(#hero-section) .blur-\[160px\]),
+html.theme-light :where(section:not(#hero-section) .blur-3xl),
+html.theme-light :where(section:not(#hero-section) .blur-2xl),
+html.theme-light :where(footer .blur-\[130px\]),
+html.theme-light :where(footer .blur-3xl) {
+  display: none !important;
+}
+
+/* Remove clashing rainbow gradient top hairlines on service cards in Light Mode */
+html.theme-light #software-systems a > div[class*="h-\[2px\]"] {
+  display: none !important;
+}
+
+/* Remove harsh neon glow divider bar on top of Footer in Light Mode */
+html.theme-light footer > div[class*="h-\[2px\]"] {
+  display: none !important;
+}
+
+/* 2. Alternating Warm Nordic Canvas Bands (#fafaf9 Alabaster vs #f4f3f0 Warm Stone) */
+html.theme-light :where(.bg-\[\#03050c\]),
+html.theme-light :where(.bg-\[\#040714\]),
+html.theme-light :where(.bg-\[\#040816\]),
+html.theme-light :where(.bg-\[\#030712\]),
+html.theme-light :where(.bg-\[\#030612\]),
+html.theme-light :where(.bg-\[\#050b1d\]:not(#hero-section):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#060c1e\]),
+html.theme-light #software-systems {
+  background-color: #fafaf9 !important;
+  background-image: none !important;
+}
+
+html.theme-light #pricing-packages,
+html.theme-light #development-route,
+html.theme-light :where(.bg-\[\#050b1c\]:not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#060c1d\]),
+html.theme-light :where(.bg-\[\#060c1f\]),
+html.theme-light :where(.bg-\[\#060c20\]),
+html.theme-light :where(.bg-\[\#060c20\]\/70),
+html.theme-light :where(.bg-\[\#071024\]),
+html.theme-light :where([class*="from-\[\#080f2d\]"]),
+html.theme-light footer.bg-\[\#020512\] {
+  background-color: #f4f3f0 !important;
+  background-image: none !important;
+  border-color: #e7e7e5 !important;
+}
+
+/* 3. Sticky Frosted Subpage Navbars */
+html.theme-light :where(.bg-\[\#040816\]\/90),
+html.theme-light :where(.bg-\[\#030712\]\/90),
+html.theme-light :where(.bg-\[\#050b1d\]\/90),
+html.theme-light :where(.bg-\[\#060c1e\]\/90),
+html.theme-light :where(.bg-\[\#070d1e\]\/90) {
+  background-color: rgba(250, 250, 249, 0.94) !important;
+  border-bottom-color: #e7e7e5 !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+/* 4. Primary Elevated White Cards (Matching DigitalSolutionsSection) */
+html.theme-light :where(.bg-\[\#080d1e\]),
+html.theme-light :where(.bg-\[\#080d1e\]\/95),
+html.theme-light :where(.bg-\[\#080d22\]),
+html.theme-light :where(.bg-\[\#080e28\]),
+html.theme-light :where(.bg-\[\#081220\]),
+html.theme-light :where(.bg-\[\#081220\]\/90),
+html.theme-light :where(.bg-\[\#091128\]\/85),
+html.theme-light :where(.bg-\[\#09122b\]),
+html.theme-light :where(.bg-\[\#0b1226\]\/90),
+html.theme-light :where(.bg-\[\#0b163d\]\/90),
+html.theme-light :where(.bg-\[\#0c1533\]\/85),
+html.theme-light :where(.bg-\[\#070d1e\]),
+html.theme-light :where(.bg-\[\#070d20\]\/95),
+html.theme-light :where(.bg-\[\#071024\]\/80),
+html.theme-light :where(.bg-\[\#081229\]),
+html.theme-light :where(.bg-\[\#090e21\]\/80),
+html.theme-light :where([class*="from-\[\#0c183a\]"]),
+html.theme-light :where([class*="from-\[\#0a1532\]"]),
+html.theme-light :where([class*="from-\[\#121238\]"]) {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-color: #e7e7e5 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Secondary Translucent Surface Panels */
+html.theme-light :where(.bg-white\/\[0\.02\]:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-white\/\[0\.03\]:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-white\/\[0\.04\]:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-white\/\[0\.05\]:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-white\/\[0\.06\]:not(#hero-section *):not(#geton-game-modal *)) {
+  background-color: #ffffff !important;
+  border-color: #e7e7e5 !important;
+}
+
+/* Soft Warm Hover on Translucent Panels & Links */
+html.theme-light :where(.hover\:bg-white\/\[0\.04\]:not(#hero-section *):not(#geton-game-modal *):hover),
+html.theme-light :where(.hover\:bg-white\/\[0\.05\]:not(#hero-section *):not(#geton-game-modal *):hover),
+html.theme-light :where(.hover\:bg-white\/\[0\.06\]:not(#hero-section *):not(#geton-game-modal *):hover),
+html.theme-light :where(.hover\:bg-cyan-950\/40:not(#hero-section *):not(#geton-game-modal *):hover) {
+  background-color: #fafaf9 !important;
+  border-color: #a3a3a3 !important;
+}
+
+/* 5. Base Architectural Borders & Typography (Zero-Specificity :where() so buttons/hovers override cleanly) */
+html.theme-light :where([class*="border-white\/"]:not(#hero-section):not(#hero-section *):not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where([class*="border-cyan-"]:not(#hero-section):not(#hero-section *):not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where([class*="border-sky-"]:not(#hero-section):not(#hero-section *):not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where([class*="border-purple-"]:not(#hero-section):not(#hero-section *):not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where([class*="border-blue-"]:not(#hero-section):not(#hero-section *):not(#geton-game-modal):not(#geton-game-modal *)) {
+  border-color: #e7e7e5 !important;
+}
+
+html.theme-light :where([class*="border-emerald-"]:not(#hero-section):not(#hero-section *):not(#geton-game-modal):not(#geton-game-modal *)) {
+  border-color: #059669 !important;
+}
+
+html.theme-light :where(.text-white:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-white\/90:not(#hero-section *):not(#geton-game-modal *)) {
+  color: #171717 !important;
+}
+
+html.theme-light :where(.text-white\/85:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-white\/70:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-slate-100:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-slate-200:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-slate-300:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-cyan-100:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-cyan-100\/90:not(#hero-section *):not(#geton-game-modal *)) {
+  color: #525252 !important;
+}
+
+html.theme-light :where(.text-slate-400:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-slate-500:not(#hero-section *):not(#geton-game-modal *)) {
+  color: #737373 !important;
+}
+
+/* Harmonize Eyebrows, Subtitles & Accent Labels to Calm Nordic Charcoal/Slate */
+html.theme-light :where(.text-cyan-200:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-cyan-200\/90:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-cyan-300:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-cyan-300\/80:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-cyan-300\/90:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-cyan-400:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-sky-200:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-sky-300:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-sky-300\/80:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-sky-400:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-blue-300:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-blue-400:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-indigo-300:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-indigo-400:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-purple-200:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-purple-300:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-purple-400:not(#hero-section *):not(#geton-game-modal *)) {
+  color: #525252 !important;
+}
+
+html.theme-light :where(a.text-cyan-200:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(a.text-cyan-200\/90:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(a.text-cyan-300:not(#hero-section *):not(#geton-game-modal *)) {
+  color: #171717 !important;
+}
+
+html.theme-light :where(a.text-cyan-200:not(#hero-section *):not(#geton-game-modal *):hover),
+html.theme-light :where(a.text-cyan-200\/90:not(#hero-section *):not(#geton-game-modal *):hover),
+html.theme-light :where(a.text-cyan-300:not(#hero-section *):not(#geton-game-modal *):hover) {
+  color: #000000 !important;
+}
+
+html.theme-light :where(.text-emerald-200:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-emerald-200\/90:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-emerald-300:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-emerald-400:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-teal-200:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-teal-300:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-teal-400:not(#hero-section *):not(#geton-game-modal *)) {
+  color: #047857 !important;
+}
+
+html.theme-light :where(.text-amber-200:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-amber-300:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-amber-300\/90:not(#hero-section *):not(#geton-game-modal *)) {
+  color: #b45309 !important;
+}
+
+html.theme-light :where(svg.text-amber-400:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(svg.text-amber-300:not(#hero-section *):not(#geton-game-modal *)) {
+  color: #d97706 !important;
+}
+
+html.theme-light :where(.text-rose-200:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.text-rose-300:not(#hero-section *):not(#geton-game-modal *)) {
+  color: #be123c !important;
+}
+
+/* Soft Tinted Accent Containers (Harmonized Warm Stone + Subtle Emerald; excludes atmospheric Hero & Game Modal) */
+html.theme-light :where(.bg-cyan-950:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-cyan-950\/25:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-cyan-950\/30:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-cyan-950\/40:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-cyan-950\/50:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-cyan-950\/60:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-cyan-950\/70:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-cyan-950\/80:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-cyan-900\/60:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-purple-950:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-purple-950\/30:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-purple-950\/60:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-purple-950\/70:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-purple-950\/80:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-purple-900\/60:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-indigo-950\/60:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-indigo-950\/80:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-blue-950:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-blue-950\/60:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-blue-950\/80:not(#hero-section *):not(#geton-game-modal *)) {
+  background-color: #f5f5f4 !important;
+  border-color: #e7e7e5 !important;
+}
+
+html.theme-light :where(.bg-emerald-950:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-emerald-950\/70:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-emerald-950\/80:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-emerald-500\/20:not(#hero-section *):not(#geton-game-modal *)) {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+
+html.theme-light :where(.bg-amber-950:not(#hero-section *):not(#geton-game-modal *)),
+html.theme-light :where(.bg-amber-950\/30:not(#hero-section *):not(#geton-game-modal *)) {
+  background-color: #fffbeb !important;
+  border-color: #fde68a !important;
+}
+
+html.theme-light :where(.bg-rose-950\/50:not(#hero-section *):not(#geton-game-modal *)) {
+  background-color: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+}
+
+/* ============================================================================
+   6. SECTION-SPECIFIC EDITORIAL HARMONY (Inspired by DigitalSolutionsSection)
+   ============================================================================ */
+
+/* --- Software Showcase Section ("Services We Deliver") --- */
+html.theme-light #software-systems a.bg-\[\#0c1533\]\/85 {
+  background-color: #ffffff !important;
+  border: 1px solid #e7e7e5 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+html.theme-light #software-systems a.bg-\[\#0c1533\]\/85:hover {
+  background-color: #ffffff !important;
+  border-color: #a3a3a3 !important;
+  box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.theme-light #software-systems a:hover h3 {
+  color: #000000 !important;
+}
+
+/* Service Icon Boxes: Neutral #171717 / #f5f5f4 like DigitalSolutionsSection */
+html.theme-light #software-systems .w-11.h-11 {
+  background-color: #f5f5f4 !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 1px solid #e7e7e5 !important;
+  color: #171717 !important;
+}
+
+html.theme-light #software-systems .w-11.h-11 svg {
+  color: #171717 !important;
+}
+
+html.theme-light #software-systems a:hover .w-11.h-11 {
+  background-color: #171717 !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border-color: #171717 !important;
+  color: #ffffff !important;
+}
+
+html.theme-light #software-systems a:hover .w-11.h-11 svg {
+  color: #ffffff !important;
+}
+
+/* Service Chips & Tags Inside White Cards */
+html.theme-light #software-systems a .bg-white\/\[0\.04\] {
+  background-color: #f5f5f4 !important;
+  border-color: #e7e7e5 !important;
+  color: #525252 !important;
+}
+
+html.theme-light #software-systems a:hover .bg-white\/\[0\.04\] {
+  background-color: #f5f5f4 !important;
+  border-color: #d6d3d1 !important;
+  color: #171717 !important;
+}
+
+html.theme-light #software-systems a .bg-sky-400\/80 {
+  background-color: #737373 !important;
+}
+
+/* Service Card Bottom Action Arrow (Matches DigitalSolutionsSection) */
+html.theme-light #software-systems a .bg-white\/5 {
+  background-color: #f5f5f4 !important;
+  border-color: #e7e7e5 !important;
+  color: #404040 !important;
+}
+
+html.theme-light #software-systems a .bg-white\/5 svg {
+  color: #404040 !important;
+}
+
+html.theme-light #software-systems a:hover .bg-white\/5 {
+  background-color: #171717 !important;
+  border-color: #171717 !important;
+  color: #ffffff !important;
+}
+
+html.theme-light #software-systems a:hover .bg-white\/5 svg {
+  color: #ffffff !important;
+}
+
+/* Category Filter Tabs in SoftwareShowcaseSection */
+html.theme-light #software-systems button.bg-white\/\[0\.06\] {
+  background-color: #ffffff !important;
+  border: 1px solid #e7e7e5 !important;
+  color: #404040 !important;
+}
+
+html.theme-light #software-systems button.bg-white\/\[0\.06\]:hover {
+  background-color: #f5f5f4 !important;
+  border-color: #a3a3a3 !important;
+  color: #171717 !important;
+}
+
+html.theme-light #software-systems button.bg-sky-500 {
+  background-color: #171717 !important;
+  border: 1px solid #171717 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+}
+
+html.theme-light #software-systems button.bg-sky-500:hover {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* --- Pricing & Tailored Services Section --- */
+html.theme-light #pricing-packages .bg-\[\#0b162c\] {
+  background-color: #ffffff !important;
+  border: 2px solid #059669 !important;
+  box-shadow: 0 12px 32px rgba(5, 150, 105, 0.09) !important;
+}
+
+html.theme-light #pricing-packages .w-12.h-12.bg-white\/5 {
+  background-color: #171717 !important;
+  border-color: #171717 !important;
+}
+
+html.theme-light #pricing-packages .w-12.h-12.bg-white\/5 svg {
+  color: #ffffff !important;
+}
+
+html.theme-light #pricing-packages .bg-\[\#0b162c\] .bg-emerald-500,
+html.theme-light #pricing-packages .bg-\[\#0b162c\] .bg-emerald-400 {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.22) !important;
+}
+
+html.theme-light #pricing-packages .bg-\[\#0b162c\] .bg-emerald-500 *,
+html.theme-light #pricing-packages .bg-\[\#0b162c\] .bg-emerald-400 * {
+  color: #ffffff !important;
+}
+
+html.theme-light #pricing-packages .bg-\[\#0b162c\] button.bg-emerald-500:hover {
+  background-color: #047857 !important;
+  color: #ffffff !important;
+}
+
+/* --- Process Route Section ("How we plan, build, launch & support") --- */
+html.theme-light #development-route {
+  background-color: #f4f3f0 !important;
+  border-top: 1px solid #e7e7e5 !important;
+  border-bottom: 1px solid #e7e7e5 !important;
+}
+
+html.theme-light #development-route .bg-\[\#0b163d\]\/90 {
+  background-color: #ffffff !important;
+  border: 1px solid #e7e7e5 !important;
+  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Auto-play toggle button */
+html.theme-light #development-route button.bg-cyan-950\/80 {
+  background-color: #f5f5f4 !important;
+  border: 1px solid #d6d3d1 !important;
+  color: #171717 !important;
+}
+
+html.theme-light #development-route button.bg-cyan-950\/80 svg {
+  color: #171717 !important;
+}
+
+html.theme-light #development-route button.bg-cyan-950\/80:hover {
+  background-color: #171717 !important;
+  border-color: #171717 !important;
+  color: #ffffff !important;
+}
+
+html.theme-light #development-route button.bg-cyan-950\/80:hover * {
+  color: #ffffff !important;
+}
+
+/* Progress Track & Solid Charcoal Fill Bar */
+html.theme-light #development-route .bg-slate-800\/90 {
+  background-color: #e7e7e5 !important;
+}
+
+html.theme-light #development-route .bg-slate-800\/90 > div {
+  background-image: none !important;
+  background-color: #171717 !important;
+}
+
+/* Waypoint Step Cards (Inactive / Completed / Active) */
+html.theme-light #development-route .bg-\[\#08122f\]\/60 {
+  background-color: #fafaf9 !important;
+  border: 1px solid #e7e7e5 !important;
+}
+
+html.theme-light #development-route .bg-\[\#08122f\]\/60:hover {
+  background-color: #ffffff !important;
+  border-color: #a3a3a3 !important;
+}
+
+html.theme-light #development-route .bg-\[\#091538\]\/80 {
+  background-color: #fafaf9 !important;
+  border: 1px solid #d6d3d1 !important;
+}
+
+html.theme-light #development-route .bg-\[\#091538\]\/80:hover {
+  background-color: #ffffff !important;
+  border-color: #737373 !important;
+}
+
+html.theme-light #development-route [class*="from-\[\#102357\]"] {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border: 2px solid #171717 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+  --tw-ring-color: transparent !important;
+}
+
+/* Waypoint & Deep Dive Stage Icons (Replace neon cyan/fuchsia gradients with crisp #171717 / #ffffff) */
+html.theme-light #development-route .bg-gradient-to-br {
+  background-image: none !important;
+  background-color: #171717 !important;
+  color: #ffffff !important;
+}
+
+html.theme-light #development-route .bg-gradient-to-br svg {
+  color: #ffffff !important;
+}
+
+html.theme-light #development-route .bg-\[\#08122f\]\/60 .w-11.h-11 {
+  background-color: #f5f5f4 !important;
+  border-color: #e7e7e5 !important;
+  color: #525252 !important;
+}
+
+html.theme-light #development-route .bg-\[\#091538\]\/80 .w-11.h-11 {
+  background-color: #e7e7e5 !important;
+  border-color: #d6d3d1 !important;
+  color: #171717 !important;
+}
+
+/* Stage Deep Dive Inset Card */
+html.theme-light #development-route .bg-\[\#070f2b\]\/95 {
+  background-color: #fafaf9 !important;
+  border: 1px solid #e7e7e5 !important;
+  box-shadow: none !important;
+}
+
+html.theme-light #development-route .bg-\[\#070f2b\]\/95 .bg-cyan-950\/70 {
+  background-color: #ffffff !important;
+  border: 1px solid #e7e7e5 !important;
+  color: #171717 !important;
+}
+
+html.theme-light #development-route .bg-\[\#070f2b\]\/95 .bg-cyan-950\/70 svg {
+  color: #059669 !important;
+}
+
+html.theme-light #development-route .bg-\[\#070f2b\]\/95 .bg-white\/\[0\.03\] {
+  background-color: #ffffff !important;
+  border: 1px solid #e7e7e5 !important;
+  color: #171717 !important;
+}
+
+html.theme-light #development-route .bg-\[\#070f2b\]\/95 .bg-white\/\[0\.03\] svg {
+  color: #059669 !important;
+}
+
+html.theme-light #development-route .bg-\[\#070f2b\]\/95 .bg-white\/\[0\.02\] {
+  background-color: #ffffff !important;
+  border: 1px solid #e7e7e5 !important;
+}
+
+/* Bottom Callout Banners (Clean Editorial White Cards matching DigitalSolutionsSection) */
+html.theme-light [class*="from-blue-900\/60"],
+html.theme-light [class*="from-blue-950\/70"] {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid #e7e7e5 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Footer Contact Icon Boxes in Light Mode */
+html.theme-light footer .w-9.h-9.bg-cyan-950\/70 {
+  background-color: #171717 !important;
+  border-color: #171717 !important;
+}
+
+html.theme-light footer .w-9.h-9.bg-cyan-950\/70 svg {
+  color: #ffffff !important;
+}
+
+/* ============================================================================
+   7. UNIVERSAL DARK BUTTONS, SOLID BADGES & HOVER TEXT CONTRAST GUARANTEE
+   (Higher specificity than :where() base rules above — guarantees ZERO dark-on-dark!)
+   ============================================================================ */
+
+/* Solid Dark & Saturated Surfaces Always Keep Pure White Text & Icons */
+html.theme-light .bg-neutral-900,
+html.theme-light .bg-neutral-900 *,
+html.theme-light .bg-black,
+html.theme-light .bg-black *,
+html.theme-light .hover\:bg-neutral-900:hover,
+html.theme-light .hover\:bg-neutral-900:hover *,
+html.theme-light .hover\:bg-black:hover,
+html.theme-light .hover\:bg-black:hover *,
+html.theme-light .group:hover .group-hover\:bg-neutral-900,
+html.theme-light .group:hover .group-hover\:bg-neutral-900 *,
+html.theme-light .group:hover .group-hover\:bg-black,
+html.theme-light .group:hover .group-hover\:bg-black *,
+html.theme-light .btn-cyan-gradient,
+html.theme-light .btn-cyan-gradient *,
+html.theme-light .btn-explore-gradient,
+html.theme-light .btn-explore-gradient *,
+html.theme-light .bg-purple-600,
+html.theme-light .bg-purple-600 *,
+html.theme-light .bg-blue-600,
+html.theme-light .bg-blue-600 *,
+html.theme-light .bg-cyan-600,
+html.theme-light .bg-cyan-600 *,
+html.theme-light .bg-emerald-600,
+html.theme-light .bg-emerald-600 *,
+html.theme-light .bg-teal-600,
+html.theme-light .bg-teal-600 *,
+html.theme-light .bg-indigo-600,
+html.theme-light .bg-indigo-600 *,
+html.theme-light .bg-sky-600,
+html.theme-light .bg-sky-600 * {
+  color: #ffffff !important;
+}
+
+/* Unify primary gradient CTAs below Hero in Light Mode to crisp charcoal #171717 (like DigitalSolutionsSection) */
+html.theme-light :where(.btn-cyan-gradient:not(#hero-section *):not(#geton-game-modal *)) {
+  background: #171717 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14) !important;
+  color: #ffffff !important;
+}
+
+html.theme-light :where(.btn-cyan-gradient:not(#hero-section *):not(#geton-game-modal *)):hover {
+  background: #000000 !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
+  color: #ffffff !important;
+}
+
+/* Keep Hero Navbar, Hero Card & Geton Game Cyan Gradient Vivid */
+html.theme-light #hero-section .btn-cyan-gradient,
+html.theme-light #geton-game-modal .btn-cyan-gradient {
+  background: linear-gradient(90deg, #2563eb 0%, #06b6d4 100%) !important;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4) !important;
+  color: #ffffff !important;
+}
+
+html.theme-light #software-systems button.bg-sky-500,
+html.theme-light #software-systems button.bg-sky-500 * {
+  color: #ffffff !important;
+}
+
+/* Primary/Secondary Dark-Origin Buttons Converted Cleanly */
+html.theme-light button.bg-white\/5:not(#hero-section *):not(#geton-game-modal *),
+html.theme-light a.bg-white\/5:not(#hero-section *):not(#geton-game-modal *) {
+  background-color: #ffffff !important;
+  border: 1px solid #d6d3d1 !important;
+  color: #171717 !important;
+}
+
+html.theme-light button.bg-white\/5:not(#hero-section *):not(#geton-game-modal *):hover,
+html.theme-light a.bg-white\/5:not(#hero-section *):not(#geton-game-modal *):hover {
+  background-color: #f5f5f4 !important;
+  border-color: #737373 !important;
+  color: #000000 !important;
+}
+
+html.theme-light button.bg-white\/10:not(#hero-section *):not(#geton-game-modal *) {
+  background-color: #171717 !important;
+  border: 1px solid #171717 !important;
+  color: #ffffff !important;
+}
+
+html.theme-light button.bg-white\/10:not(#hero-section *):not(#geton-game-modal *) * {
+  color: #ffffff !important;
+}
+
+html.theme-light button.bg-white\/10:not(#hero-section *):not(#geton-game-modal *):hover {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+html.theme-light button.bg-white\/10:not(#hero-section *):not(#geton-game-modal *):hover * {
+  color: #ffffff !important;
+}
+
+/* Close / Icon Buttons Hovering with hover:bg-white/10 */
+html.theme-light button.hover\:bg-white\/10:not(.bg-white\/10):not(#hero-section *):not(#geton-game-modal *):hover {
+  background-color: #f5f5f4 !important;
+  color: #171717 !important;
+}
+
+html.theme-light button.hover\:bg-white\/10:not(.bg-white\/10):not(#hero-section *):not(#geton-game-modal *):hover * {
+  color: #171717 !important;
+}
+
+/* Emerald & Cyan Solid Buttons */
+html.theme-light button.bg-emerald-500:not(#hero-section *):not(#geton-game-modal *),
+html.theme-light a.bg-emerald-500:not(#hero-section *):not(#geton-game-modal *),
+html.theme-light .bg-emerald-500:not(button):not(.absolute):not(#hero-section *):not(#geton-game-modal *) {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+}
+
+html.theme-light button.bg-emerald-500:not(#hero-section *):not(#geton-game-modal *) *,
+html.theme-light a.bg-emerald-500:not(#hero-section *):not(#geton-game-modal *) *,
+html.theme-light .bg-emerald-500:not(button):not(.absolute):not(#hero-section *):not(#geton-game-modal *) * {
+  color: #ffffff !important;
+}
+
+html.theme-light button.bg-emerald-500:not(#hero-section *):not(#geton-game-modal *):hover,
+html.theme-light a.bg-emerald-500:not(#hero-section *):not(#geton-game-modal *):hover {
+  background-color: #047857 !important;
+  color: #ffffff !important;
+}
+
+html.theme-light .bg-cyan-500:not(#hero-section *):not(#geton-game-modal *) {
+  background-color: #171717 !important;
+  color: #ffffff !important;
+}
+
+html.theme-light .bg-cyan-500:not(#hero-section *):not(#geton-game-modal *) * {
+  color: #ffffff !important;
+}
+
+html.theme-light .bg-amber-400:not(#hero-section *):not(#geton-game-modal *),
+html.theme-light .bg-amber-400:not(#hero-section *):not(#geton-game-modal *) * {
+  color: #171717 !important;
+}
+
+/* Dark Pill Overlays on Photos & Cinema Showreel */
+html.theme-light span.bg-black\/60,
+html.theme-light span.bg-black\/60 *,
+html.theme-light div.bg-black\/65,
+html.theme-light div.bg-black\/65 *,
+html.theme-light .bg-slate-950\/80:not(.fixed),
+html.theme-light .bg-slate-950\/90:not(.fixed),
+html.theme-light .bg-slate-950\/90:not(.fixed) * {
+  color: #f8fafc !important;
+}
+
+html.theme-light .aspect-video [class*="from-slate-950"] {
+  background-image: linear-gradient(135deg, #020617 0%, #0a0f26 50%, #120b2e 100%) !important;
+}
+
+html.theme-light .aspect-video [class*="from-slate-950"] * {
+  color: #f8fafc !important;
+}
+
+/* 8. Clean Form Inputs in Light Mode */
+html.theme-light input:not([type="checkbox"]):not([type="radio"]):not(#geton-game-modal *),
+html.theme-light textarea:not(#geton-game-modal *),
+html.theme-light select:not(#geton-game-modal *) {
+  background-color: #ffffff !important;
+  color: #171717 !important;
+  border-color: #d6d3d1 !important;
+}
+
+html.theme-light input::placeholder,
+html.theme-light textarea::placeholder {
+  color: #737373 !important;
+}
+
+/* 9. Rendering Performance Optimization for Below-the-Fold Sections */
+#software-systems,
+#pricing-packages,
+#digital-solutions,
+#development-route,
+#projects {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 850px;
 }

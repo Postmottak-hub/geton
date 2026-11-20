@@ -14,10 +14,10 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { Article, ARTICLES } from '../data/articles.ts';
-import { GetonLogo } from '../components/Logo.tsx';
+import { Navbar } from '../components/Navbar.tsx';
 import { Footer } from '../components/Footer.tsx';
 import { useLanguage } from '../context/LanguageContext.tsx';
-import { LanguageSwitcher } from '../components/LanguageSwitcher.tsx';
+import { ServiceSlug } from '../data/services.ts';
 
 interface ArticleDetailPageProps {
   article: Article;
@@ -25,6 +25,7 @@ interface ArticleDetailPageProps {
   onSelectArticle: (articleId: string) => void;
   onStartProject: () => void;
   onNavigateToTab: (tab: string) => void;
+  onNavigateToService?: (slug: ServiceSlug) => void;
 }
 
 export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({
@@ -33,6 +34,7 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({
   onSelectArticle,
   onStartProject,
   onNavigateToTab,
+  onNavigateToService,
 }) => {
   const { language } = useLanguage();
   const [copied, setCopied] = useState(false);
@@ -62,34 +64,16 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({
   const relatedArticles = ARTICLES.filter((a) => a.id !== article.id).slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-[#040816] text-white selection:bg-cyan-500 selection:text-black">
-      {/* 
-        STICKY NAVIGATION BAR
-      */}
-      <header className="sticky top-0 z-50 w-full bg-[#040816]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-8 py-4 transition-all">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-xs sm:text-sm font-medium text-slate-200 transition-colors cursor-pointer group"
-            >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span>{language === 'no' ? 'Tilbake til artikler' : 'Back to Insights'}</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-4 sm:gap-6">
-            <GetonLogo className="w-7 h-7" />
-            <LanguageSwitcher />
-            <button
-              onClick={onStartProject}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-cyan-600/30 transition-all cursor-pointer"
-            >
-              {language === 'no' ? 'Start et prosjekt' : 'Start a Project'}
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#040816] text-white selection:bg-cyan-500 selection:text-black overflow-x-hidden">
+      {/* Persistent Top Menu */}
+      <div className="sticky top-0 z-50 w-full bg-[#040816]/90 backdrop-blur-xl border-b border-white/10">
+        <Navbar
+          activeTab="blogs"
+          onSelectTab={onNavigateToTab}
+          onSelectServiceSlug={onNavigateToService}
+          onGetStarted={onStartProject}
+        />
+      </div>
 
       {/* 
         ARTICLE HERO HEADER
@@ -166,11 +150,14 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({
         HERO IMAGE BANNER
       */}
       <section className="max-w-5xl mx-auto px-4 sm:px-8 -mt-6 sm:-mt-8 relative z-20 mb-14">
-        <div className="rounded-3xl overflow-hidden border border-white/15 bg-slate-950 shadow-2xl">
+        <div className="rounded-3xl overflow-hidden border border-white/15 bg-slate-950 shadow-2xl aspect-video">
           <img
             src={article.imageSrc}
             alt={title}
-            className="w-full h-[280px] sm:h-[420px] object-cover"
+            width={1280}
+            height={714}
+            decoding="async"
+            className="w-full h-full object-contain"
           />
         </div>
       </section>
@@ -273,8 +260,8 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({
       {/* 
         MORE ARTICLES RECOMMENDATION STRIP
       */}
-      <section className="py-20 px-4 sm:px-8 border-t border-white/10 bg-[#060c20]">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-20 px-4 sm:px-8 lg:px-12 xl:px-16 border-t border-white/10 bg-[#060c20]">
+        <div className="max-w-[1440px] mx-auto">
           <div className="flex items-center justify-between mb-10">
             <div>
               <div className="text-xs font-semibold text-cyan-400 uppercase tracking-widest mb-1">
@@ -306,11 +293,15 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({
                   className="group rounded-2xl bg-[#080e28] border border-white/10 hover:border-cyan-400/40 p-5 flex flex-col justify-between shadow-lg hover:-translate-y-1.5 transition-all duration-300 cursor-pointer"
                 >
                   <div>
-                    <div className="relative aspect-[16/10] rounded-xl overflow-hidden mb-4 bg-slate-900 border border-white/10">
+                    <div className="relative aspect-video rounded-xl overflow-hidden mb-4 bg-slate-900 border border-white/10">
                       <img
                         src={rel.imageSrc}
                         alt={relTitle}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        width={1280}
+                        height={714}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-contain group-hover:scale-[1.03] transition-transform duration-500"
                       />
                       <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full bg-slate-950/80 backdrop-blur-md text-[10px] font-semibold text-cyan-300 border border-white/15">
                         {relCategory}

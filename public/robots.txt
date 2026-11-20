@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Hindre indeksering av eventuelle midlertidige parametere eller ikke-offentlige endepunkter
+Disallow: /api/
+
+Sitemap: https://getontechs.com/sitemap.xml

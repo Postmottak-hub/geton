@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  ArrowLeft,
   ArrowRight,
-  ShieldCheck,
   Zap,
   TrendingDown,
   Sparkles,
@@ -14,27 +12,25 @@ import {
   Smartphone,
   Globe,
   Sliders,
-  CheckCircle2,
-  Share2,
-  ExternalLink,
-  Tag,
-  Eye,
   Check,
 } from 'lucide-react';
-import { GetonLogo } from '../components/Logo.tsx';
+import { Navbar } from '../components/Navbar.tsx';
 import { Footer } from '../components/Footer.tsx';
 import { useLanguage } from '../context/LanguageContext.tsx';
-import { LanguageSwitcher } from '../components/LanguageSwitcher.tsx';
+import { ServiceSlug } from '../data/services.ts';
 
 interface SwalletCaseStudyPageProps {
   onBack: () => void;
   onNavigateToProject: (projectId: string) => void;
+  onNavigateToTab: (tab: string) => void;
+  onNavigateToService?: (slug: ServiceSlug) => void;
   onStartProject: () => void;
 }
 
 export const SwalletCaseStudyPage: React.FC<SwalletCaseStudyPageProps> = ({
-  onBack,
   onNavigateToProject,
+  onNavigateToTab,
+  onNavigateToService,
   onStartProject,
 }) => {
   const { t, language } = useLanguage();
@@ -184,55 +180,19 @@ export const SwalletCaseStudyPage: React.FC<SwalletCaseStudyPageProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-[#060c1e] text-slate-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
-      
-      {/* 
-        ========================================================================
-        STICKY CASE STUDY NAVIGATION HEADER
-        ========================================================================
-      */}
-      <header className="sticky top-0 z-50 bg-[#060c1e]/90 backdrop-blur-xl border-b border-cyan-500/20 px-4 sm:px-8 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3 sm:gap-6">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition-colors cursor-pointer group"
-          >
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-            <span>{t.swalletStudy.backToProjects}</span>
-          </button>
+    <div className="min-h-screen bg-[#060c1e] text-slate-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden">
+      {/* Persistent Top Menu */}
+      <div className="sticky top-0 z-50 w-full bg-[#060c1e]/90 backdrop-blur-xl border-b border-cyan-500/20">
+        <Navbar
+          activeTab="projects"
+          onSelectTab={onNavigateToTab}
+          onSelectServiceSlug={onNavigateToService}
+          onGetStarted={onStartProject}
+        />
+      </div>
 
-          {/* Breadcrumb */}
-          <div className="hidden md:flex items-center gap-2 text-xs font-mono text-slate-400">
-            <span className="text-slate-600">/</span>
-            <span>{t.nav.projects}</span>
-            <span className="text-slate-600">/</span>
-            <span className="text-purple-300 font-bold">Swallet Fintech</span>
-          </div>
-        </div>
-
-        {/* Center Logo */}
-        <div className="hidden sm:flex items-center gap-2">
-          <GetonLogo size="default" />
-        </div>
-
-        {/* Right CTA & Language Switcher */}
-        <div className="flex items-center gap-3">
-          <LanguageSwitcher size="sm" />
-          <button
-            onClick={onStartProject}
-            className="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold text-white btn-cyan-gradient shadow-sm hover:scale-105 active:scale-95 transition-transform cursor-pointer"
-          >
-            {t.nav.getStarted}
-          </button>
-        </div>
-      </header>
-
-      {/* 
-        ========================================================================
-        MAIN CASE STUDY PAGE CONTAINER
-        ========================================================================
-      */}
-      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
+      {/* MAIN CASE STUDY PAGE CONTAINER */}
+      <main className="flex-1 w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-8 sm:py-12 space-y-12">
         
         {/* HERO TITLE & INTRO */}
         <div className="space-y-4">
@@ -260,9 +220,12 @@ export const SwalletCaseStudyPage: React.FC<SwalletCaseStudyPageProps> = ({
         */}
         <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-purple-500/30 shadow-[0_0_60px_rgba(168,85,247,0.18)] bg-slate-950">
           <img
-            src="/assets/aistudio/Swallet_Fintech_Case_Study_Showcase_302711d7.png"
+            src="/assets/aistudio/Swallet_Fintech_Case_Study_Showcase_302711d7.webp"
             alt="Swallet Fintech Case Study Showcase"
-            className="w-full h-auto object-cover max-h-[640px]"
+            width={1200}
+            height={675}
+            decoding="async"
+            className="w-full h-auto object-contain"
           />
         </div>
 
@@ -289,7 +252,7 @@ export const SwalletCaseStudyPage: React.FC<SwalletCaseStudyPageProps> = ({
               {t.projects.clientLabel}
             </div>
             <div className="text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-purple-400" />
               <span>{t.swalletStudy.developedBy}</span>
             </div>
           </div>
@@ -661,16 +624,7 @@ export const SwalletCaseStudyPage: React.FC<SwalletCaseStudyPageProps> = ({
       </main>
 
       {/* Global Footer */}
-      <Footer
-        onSelectTab={(tab) => {
-          onBack();
-          setTimeout(() => {
-            const el = document.getElementById(tab);
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }, 100);
-        }}
-        onGetStarted={onStartProject}
-      />
+      <Footer onSelectTab={onNavigateToTab} onGetStarted={onStartProject} />
     </div>
   );
 };

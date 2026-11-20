@@ -83,7 +83,7 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
           : 'Real-time telemetry tracking & QR-based returns',
       ],
       techStack: ['React 19', 'Next.js', 'React Native', 'Node.js', 'PostgreSQL', 'Carrier APIs'],
-      imageSrc: '/assets/aistudio/Frakt360__Komplett_norsk_fraktplattform_6546bb91.png',
+      imageSrc: '/assets/aistudio/Frakt360__Komplett_norsk_fraktplattform_6546bb91.webp',
       isFullCaseStudy: true,
     },
 
@@ -126,7 +126,7 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
           : 'Strict data privacy and encrypted BankID verification',
       ],
       techStack: ['React 19', 'Next.js', 'React Native', 'Node.js', 'PSD2 API', 'BankID', 'PostgreSQL'],
-      imageSrc: '/assets/aistudio/Swallet_Fintech_Case_Study_Showcase_302711d7.png',
+      imageSrc: '/assets/aistudio/Swallet_Fintech_Case_Study_Showcase_302711d7.webp',
       isFullCaseStudy: true,
     },
 
@@ -169,7 +169,7 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
           : 'Photographic proof of delivery and automated payout',
       ],
       techStack: ['React Native', 'TypeScript', 'Node.js', 'Mapbox / Google Maps', 'WebSockets', 'PostgreSQL'],
-      imageSrc: '/assets/aistudio/Hentli_Case_Study__Two_Seamless_Experiences_78303fe2.png',
+      imageSrc: '/assets/aistudio/Hentli__Two_Experiences__One_App_706526e8.png',
       isFullCaseStudy: true,
     },
 
@@ -189,15 +189,15 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
       client: 'Vestlandsk Hjertesenter AS',
       industry: language === 'no' ? 'Spesialisthelsetjeneste' : 'Cardiology & Healthcare',
       year: '2026',
-      metrics: 'vestlandskhjertesenter.no · 0 ventetid',
+      metrics: 'vestlandskhjertesenter.no · Timebooking',
       description:
         language === 'no'
-          ? 'Vestlandsk Hjertesenter tilbyr avansert kardiologisk utredning i Bergen uten offentlig ventetid. Geton utviklet en trygghetsvekkende skandinavisk nettside og digital pasientportal med direkte timebooking, oversikt over hjerteundersøkelser og lokal SEO.'
-          : 'Vestlandsk Hjertesenter provides premier cardiovascular diagnostics in Bergen with zero wait times. Geton built a reassuring Scandinavian web platform featuring online appointment booking, diagnostic catalogs, and local SEO.',
+          ? 'Vestlandsk Hjertesenter tilbyr spesialisert kardiologisk utredning i Bergen. Geton utviklet en trygghetsvekkende skandinavisk nettside og digital pasientportal med direkte timebooking, oversikt over hjerteundersøkelser og lokal SEO.'
+          : 'Vestlandsk Hjertesenter provides specialist cardiovascular diagnostics in Bergen. Geton built a reassuring Scandinavian web platform featuring online appointment booking, diagnostic catalogs, and local SEO.',
       keyFeatures: [
         language === 'no'
-          ? 'Direkte digital timebooking for pasienter uten ventetid'
-          : 'Direct online appointment booking with zero waiting times',
+          ? 'Direkte digital timebooking for pasienter på nett'
+          : 'Direct online appointment booking for patients',
         language === 'no'
           ? 'Komplett oversikt: Ekkokardiografi, Arbeids-EKG, 24t Holter & blodtrykk'
           : 'Comprehensive diagnostic catalog: Echo, Stress ECG, 24h Holter',
@@ -212,7 +212,7 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
           : 'Optimized regional search presence across Western Norway',
       ],
       techStack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Booking API', 'SEO Engine'],
-      imageSrc: '/assets/images/vestlandsk_hjertesenter_mockup_1793710496839.jpg',
+      imageSrc: '/assets/images/vestlandsk_hjertesenter_mockup_1793710496839.webp',
       isFullCaseStudy: true,
     },
   ];
@@ -264,7 +264,7 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
       <div className="absolute -top-24 right-1/4 w-96 h-96 bg-amber-100/40 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 left-1/4 w-[420px] h-[420px] bg-sky-100/40 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
+      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 relative z-10">
         
         {/* ========================================================
             SECTION HEADER (Creative Nordic Editorial Typography)
@@ -328,47 +328,35 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
               <div>
                 {/* 
                   TOP IMAGE CONTAINER:
-                  - High-fidelity realistic product photography
-                  - Tags rendered in top-left matching the reference image
+                  - Full uncropped 16:9 showcase frame (object-contain so zero UI edges are cut)
                 */}
-                <div className="relative w-full aspect-[16/11] rounded-[20px] overflow-hidden bg-neutral-100 border border-neutral-200/60 shadow-xs mb-5">
+                <div className="relative w-full aspect-video rounded-[20px] overflow-hidden bg-neutral-100 border border-neutral-200/70 shadow-xs mb-4">
                   <img
                     src={project.imageSrc}
-                    alt={project.title}
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                    alt={`${project.title} — ${project.industry}`}
+                    width={1280}
+                    height={720}
                     loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-contain group-hover:scale-[1.03] transition-transform duration-500 ease-out"
                   />
+                </div>
 
-                  {/* Gradient shadow overlay for pill legibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-
-                  {/* Top Left Tags (Matching reference image style) */}
-                  <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 flex-wrap pointer-events-none">
+                {/* Tags + Year Row (placed below image so the full showcase artwork stays unobstructed) */}
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     {project.tags.map((tag, idx) => (
                       <span
                         key={idx}
-                        className={`text-[10px] sm:text-[11px] font-semibold px-2.5 py-0.5 rounded-full shadow-xs ${tag.color}`}
+                        className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full shadow-xs ${tag.color}`}
                       >
                         {tag.label}
                       </span>
                     ))}
                   </div>
-
-                  {/* Case Study Hover Pill Indicator */}
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none opacity-90 group-hover:opacity-100 transition-opacity">
-                    <span className="text-[10px] font-medium text-white bg-black/60 backdrop-blur-md px-2 py-0.5 rounded border border-white/20">
-                      {project.isFullCaseStudy
-                        ? language === 'no'
-                          ? 'Klikk for å lese case study'
-                          : 'Click to read case study'
-                        : language === 'no'
-                        ? 'Se prosjekt'
-                        : 'View project'}
-                    </span>
-                    <span className="text-[10px] font-medium text-white/90 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded border border-white/20">
-                      {project.year}
-                    </span>
-                  </div>
+                  <span className="text-[11px] font-semibold text-neutral-400 tabular-nums shrink-0">
+                    {project.year}
+                  </span>
                 </div>
 
                 {/* Unboxed Metadata Kicker */}
@@ -382,9 +370,21 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
                 </h3>
 
                 {/* Subtitle / Description */}
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal line-clamp-2 mb-4">
+                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal line-clamp-2 mb-3">
                   {project.subtitle}
                 </p>
+
+                {/* Technologies */}
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {project.techStack.slice(0, 3).map((tech) => (
+                    <span
+                      key={tech}
+                      className="text-[10px] font-medium px-2 py-0.5 rounded bg-neutral-100 text-neutral-600 border border-neutral-200"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               {/* Bottom Card Row: Tech Metric + Circular Arrow Button */}
@@ -393,10 +393,18 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
                   {project.metrics}
                 </div>
 
-                {/* Circular Black Arrow Button (matching reference image) */}
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-neutral-900 group-hover:bg-black text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 group-hover:translate-x-0.5 transition-all">
+                <a
+                  href={`/prosjekter/${project.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onInspectProject(project);
+                  }}
+                  aria-label={`${language === 'no' ? 'Åpne prosjekt' : 'Open project'} ${project.title}`}
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-neutral-900 group-hover:bg-black text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 group-hover:translate-x-0.5 transition-all"
+                >
                   <ArrowRight className="w-4 h-4" />
-                </div>
+                </a>
               </div>
             </div>
           ))}

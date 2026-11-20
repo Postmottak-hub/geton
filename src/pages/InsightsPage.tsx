@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import {
-  ArrowLeft,
   ArrowRight,
   BookOpen,
   Clock,
-  Calendar,
-  Sparkles,
 } from 'lucide-react';
-import { GetonLogo } from '../components/Logo.tsx';
+import { Navbar } from '../components/Navbar.tsx';
 import { Footer } from '../components/Footer.tsx';
 import { useLanguage } from '../context/LanguageContext.tsx';
-import { LanguageSwitcher } from '../components/LanguageSwitcher.tsx';
-import { Article, ARTICLES } from '../data/articles.ts';
+import { ARTICLES } from '../data/articles.ts';
+import { ServiceSlug } from '../data/services.ts';
 
 interface InsightsPageProps {
   onBack: () => void;
   onNavigateToTab: (tab: string) => void;
+  onNavigateToService?: (slug: ServiceSlug) => void;
   onStartProject: () => void;
   onSelectArticle: (articleId: string) => void;
 }
 
 export const InsightsPage: React.FC<InsightsPageProps> = ({
-  onBack,
   onNavigateToTab,
+  onNavigateToService,
   onStartProject,
   onSelectArticle,
 }) => {
@@ -34,7 +32,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({
   }, []);
 
   const categories = [
-    { id: 'all', labelNo: 'Alle fagartikler (8)', labelEn: 'All Articles (8)' },
+    { id: 'all', labelNo: `Alle fagartikler (${ARTICLES.length})`, labelEn: `All Articles (${ARTICLES.length})` },
     { id: 'ai', labelNo: 'AI & Automasjon', labelEn: 'AI & Automation' },
     { id: 'architecture', labelNo: 'Arkitektur & System', labelEn: 'Architecture' },
     { id: 'web', labelNo: 'Web & Ytelse', labelEn: 'Web & Performance' },
@@ -51,43 +49,25 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({
       : ARTICLES.filter((a) => a.category === activeCategory);
 
   return (
-    <div className="min-h-screen bg-[#040816] text-white selection:bg-cyan-500 selection:text-black">
-      {/* 
-        STICKY NAVIGATION BAR
-      */}
-      <header className="sticky top-0 z-50 w-full bg-[#040816]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-8 py-4 transition-all">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-xs sm:text-sm font-medium text-slate-200 transition-colors cursor-pointer group"
-            >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span>{language === 'no' ? 'Tilbake til forsiden' : 'Back to Home'}</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-4 sm:gap-6">
-            <GetonLogo className="w-7 h-7" />
-            <LanguageSwitcher />
-            <button
-              onClick={onStartProject}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-cyan-600/30 transition-all cursor-pointer"
-            >
-              {language === 'no' ? 'Start et prosjekt' : 'Start a Project'}
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#040816] text-white selection:bg-cyan-500 selection:text-black overflow-x-hidden">
+      {/* Persistent Top Menu */}
+      <div className="sticky top-0 z-50 w-full bg-[#040816]/90 backdrop-blur-xl border-b border-white/10">
+        <Navbar
+          activeTab="blogs"
+          onSelectTab={onNavigateToTab}
+          onSelectServiceSlug={onNavigateToService}
+          onGetStarted={onStartProject}
+        />
+      </div>
 
       {/* 
         HERO SECTION: INSIGHTS & ENGINEERING ARTICLES
       */}
-      <section className="relative pt-12 pb-16 sm:py-20 px-4 sm:px-8 border-b border-white/10 overflow-hidden">
+      <section className="relative pt-12 pb-16 sm:py-20 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10 overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-cyan-600/15 rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute top-10 right-10 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[130px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
+        <div className="max-w-[1440px] mx-auto relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/70 border border-cyan-400/40 text-[11px] font-semibold tracking-wider text-cyan-300 uppercase mb-6">
             <BookOpen className="w-3.5 h-3.5 text-cyan-400" />
             <span>TEKNOLOGISKE INNSIKTER // GETON AS</span>
@@ -127,8 +107,8 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({
       {/* 
         ARTICLES GRID (Clicking navigates to dedicated full page)
       */}
-      <section className="py-20 px-4 sm:px-8 border-b border-white/10">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-20 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10">
+        <div className="max-w-[1440px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredArticles.map((article) => {
               const title = language === 'no' ? article.titleNo : article.titleEn;
@@ -137,18 +117,26 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({
               const date = language === 'no' ? article.dateNo : article.dateEn;
 
               return (
-                <div
+                <a
                   key={article.id}
-                  onClick={() => onSelectArticle(article.id)}
+                  href={`/artikler/${article.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onSelectArticle(article.id);
+                  }}
                   className="group relative rounded-3xl bg-[#080d22] border border-white/10 hover:border-cyan-400/50 p-6 flex flex-col justify-between shadow-[0_10px_35px_rgba(0,0,0,0.3)] hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(6,182,212,0.15)] transition-all duration-300 cursor-pointer overflow-hidden"
                 >
                   <div>
                     {/* Article Thumbnail */}
-                    <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-slate-900 border border-white/10 mb-5">
+                    <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-white/10 mb-5">
                       <img
                         src={article.imageSrc}
                         alt={title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        width={1280}
+                        height={714}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-contain group-hover:scale-[1.03] transition-transform duration-500"
                       />
                       <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/15 text-[11px] font-semibold text-cyan-300">
                         {categoryLabel}
@@ -166,9 +154,9 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xl font-bold font-display text-white mb-3 group-hover:text-cyan-300 transition-colors leading-snug">
+                    <h2 className="text-xl font-bold font-display text-white mb-3 group-hover:text-cyan-300 transition-colors leading-snug">
                       {title}
-                    </h3>
+                    </h2>
 
                     {/* Excerpt */}
                     <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6 line-clamp-3">
@@ -195,7 +183,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
-                </div>
+                </a>
               );
             })}
           </div>
@@ -207,11 +195,11 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({
       */}
       <section className="py-20 px-4 sm:px-8 bg-gradient-to-b from-[#080f2d] to-[#040816]">
         <div className="max-w-4xl mx-auto rounded-3xl p-8 sm:p-12 bg-gradient-to-r from-blue-950/80 via-cyan-950/80 to-blue-950/80 border border-cyan-500/40 text-center shadow-[0_0_60px_rgba(6,182,212,0.25)]">
-          <h3 className="text-2xl sm:text-4xl font-extrabold font-display text-white mb-4">
+          <h2 className="text-2xl sm:text-4xl font-extrabold font-display text-white mb-4">
             {language === 'no'
               ? 'Vil du bygge fremtidens programvare med Geton AS?'
               : 'Want to Engineer Next-Gen Software with Geton AS?'}
-          </h3>
+          </h2>
           <p className="text-slate-300 text-sm sm:text-base max-w-xl mx-auto mb-8 leading-relaxed">
             {language === 'no'
               ? 'Vi kombinerer banebrytende arkitektur med rask leveringstakt og langsiktig trygghet.'

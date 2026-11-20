@@ -1,38 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import {
-  ArrowLeft,
   ArrowRight,
   MapPin,
   Navigation,
   Smartphone,
-  ShieldCheck,
   Zap,
   Bell,
   Layers,
   Sparkles,
-  Check,
   CheckCircle2,
   Users,
-  Compass,
   Truck,
   Package,
-  Clock,
-  ExternalLink,
 } from 'lucide-react';
-import { GetonLogo } from '../components/Logo.tsx';
+import { Navbar } from '../components/Navbar.tsx';
 import { Footer } from '../components/Footer.tsx';
 import { useLanguage } from '../context/LanguageContext.tsx';
-import { LanguageSwitcher } from '../components/LanguageSwitcher.tsx';
+import { ServiceSlug } from '../data/services.ts';
 
 interface HentliCaseStudyPageProps {
   onBack: () => void;
   onNavigateToProject: (projectId: string) => void;
+  onNavigateToTab: (tab: string) => void;
+  onNavigateToService?: (slug: ServiceSlug) => void;
   onStartProject: () => void;
 }
 
 export const HentliCaseStudyPage: React.FC<HentliCaseStudyPageProps> = ({
   onBack,
-  onNavigateToProject,
+  onNavigateToTab,
+  onNavigateToService,
   onStartProject,
 }) => {
   const { language } = useLanguage();
@@ -135,43 +132,25 @@ export const HentliCaseStudyPage: React.FC<HentliCaseStudyPageProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-[#040816] text-white selection:bg-purple-500 selection:text-white">
-      {/* 
-        STICKY TOP NAVIGATION BAR
-      */}
-      <header className="sticky top-0 z-50 w-full bg-[#040816]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-8 py-4 transition-all">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-xs sm:text-sm font-medium text-slate-200 transition-colors cursor-pointer group"
-            >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span>{language === 'no' ? 'Tilbake til forsiden' : 'Back to Home'}</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-4 sm:gap-6">
-            <GetonLogo className="w-7 h-7" />
-            <LanguageSwitcher />
-            <button
-              onClick={onStartProject}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-purple-600/30 transition-all cursor-pointer"
-            >
-              {language === 'no' ? 'Start et prosjekt' : 'Start a Project'}
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#040816] text-white selection:bg-purple-500 selection:text-white overflow-x-hidden">
+      {/* Persistent Top Menu */}
+      <div className="sticky top-0 z-50 w-full bg-[#040816]/90 backdrop-blur-xl border-b border-white/10">
+        <Navbar
+          activeTab="projects"
+          onSelectTab={onNavigateToTab}
+          onSelectServiceSlug={onNavigateToService}
+          onGetStarted={onStartProject}
+        />
+      </div>
 
       {/* 
         HERO SECTION: METADATA & TITLE
       */}
-      <section className="relative pt-12 pb-16 sm:py-20 px-4 sm:px-8 border-b border-white/10 overflow-hidden">
+      <section className="relative pt-12 pb-16 sm:py-20 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10 overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-purple-600/15 rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute top-10 right-10 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[130px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto relative z-10">
+        <div className="max-w-[1440px] mx-auto relative z-10">
           {/* Eyebrow badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-950/70 border border-purple-400/40 text-[11px] font-semibold tracking-wider text-purple-300 uppercase mb-6">
             <Sparkles className="w-3.5 h-3.5 text-purple-400" />
@@ -233,13 +212,16 @@ export const HentliCaseStudyPage: React.FC<HentliCaseStudyPageProps> = ({
       {/* 
         HERO MEDIA BANNER (Attached: Hentli Case Study Two Seamless Experiences)
       */}
-      <section className="py-12 px-4 sm:px-8 border-b border-white/10 bg-[#060c20]">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-12 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10 bg-[#060c20]">
+        <div className="max-w-[1440px] mx-auto">
           <div className="relative rounded-3xl overflow-hidden border border-purple-500/30 shadow-[0_20px_60px_rgba(147,51,234,0.2)] bg-slate-950">
             <img
-              src="/assets/aistudio/Hentli_Case_Study__Two_Seamless_Experiences_78303fe2.png"
+              src="/assets/aistudio/Hentli__Two_Experiences__One_App_706526e8.png"
               alt="Hentli Case Study - One app, two experiences"
-              className="w-full h-auto object-cover"
+              width={1672}
+              height={941}
+              decoding="async"
+              className="w-full h-auto object-contain"
             />
           </div>
         </div>
@@ -248,8 +230,8 @@ export const HentliCaseStudyPage: React.FC<HentliCaseStudyPageProps> = ({
       {/* 
         SECTION 1: THE CHALLENGE & THE OPPORTUNITY
       */}
-      <section className="py-20 px-4 sm:px-8 border-b border-white/10">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <section className="py-20 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-6 space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950/60 border border-purple-400/30 text-xs font-semibold text-purple-300 uppercase tracking-wider">
               {language === 'no' ? 'UTFORDRINGEN' : 'THE CHALLENGE'}
@@ -288,9 +270,13 @@ export const HentliCaseStudyPage: React.FC<HentliCaseStudyPageProps> = ({
           <div className="lg:col-span-6">
             <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900 group">
               <img
-                src="/assets/aistudio/Smartphone_Sofa_Delivery_Map_Scene_86ff9f8d.png"
+                src="/assets/aistudio/Smartphone_Sofa_Delivery_Map_Scene_86ff9f8d.webp"
                 alt="Smartphone Sofa Delivery Map Scene 3D Illustration"
-                className="w-full h-auto object-cover group-hover:scale-102 transition-transform duration-500"
+                width={900}
+                height={600}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-auto object-contain group-hover:scale-[1.01] transition-transform duration-500"
               />
               <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-slate-950/85 backdrop-blur-md border border-white/15 text-xs text-slate-200">
                 <span className="font-bold text-purple-300">3D Visual Asset: </span>
@@ -307,8 +293,8 @@ export const HentliCaseStudyPage: React.FC<HentliCaseStudyPageProps> = ({
         SECTION 2: ONE PLATFORM. TWO EXPERIENCES.
         Interactive Tab Switching between Customer Flow and Driver Flow
       */}
-      <section className="py-24 px-4 sm:px-8 border-b border-white/10 bg-[#060c20]/70">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-24 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10 bg-[#060c20]/70">
+        <div className="max-w-[1440px] mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-950/60 border border-indigo-400/30 text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-4">
               {language === 'no' ? 'BRUKEROPPLEVELSEN' : 'USER EXPERIENCE'}
@@ -380,11 +366,15 @@ export const HentliCaseStudyPage: React.FC<HentliCaseStudyPageProps> = ({
             <img
               src={
                 activeRoleTab === 'customer'
-                  ? '/assets/aistudio/Hentli_customer_delivery_journey-2_9993afde.png'
-                  : '/assets/aistudio/Hentli_driver_journey_UI_board-1_ea5e846b.png'
+                  ? '/assets/aistudio/Hentli_customer_delivery_journey-2_9993afde.webp'
+                  : '/assets/aistudio/Hentli_driver_journey_UI_board-1_ea5e846b.webp'
               }
               alt={activeRoleTab === 'customer' ? 'Hentli Customer Journey UI Board' : 'Hentli Driver Journey UI Board'}
-              className="w-full h-auto object-cover"
+              width={1200}
+              height={800}
+              loading="lazy"
+              decoding="async"
+              className="w-full h-auto object-contain"
             />
           </div>
         </div>
@@ -393,8 +383,8 @@ export const HentliCaseStudyPage: React.FC<HentliCaseStudyPageProps> = ({
       {/* 
         SECTION 3: BUILT AROUND THE MAP & INSTANT OTP
       */}
-      <section className="py-20 px-4 sm:px-8 border-b border-white/10">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+      <section className="py-20 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="p-8 sm:p-10 rounded-3xl bg-white/[0.02] border border-white/10 flex flex-col justify-between">
             <div>
               <div className="w-12 h-12 rounded-2xl bg-purple-950/80 border border-purple-400/40 flex items-center justify-center text-purple-300 mb-6">
@@ -440,8 +430,8 @@ export const HentliCaseStudyPage: React.FC<HentliCaseStudyPageProps> = ({
       {/* 
         SECTION 4: DESIGNED FOR REAL-TIME DELIVERY (6 Core Pillars)
       */}
-      <section className="py-24 px-4 sm:px-8 border-b border-white/10 bg-[#060c20]">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-24 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10 bg-[#060c20]">
+        <div className="max-w-[1440px] mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950/60 border border-purple-400/30 text-xs font-semibold text-purple-300 uppercase tracking-wider mb-4">
               {language === 'no' ? 'ARKITEKTUR & FUNKSJONER' : 'ARCHITECTURE & FEATURES'}
@@ -543,7 +533,7 @@ export const HentliCaseStudyPage: React.FC<HentliCaseStudyPageProps> = ({
       </section>
 
       {/* FOOTER */}
-      <Footer onSelectTab={onBack} onGetStarted={onStartProject} />
+      <Footer onSelectTab={onNavigateToTab} onGetStarted={onStartProject} />
     </div>
   );
 };

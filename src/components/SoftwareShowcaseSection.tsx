@@ -2,23 +2,28 @@ import React, { useState } from 'react';
 import {
   Smartphone,
   Globe,
-  Cpu,
+  Code2,
   Cloud,
   Palette,
   TrendingUp,
   ShoppingCart,
   Workflow,
-  Sparkles,
+  Bot,
   ShieldCheck,
   Layers,
-  Search,
+  Gauge,
   ArrowRight,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext.tsx';
+import {
+  SOFTWARE_CARD_ID_TO_SERVICE_SLUG,
+  SERVICE_PAGES,
+  ServiceSlug,
+} from '../data/services.ts';
 
 interface SoftwareShowcaseSectionProps {
   onScheduleReview: () => void;
-  onInspectProject: (title: string, desc: string, metrics: string) => void;
+  onNavigateToService: (slug: ServiceSlug) => void;
 }
 
 export interface ServiceCardItem {
@@ -38,7 +43,7 @@ export interface ServiceCardItem {
   deliverableEn: string;
   deliverableLabelNo: string;
   deliverableLabelEn: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   gradientLine: string;
   iconBg: string;
   iconColor: string;
@@ -46,7 +51,7 @@ export interface ServiceCardItem {
 
 export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = ({
   onScheduleReview,
-  onInspectProject,
+  onNavigateToService,
 }) => {
   const { language } = useLanguage();
   const [activeCategory, setActiveCategory] = useState<'all' | 'dev' | 'cloud' | 'growth'>('all');
@@ -74,8 +79,8 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       deliverableLabelEn: 'DELIVERABLE',
       icon: Smartphone,
       gradientLine: 'from-sky-400 via-blue-500 to-indigo-500',
-      iconBg: 'bg-sky-500/10 border-sky-400/30 text-sky-400 group-hover:bg-sky-500/20 group-hover:border-sky-400/60',
-      iconColor: 'text-sky-400',
+      iconBg: 'bg-gradient-to-br from-sky-500/25 to-blue-600/20 border-sky-400/50 text-sky-300 shadow-[0_0_16px_rgba(56,189,248,0.22)] group-hover:from-sky-500/35 group-hover:to-indigo-500/30 group-hover:border-sky-300 group-hover:shadow-[0_0_22px_rgba(56,189,248,0.45)]',
+      iconColor: 'text-sky-300',
     },
 
     // 2. Webutvikling
@@ -90,16 +95,16 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       subtitleEn: 'High-Performance Web',
       descNo: 'Moderne, konverterende nettsider og kundeportaler med sub-sekunds lastetid.',
       descEn: 'Modern, responsive websites and customer portals built for high speed and conversion.',
-      chipsNo: ['Core Web Vitals 95+', 'Brukervennlig CMS', 'Responsivt design'],
-      chipsEn: ['Core Web Vitals 95+', 'Intuitive CMS', 'Fully Responsive'],
+      chipsNo: ['Teknisk SEO', 'Brukervennlig CMS', 'Responsivt design'],
+      chipsEn: ['Technical SEO', 'Intuitive CMS', 'Fully Responsive'],
       deliverableNo: 'Skalerbar webplattform',
       deliverableEn: 'Scalable Web Platform',
       deliverableLabelNo: 'LEVERANSE',
       deliverableLabelEn: 'DELIVERABLE',
       icon: Globe,
       gradientLine: 'from-cyan-400 via-teal-400 to-sky-400',
-      iconBg: 'bg-cyan-500/10 border-cyan-400/30 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/60',
-      iconColor: 'text-cyan-400',
+      iconBg: 'bg-gradient-to-br from-cyan-500/25 to-teal-500/20 border-cyan-400/50 text-cyan-300 shadow-[0_0_16px_rgba(34,211,238,0.22)] group-hover:from-cyan-500/35 group-hover:to-teal-500/30 group-hover:border-cyan-300 group-hover:shadow-[0_0_22px_rgba(34,211,238,0.45)]',
+      iconColor: 'text-cyan-300',
     },
 
     // 3. Skreddersydd programvare
@@ -120,10 +125,10 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       deliverableEn: 'Bespoke Core Platform',
       deliverableLabelNo: 'LEVERANSE',
       deliverableLabelEn: 'DELIVERABLE',
-      icon: Cpu,
+      icon: Code2,
       gradientLine: 'from-indigo-400 via-purple-500 to-sky-400',
-      iconBg: 'bg-indigo-500/10 border-indigo-400/30 text-indigo-400 group-hover:bg-indigo-500/20 group-hover:border-indigo-400/60',
-      iconColor: 'text-indigo-400',
+      iconBg: 'bg-gradient-to-br from-indigo-500/25 to-purple-600/20 border-indigo-400/50 text-indigo-300 shadow-[0_0_16px_rgba(129,140,248,0.24)] group-hover:from-indigo-500/35 group-hover:to-purple-500/30 group-hover:border-purple-300 group-hover:shadow-[0_0_22px_rgba(168,85,247,0.45)]',
+      iconColor: 'text-indigo-300',
     },
 
     // 4. Sky-løsninger (Cloud Solutions)
@@ -138,16 +143,16 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       subtitleEn: 'AWS, Azure & Managed Hosting',
       descNo: 'Sikker skystruktur på AWS, Azure og GCP med automatisk skalering og kostnadskontroll.',
       descEn: 'Resilient cloud infrastructure on AWS, Azure & GCP with auto-scaling and cost governance.',
-      chipsNo: ['AWS · Azure · GCP', 'Automatisk skalering', '99.99% oppetid'],
-      chipsEn: ['AWS · Azure · GCP', 'Auto-Scaling', '99.99% Uptime SLA'],
-      deliverableNo: '99.99% Driftsikkerhet',
-      deliverableEn: '99.99% Uptime Guarantee',
-      deliverableLabelNo: 'GARANTI',
-      deliverableLabelEn: 'GUARANTEE',
+      chipsNo: ['AWS · Azure · GCP', 'Automatisk skalering', 'Sikker drift'],
+      chipsEn: ['AWS · Azure · GCP', 'Auto-Scaling', 'Managed Security'],
+      deliverableNo: 'Stabil skydrift',
+      deliverableEn: 'Resilient Cloud Hosting',
+      deliverableLabelNo: 'DRIFT',
+      deliverableLabelEn: 'OPERATIONS',
       icon: Cloud,
       gradientLine: 'from-blue-400 via-indigo-400 to-cyan-400',
-      iconBg: 'bg-blue-500/10 border-blue-400/30 text-blue-400 group-hover:bg-blue-500/20 group-hover:border-blue-400/60',
-      iconColor: 'text-blue-400',
+      iconBg: 'bg-gradient-to-br from-blue-500/25 to-cyan-500/20 border-blue-400/50 text-blue-300 shadow-[0_0_16px_rgba(59,130,246,0.22)] group-hover:from-blue-500/35 group-hover:to-cyan-500/30 group-hover:border-blue-300 group-hover:shadow-[0_0_22px_rgba(59,130,246,0.45)]',
+      iconColor: 'text-blue-300',
     },
 
     // 5. UI/UX & Produktdesign
@@ -170,8 +175,8 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       deliverableLabelEn: 'DELIVERABLE',
       icon: Palette,
       gradientLine: 'from-pink-400 via-rose-400 to-amber-400',
-      iconBg: 'bg-pink-500/10 border-pink-400/30 text-pink-400 group-hover:bg-pink-500/20 group-hover:border-pink-400/60',
-      iconColor: 'text-pink-400',
+      iconBg: 'bg-gradient-to-br from-pink-500/25 to-purple-600/20 border-pink-400/50 text-pink-300 shadow-[0_0_16px_rgba(244,114,182,0.22)] group-hover:from-pink-500/35 group-hover:to-purple-500/30 group-hover:border-pink-300 group-hover:shadow-[0_0_22px_rgba(244,114,182,0.45)]',
+      iconColor: 'text-pink-300',
     },
 
     // 6. Digital markedsføring
@@ -194,8 +199,8 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       deliverableLabelEn: 'OUTCOME',
       icon: TrendingUp,
       gradientLine: 'from-emerald-400 via-teal-400 to-cyan-400',
-      iconBg: 'bg-emerald-500/10 border-emerald-400/30 text-emerald-400 group-hover:bg-emerald-500/20 group-hover:border-emerald-400/60',
-      iconColor: 'text-emerald-400',
+      iconBg: 'bg-gradient-to-br from-emerald-500/25 to-teal-500/20 border-emerald-400/50 text-emerald-300 shadow-[0_0_16px_rgba(16,185,129,0.22)] group-hover:from-emerald-500/35 group-hover:to-teal-500/30 group-hover:border-emerald-300 group-hover:shadow-[0_0_22px_rgba(16,185,129,0.45)]',
+      iconColor: 'text-emerald-300',
     },
 
     // 7. E-handel & Nettbutikker
@@ -218,8 +223,8 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       deliverableLabelEn: 'DELIVERABLE',
       icon: ShoppingCart,
       gradientLine: 'from-amber-400 via-orange-400 to-rose-400',
-      iconBg: 'bg-amber-500/10 border-amber-400/30 text-amber-400 group-hover:bg-amber-500/20 group-hover:border-amber-400/60',
-      iconColor: 'text-amber-400',
+      iconBg: 'bg-gradient-to-br from-amber-500/25 to-orange-500/20 border-amber-400/50 text-amber-300 shadow-[0_0_16px_rgba(245,158,11,0.22)] group-hover:from-amber-500/35 group-hover:to-orange-500/30 group-hover:border-amber-300 group-hover:shadow-[0_0_22px_rgba(245,158,11,0.45)]',
+      iconColor: 'text-amber-300',
     },
 
     // 8. Systemintegrasjoner & API
@@ -242,8 +247,8 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       deliverableLabelEn: 'IMPACT',
       icon: Workflow,
       gradientLine: 'from-teal-400 via-emerald-400 to-sky-400',
-      iconBg: 'bg-teal-500/10 border-teal-400/30 text-teal-400 group-hover:bg-teal-500/20 group-hover:border-teal-400/60',
-      iconColor: 'text-teal-400',
+      iconBg: 'bg-gradient-to-br from-teal-500/25 to-cyan-500/20 border-teal-400/50 text-teal-300 shadow-[0_0_16px_rgba(20,184,166,0.22)] group-hover:from-teal-500/35 group-hover:to-cyan-500/30 group-hover:border-teal-300 group-hover:shadow-[0_0_22px_rgba(20,184,166,0.45)]',
+      iconColor: 'text-teal-300',
     },
 
     // 9. Kunstig intelligens & Automasjon
@@ -260,14 +265,14 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       descEn: 'Pragmatic AI automation and internal assistants that eliminate repetitive tasks and save hours.',
       chipsNo: ['Dokumentsortering & OCR', 'Interne AI-assistenter', '100% GDPR-trygt'],
       chipsEn: ['Document OCR', 'Internal AI Agents', '100% GDPR Compliant'],
-      deliverableNo: 'Opptil 70% tidsbesparelse',
-      deliverableEn: 'Up to 70% Time Saved',
+      deliverableNo: 'Effektive arbeidsprosesser',
+      deliverableEn: 'Streamlined Workflows',
       deliverableLabelNo: 'GEVINST',
       deliverableLabelEn: 'EFFICIENCY',
-      icon: Sparkles,
+      icon: Bot,
       gradientLine: 'from-violet-400 via-purple-400 to-indigo-400',
-      iconBg: 'bg-violet-500/10 border-violet-400/30 text-violet-400 group-hover:bg-violet-500/20 group-hover:border-violet-400/60',
-      iconColor: 'text-violet-400',
+      iconBg: 'bg-gradient-to-br from-violet-500/25 to-purple-600/25 border-violet-400/55 text-violet-200 shadow-[0_0_18px_rgba(139,92,246,0.28)] group-hover:from-violet-500/40 group-hover:to-purple-500/35 group-hover:border-violet-300 group-hover:shadow-[0_0_24px_rgba(139,92,246,0.5)]',
+      iconColor: 'text-violet-200',
     },
 
     // 10. Vedlikehold og support
@@ -290,8 +295,8 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       deliverableLabelEn: 'AGREEMENT',
       icon: ShieldCheck,
       gradientLine: 'from-emerald-400 via-teal-400 to-sky-400',
-      iconBg: 'bg-emerald-500/10 border-emerald-400/30 text-emerald-400 group-hover:bg-emerald-500/20 group-hover:border-emerald-400/60',
-      iconColor: 'text-emerald-400',
+      iconBg: 'bg-gradient-to-br from-emerald-500/25 to-sky-500/20 border-emerald-400/50 text-emerald-300 shadow-[0_0_16px_rgba(16,185,129,0.22)] group-hover:from-emerald-500/35 group-hover:to-sky-500/30 group-hover:border-emerald-300 group-hover:shadow-[0_0_22px_rgba(16,185,129,0.45)]',
+      iconColor: 'text-emerald-300',
     },
 
     // 11. Merkevare & Visuell profil
@@ -314,8 +319,8 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       deliverableLabelEn: 'DELIVERABLE',
       icon: Layers,
       gradientLine: 'from-purple-400 via-pink-400 to-rose-400',
-      iconBg: 'bg-purple-500/10 border-purple-400/30 text-purple-400 group-hover:bg-purple-500/20 group-hover:border-purple-400/60',
-      iconColor: 'text-purple-400',
+      iconBg: 'bg-gradient-to-br from-purple-500/25 to-pink-500/20 border-purple-400/50 text-purple-300 shadow-[0_0_16px_rgba(168,85,247,0.24)] group-hover:from-purple-500/35 group-hover:to-pink-500/30 group-hover:border-purple-300 group-hover:shadow-[0_0_22px_rgba(168,85,247,0.48)]',
+      iconColor: 'text-purple-300',
     },
 
     // 12. SEO & Ytelsesoptimalisering
@@ -330,16 +335,16 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
       subtitleEn: 'Top Rankings & Speed',
       descNo: 'Optimalisering av kode, hastighet og innhold for topplasseringer på Google og flere henvendelser.',
       descEn: 'Technical code optimization, speed tuning, and content architecture for top Google rankings.',
-      chipsNo: ['Teknisk SEO-audit', 'Lighthouse 95+ fart', 'Søkeordsanalyse'],
-      chipsEn: ['Technical SEO Audit', 'Lighthouse 95+ Speed', 'Keyword Strategy'],
-      deliverableNo: 'Grønne Core Web Vitals',
-      deliverableEn: 'Top Google Rankings',
+      chipsNo: ['Teknisk SEO-audit', 'Core Web Vitals', 'Søkeordsanalyse'],
+      chipsEn: ['Technical SEO Audit', 'Core Web Vitals', 'Keyword Strategy'],
+      deliverableNo: 'Bedre synlighet & fart',
+      deliverableEn: 'Search Visibility & Speed',
       deliverableLabelNo: 'MÅL',
       deliverableLabelEn: 'TARGET',
-      icon: Search,
+      icon: Gauge,
       gradientLine: 'from-orange-400 via-amber-400 to-yellow-400',
-      iconBg: 'bg-orange-500/10 border-orange-400/30 text-orange-400 group-hover:bg-orange-500/20 group-hover:border-orange-400/60',
-      iconColor: 'text-orange-400',
+      iconBg: 'bg-gradient-to-br from-orange-500/25 to-amber-500/20 border-orange-400/50 text-orange-300 shadow-[0_0_16px_rgba(249,115,22,0.22)] group-hover:from-orange-500/35 group-hover:to-amber-500/30 group-hover:border-orange-300 group-hover:shadow-[0_0_22px_rgba(249,115,22,0.45)]',
+      iconColor: 'text-orange-300',
     },
   ];
 
@@ -374,7 +379,7 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
         }}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 relative z-10">
         
         {/* ========================================================
             HUMAN EDITORIAL SECTION HEADER (Zero-Pill Discipline)
@@ -430,7 +435,7 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
             - COMPACT, CRISP, SCANNABLE HUMAN-CRAFTED DESIGN
             - NO WALLS OF DENSE TEXT
         ======================================================== */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-16">
           {filteredServices.map((service) => {
             const IconComponent = service.icon;
             const tag = language === 'no' ? service.tagNo : service.tagEn;
@@ -440,12 +445,18 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
             const chips = language === 'no' ? service.chipsNo : service.chipsEn;
             const deliverable = language === 'no' ? service.deliverableNo : service.deliverableEn;
             const deliverableLabel = language === 'no' ? service.deliverableLabelNo : service.deliverableLabelEn;
+            const targetSlug = SOFTWARE_CARD_ID_TO_SERVICE_SLUG[service.id];
+            const routePath = SERVICE_PAGES[targetSlug]?.routePath || `/tjenester/${targetSlug}`;
 
             return (
-              <div
+              <a
                 key={service.id}
-                onClick={() => onInspectProject(title, desc, deliverable)}
-                className="group relative rounded-2xl p-5 sm:p-6 bg-[#0c1533]/85 hover:bg-[#101b42]/95 backdrop-blur-xl border border-white/10 hover:border-sky-400/40 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5 shadow-[0_4px_24px_rgba(0,0,0,0.28)] hover:shadow-[0_16px_36px_rgba(14,165,233,0.14)] cursor-pointer overflow-hidden"
+                href={routePath}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigateToService(targetSlug);
+                }}
+                className="group relative rounded-2xl p-5 sm:p-6 bg-[#0c1533]/85 hover:bg-[#101b42]/95 backdrop-blur-xl border border-white/10 hover:border-sky-400/40 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5 shadow-[0_4px_24px_rgba(0,0,0,0.28)] hover:shadow-[0_16px_36px_rgba(14,165,233,0.14)] cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
               >
                 {/* Top Glowing Hairline Accent */}
                 <div
@@ -461,7 +472,7 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
                     <div
                       className={`w-11 h-11 rounded-xl flex items-center justify-center border transition-all duration-300 ${service.iconBg}`}
                     >
-                      <IconComponent className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
+                      <IconComponent className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3" strokeWidth={2.2} />
                     </div>
                     <span className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase bg-white/[0.04] px-2.5 py-1 rounded-md border border-white/[0.06]">
                       {tag}
@@ -476,12 +487,12 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
                     {subtitle}
                   </div>
 
-                  {/* Short, Punchy Description (Crisp, under 15 words) */}
+                  {/* Short, Punchy Description */}
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
                     {desc}
                   </p>
 
-                  {/* Cool Scannable Feature Chips */}
+                  {/* Scannable Capabilities */}
                   <div className="flex flex-wrap gap-1.5 mb-5">
                     {chips.map((chip, idx) => (
                       <span
@@ -508,12 +519,12 @@ export const SoftwareShowcaseSection: React.FC<SoftwareShowcaseSectionProps> = (
 
                   <div
                     className="p-2 rounded-xl bg-white/5 group-hover:bg-sky-500 border border-white/10 group-hover:border-sky-400 text-sky-300 group-hover:text-white transition-all duration-200 shrink-0 shadow-sm"
-                    title={language === 'no' ? 'Se detaljer' : 'View details'}
+                    aria-hidden="true"
                   >
                     <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
                   </div>
                 </div>
-              </div>
+              </a>
             );
           })}
         </div>

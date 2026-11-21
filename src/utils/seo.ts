@@ -203,8 +203,8 @@ export function applyRouteSEO(config: SEOConfig, language: 'no' | 'en'): void {
       {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-        opens: '08:30',
-        closes: '16:30',
+        opens: '08:00',
+        closes: '16:00',
       },
     ],
     address: {

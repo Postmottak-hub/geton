@@ -16,6 +16,7 @@ import {
 import { ServiceItemData } from './HeroCard.tsx';
 import { useLanguage } from '../context/LanguageContext.tsx';
 import { trackEvent } from '../utils/analytics.ts';
+import { submitContactInquiry, formatContactSubmitError } from '../utils/contactSubmit.ts';
 
 // --- Showreel Modal ---
 interface ShowreelModalProps {
@@ -385,11 +386,11 @@ export const ProjectInquiryModal: React.FC<InquiryModalProps> = ({
       );
       return;
     }
-    if (projectNote.trim().length < 10) {
+    if (projectNote.trim().length < 5) {
       setErrorMsg(
         language === 'no'
-          ? 'Beskriv kort hva du ønsker hjelp med (minst 10 tegn).'
-          : 'Please add a short project description (at least 10 characters).'
+          ? 'Beskriv kort hva du ønsker hjelp med (minst 5 tegn).'
+          : 'Please add a short project description (at least 5 characters).'
       );
       return;
     }
@@ -397,30 +398,21 @@ export const ProjectInquiryModal: React.FC<InquiryModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('https://formsubmit.co/ajax/contact@getontechs.com', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          _subject: `Ny prosjektforespørsel (${projectType}) fra ${name}`,
-          _replyto: email.trim(),
-          _template: 'table',
-          _honey: honeypot,
-          Navn: name.trim(),
-          Epost: email.trim(),
-          Telefon: phone.trim() || 'Ikke oppgitt',
-          Bedrift: company.trim() || 'Ikke oppgitt',
-          Prosjekttype: projectType,
-          Budsjett: budget || 'Ikke oppgitt',
-          Oppstart: timeline || 'Ikke oppgitt',
-          Beskrivelse: projectNote.trim(),
-        }),
+      const result = await submitContactInquiry({
+        name,
+        email,
+        phone,
+        company,
+        projectType,
+        budget,
+        timeline,
+        message: projectNote,
+        honeypot,
+        source: 'project_inquiry_modal',
       });
 
-      if (!response.ok) {
-        throw new Error('HTTP error');
+      if (!result.ok) {
+        throw new Error(result.error || 'Submission failed');
       }
 
       trackEvent('contact_form_submit', {
@@ -437,12 +429,9 @@ export const ProjectInquiryModal: React.FC<InquiryModalProps> = ({
       setBudget('');
       setTimeline('');
       setProjectNote('');
-    } catch {
-      setErrorMsg(
-        language === 'no'
-          ? 'Kunne ikke sende skjemaet automatisk akkurat nå. Du kan prøve igjen eller sende direkte til contact@getontechs.com nedenfor.'
-          : 'Could not send the form automatically right now. Please try again or email contact@getontechs.com directly below.'
-      );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : undefined;
+      setErrorMsg(formatContactSubmitError(msg, language));
     } finally {
       setIsSubmitting(false);
     }
@@ -454,11 +443,11 @@ export const ProjectInquiryModal: React.FC<InquiryModalProps> = ({
       aria-modal="true"
       aria-labelledby="inquiry-modal-title"
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/30 backdrop-blur-[4px] animate-in fade-in duration-200 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/30 backdrop-blur-[4px] animate-in fade-in duration-200 overflow-y-auto"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl rounded-3xl bg-[#080d1e]/95 border border-cyan-400/40 p-6 sm:p-8 shadow-[0_28px_90px_rgba(0,0,0,0.45)] my-auto max-h-[92vh] overflow-y-auto"
+        className="relative w-full max-w-2xl rounded-2xl sm:rounded-3xl bg-[#080d1e]/95 border border-cyan-400/40 p-5 sm:p-8 shadow-[0_28px_90px_rgba(0,0,0,0.45)] my-auto max-h-[92dvh] overflow-y-auto"
       >
         <button
           type="button"
@@ -783,6 +772,28 @@ export const PortfolioModal: React.FC<PortfolioModalProps> = ({
           : 'Cardiac diagnostic portal with direct online booking',
       tag: 'Web & Pasientportal',
     },
+    {
+      id: 'geton-scooters',
+      title: 'Geton Scooters',
+      category: language === 'no' ? 'IoT, MQTT & Mobilitet' : 'IoT, MQTT & Mobility',
+      metric: 'iOS & Android · MQTT · Geofencing',
+      desc:
+        language === 'no'
+          ? 'Elsparkesykkelplattform med sanntidskart, geofencing og IoT'
+          : 'Micro-mobility app with live maps, geofencing, and MQTT IoT',
+      tag: 'iOS & Android · IoT',
+    },
+    {
+      id: 'norraq-style',
+      title: 'NORRAQ Style',
+      category: language === 'no' ? 'Beauty Tech & Plattform' : 'Beauty Tech & Platform',
+      metric: 'Matching · Booking · Chat',
+      desc:
+        language === 'no'
+          ? 'Digital plattform som kobler modeller, studenter og salonger'
+          : 'Matching, booking, and chat platform for beauty professionals',
+      tag: 'Web & Matching',
+    },
   ];
 
   return (
@@ -792,7 +803,7 @@ export const PortfolioModal: React.FC<PortfolioModalProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-4xl rounded-3xl bg-[#080d1e] border border-cyan-400/40 p-6 sm:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.45)] max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-5xl rounded-3xl bg-[#080d1e] border border-cyan-400/40 p-5 sm:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.45)] max-h-[90vh] overflow-y-auto"
       >
         <button
           type="button"
@@ -815,7 +826,7 @@ export const PortfolioModal: React.FC<PortfolioModalProps> = ({
         </h3>
         <p className="text-slate-400 text-xs sm:text-sm mb-6">{t.projects.subtitle}</p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           {portfolioProjects.map((proj, idx) => (
             <button
               type="button"

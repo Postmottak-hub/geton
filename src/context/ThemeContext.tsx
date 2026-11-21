@@ -25,26 +25,28 @@ function applyThemeToDocument(theme: Theme): void {
   root.setAttribute('data-theme', theme);
 }
 
+const THEME_STORAGE_KEY = 'geton_theme_v2';
+
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
     try {
-      const saved = localStorage.getItem('geton_theme') as Theme | null;
-      if (saved === 'light' || saved === 'dark') {
+      const saved = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
+      if (saved === 'dark' || saved === 'light') {
         applyThemeToDocument(saved);
         return saved;
       }
     } catch {
       // Ignore storage access issues
     }
-    applyThemeToDocument('dark');
-    return 'dark';
+    applyThemeToDocument('light');
+    return 'light';
   });
 
   const setTheme = (nextTheme: Theme) => {
     setThemeState(nextTheme);
     applyThemeToDocument(nextTheme);
     try {
-      localStorage.setItem('geton_theme', nextTheme);
+      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
     } catch {
       // Ignore storage access issues
     }

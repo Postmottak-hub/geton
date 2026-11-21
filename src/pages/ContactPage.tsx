@@ -20,6 +20,7 @@ import { useTheme } from '../context/ThemeContext.tsx';
 import { ServiceSlug } from '../data/services.ts';
 import { trackEvent } from '../utils/analytics.ts';
 import { applyRouteSEO } from '../utils/seo.ts';
+import { submitContactInquiry, formatContactSubmitError } from '../utils/contactSubmit.ts';
 
 interface ContactPageProps {
   onBack: () => void;
@@ -167,11 +168,11 @@ export const ContactPage: React.FC<ContactPageProps> = ({
       );
       return;
     }
-    if (details.trim().length < 10) {
+    if (details.trim().length < 5) {
       setErrorMsg(
         language === 'no'
-          ? 'Vennligst legg til en kort prosjektbeskrivelse (minst 10 tegn).'
-          : 'Please add a short project description (at least 10 characters).'
+          ? 'Vennligst legg til en kort prosjektbeskrivelse (minst 5 tegn).'
+          : 'Please add a short project description (at least 5 characters).'
       );
       return;
     }
@@ -179,30 +180,21 @@ export const ContactPage: React.FC<ContactPageProps> = ({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('https://formsubmit.co/ajax/contact@getontechs.com', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          _subject: `Ny henvendelse (${projectType}) fra ${name}`,
-          _replyto: email.trim(),
-          _template: 'table',
-          _honey: honeypot,
-          Navn: name.trim(),
-          Epost: email.trim(),
-          Telefon: phone.trim() || 'Ikke oppgitt',
-          Bedrift: company.trim() || 'Ikke oppgitt',
-          Prosjekttype: projectType,
-          Budsjett: selectedBudget || 'Ikke oppgitt',
-          Oppstart: timeline || 'Ikke oppgitt',
-          Prosjektbeskrivelse: details.trim(),
-        }),
+      const result = await submitContactInquiry({
+        name,
+        email,
+        phone,
+        company,
+        projectType,
+        budget: selectedBudget,
+        timeline,
+        message: details,
+        honeypot,
+        source: 'contact_page',
       });
 
-      if (!response.ok) {
-        throw new Error('HTTP error');
+      if (!result.ok) {
+        throw new Error(result.error || 'Submission failed');
       }
 
       trackEvent('contact_form_submit', {
@@ -218,12 +210,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({
       setPhone('');
       setDetails('');
       setTimeline('');
-    } catch {
-      setErrorMsg(
-        language === 'no'
-          ? 'Kunne ikke sende skjemaet automatisk akkurat nå. Prøv igjen eller send e-post direkte til contact@getontechs.com.'
-          : 'Unable to send automatically right now. Please try again or email contact@getontechs.com directly.'
-      );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : undefined;
+      setErrorMsg(formatContactSubmitError(msg, language));
     } finally {
       setIsSubmitting(false);
     }
@@ -239,7 +228,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({
           : 'Drop by our office at Straume or schedule an online meeting. We are always open to collaboration and new ideas.',
       fullDetails: [
         'Besøksadresse: Trollhaugmyra 15, 5353 Straume (Øygarden / Bergen)',
-        'Åpningstider: Mandag – Fredag: 08:30 – 16:30',
+        language === 'no'
+          ? 'Åpningstider: Man-Fre 08.00 - 16.00'
+          : 'Opening hours: Mon–Fri 08:00 – 16:00',
         'Org. nr.: 926 117 076',
         'Digitalt møte eller fysisk møte etter avtale',
       ],
@@ -311,23 +302,23 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
       <main>
         {/* HERO & FORM SECTION */}
-        <section className="relative pt-12 pb-20 sm:py-24 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10 overflow-hidden">
+        <section className="relative pt-8 pb-14 sm:py-24 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10 overflow-hidden">
           <div className="absolute top-10 left-1/4 w-[600px] h-[500px] bg-emerald-600/10 rounded-full blur-[160px] pointer-events-none" />
           <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[150px] pointer-events-none" />
 
           <div className="max-w-[1440px] mx-auto relative z-10">
-            <div className="max-w-3xl mb-12 sm:mb-16">
-              <h1 className="text-4xl sm:text-6xl font-extrabold font-display tracking-tight text-white mb-6">
+            <div className="max-w-3xl mb-8 sm:mb-16">
+              <h1 className="text-3xl sm:text-6xl font-extrabold font-display tracking-tight text-white mb-4 sm:mb-6">
                 {language === 'no' ? 'Ta kontakt med Geton AS' : 'Get in Touch With Geton AS'}
               </h1>
-              <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+              <p className="text-sm sm:text-lg text-slate-300 leading-relaxed font-normal">
                 {language === 'no'
                   ? 'Har du planer om ny nettside, mobilapp eller skreddersydd system? Fortell oss litt om prosjektet ditt, så tar vi kontakt for en uforpliktende prat.'
                   : 'Planning a new website, mobile application, or custom business system? Share your goals with us for a non-binding consultation.'}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-14 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-14 items-start">
               {/* Left Column: Visual Photos & Direct Contact Info */}
               <div className="lg:col-span-5 space-y-8">
                 <div className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900 group relative">
@@ -438,7 +429,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
               {/* Right Column: Validated Lead-Generation Form */}
               <div className="lg:col-span-7">
-                <div className="p-8 sm:p-10 rounded-3xl bg-[#081220]/90 border border-emerald-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+                <div className="p-5 sm:p-10 rounded-2xl sm:rounded-3xl bg-[#081220]/90 border border-emerald-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
                   {isSubmitted ? (
                     <div className="py-14 text-center animate-in fade-in space-y-4">
                       <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-400 mx-auto shadow-[0_0_25px_rgba(16,185,129,0.4)]">
@@ -680,13 +671,13 @@ export const ContactPage: React.FC<ContactPageProps> = ({
         </section>
 
         {/* SECTION 2: GOOGLE MAPS, GOOGLE REVIEWS & COLLABORATION */}
-        <section className="py-24 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10 bg-[#060c1d]">
+        <section className="py-14 sm:py-24 px-4 sm:px-8 lg:px-12 xl:px-16 border-b border-white/10 bg-[#060c1d]">
           <div className="max-w-[1440px] mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 items-center mb-12 sm:mb-16">
               {/* Interactive Google Maps Embed */}
               <div className="lg:col-span-6">
-                <div className="relative rounded-3xl overflow-hidden border border-emerald-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-slate-950">
-                  <div className="w-full h-[380px] sm:h-[440px] relative">
+                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-emerald-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-slate-950">
+                  <div className="w-full h-[280px] sm:h-[440px] relative">
                     <iframe
                       title="Geton AS kontoradresse på Google Maps"
                       width="100%"
@@ -755,20 +746,20 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                     : 'Reach out using the form above or book a coffee at our office for straightforward engineering advice on scope, architecture, and execution.'}
                 </p>
 
-                <div className="p-5 rounded-2xl bg-white/[0.03] border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="space-y-1">
                     <div className="text-xs font-bold uppercase tracking-wider text-emerald-400">
                       {language === 'no' ? 'Verifisert adresse · Bergen / Øygarden' : 'Verified Office · Bergen / Øygarden'}
                     </div>
                     <div className="text-sm font-semibold text-white">
-                      Trollhaugmyra 15, 5353 Straume · {language === 'no' ? 'Man–Fre 08:30–16:30' : 'Mon–Fri 08:30–16:30'}
+                      Trollhaugmyra 15, 5353 Straume · {language === 'no' ? 'Man-Fre 08.00 - 16.00' : 'Mon-Fri 08:00 - 16:00'}
                     </div>
                   </div>
                   <a
                     href="https://maps.google.com/?q=Trollhaugmyra+15,+5353+Straume,+Norway"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition-all shrink-0"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition-all shrink-0"
                   >
                     <span>{language === 'no' ? 'Veibeskrivelse' : 'Get Directions'}</span>
                     <ExternalLink className="w-3.5 h-3.5" />

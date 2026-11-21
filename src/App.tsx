@@ -25,6 +25,11 @@ import { useTheme } from './context/ThemeContext.tsx';
 import { applyRouteSEO } from './utils/seo.ts';
 
 // Lazy-loaded below-the-fold homepage sections & interactive game modal for faster initial load
+const HomeServicesSection = lazy(() =>
+  import('./components/HomeServicesSection.tsx').then((m) => ({
+    default: m.HomeServicesSection,
+  }))
+);
 const SoftwareShowcaseSection = lazy(() =>
   import('./components/SoftwareShowcaseSection.tsx').then((m) => ({
     default: m.SoftwareShowcaseSection,
@@ -50,6 +55,16 @@ const ProjectsShowcaseSection = lazy(() =>
     default: m.ProjectsShowcaseSection,
   }))
 );
+const HomeInsightsSection = lazy(() =>
+  import('./components/HomeInsightsSection.tsx').then((m) => ({
+    default: m.HomeInsightsSection,
+  }))
+);
+const HomeContactSection = lazy(() =>
+  import('./components/HomeContactSection.tsx').then((m) => ({
+    default: m.HomeContactSection,
+  }))
+);
 const GetonJumpGameModal = lazy(() =>
   import('./components/GetonJumpGameModal.tsx').then((m) => ({
     default: m.GetonJumpGameModal,
@@ -68,6 +83,16 @@ const HentliCaseStudyPage = lazy(() =>
 const VestlandskHjertesenterCaseStudyPage = lazy(() =>
   import('./pages/VestlandskHjertesenterCaseStudyPage.tsx').then((m) => ({
     default: m.VestlandskHjertesenterCaseStudyPage,
+  }))
+);
+const GetonScootersCaseStudyPage = lazy(() =>
+  import('./pages/GetonScootersCaseStudyPage.tsx').then((m) => ({
+    default: m.GetonScootersCaseStudyPage,
+  }))
+);
+const NorraqStyleCaseStudyPage = lazy(() =>
+  import('./pages/NorraqStyleCaseStudyPage.tsx').then((m) => ({
+    default: m.NorraqStyleCaseStudyPage,
   }))
 );
 const AboutPage = lazy(() => import('./pages/AboutPage.tsx').then((m) => ({ default: m.AboutPage })));
@@ -103,6 +128,8 @@ type PageView =
   | 'swallet'
   | 'hentli'
   | 'vestlandsk-hjertesenter'
+  | 'geton-scooters'
+  | 'norraq-style'
   | 'about'
   | 'insights'
   | 'article'
@@ -231,6 +258,12 @@ function parseLocation(pathname: string, hash: string): ParsedRoute {
   if (path === '/prosjekter/hentli') return { view: 'hentli', tab: 'projects' };
   if (path === '/prosjekter/vestlandsk-hjertesenter') {
     return { view: 'vestlandsk-hjertesenter', tab: 'projects' };
+  }
+  if (path === '/prosjekter/geton-scooters') {
+    return { view: 'geton-scooters', tab: 'projects' };
+  }
+  if (path === '/prosjekter/norraq-style') {
+    return { view: 'norraq-style', tab: 'projects' };
   }
 
   if (path === '/om-oss' || path === '/about') {
@@ -517,7 +550,44 @@ export default function App() {
           ogImage: '/assets/images/vestlandsk_hjertesenter_mockup_1793710496839.webp',
           breadcrumbs: [
             { name: language === 'no' ? 'Forside' : 'Home', path: '/' },
+            { name: language === 'no' ? 'Prosjekter' : 'Projects', path: '/prosjekter' },
             { name: 'Vestlandsk Hjertesenter', path: '/prosjekter/vestlandsk-hjertesenter' },
+          ],
+        },
+        language
+      );
+    } else if (currentView === 'geton-scooters') {
+      applyRouteSEO(
+        {
+          title: 'Geton Scooters – IoT, MQTT og apputvikling | Geton AS',
+          description:
+            language === 'no'
+              ? 'Se hvordan Geton AS utviklet en elsparkesykkelplattform med mobilapp for iOS og Android, kart, IoT, MQTT og geofencing – testet i drift på Sotra.'
+              : 'How Geton AS built an e-scooter mobility platform featuring iOS & Android apps, geofencing maps, and MQTT IoT connectivity.',
+          canonicalPath: '/prosjekter/geton-scooters',
+          ogImage: '/assets/aistudio/Geton_Scooters_IoT_Mobility_Case_Study_84e80f94.png',
+          breadcrumbs: [
+            { name: language === 'no' ? 'Forside' : 'Home', path: '/' },
+            { name: language === 'no' ? 'Prosjekter' : 'Projects', path: '/prosjekter' },
+            { name: 'Geton Scooters', path: '/prosjekter/geton-scooters' },
+          ],
+        },
+        language
+      );
+    } else if (currentView === 'norraq-style') {
+      applyRouteSEO(
+        {
+          title: 'NORRAQ Style – Digital plattform for skjønnhetsbransjen | Geton AS',
+          description:
+            language === 'no'
+              ? 'Se hvordan NORRAQ Style samler modeller, studenter, lærlinger og skjønnhetsaktører i én løsning med smart matching, booking og chat.'
+              : 'How NORRAQ Style unifies models, beauty students, stylists, and clinics through smart matching, structured bookings, and private chat.',
+          canonicalPath: '/prosjekter/norraq-style',
+          ogImage: '/assets/aistudio/NORRAQ_Style__Fra_matching_til_booking_00b2d200.png',
+          breadcrumbs: [
+            { name: language === 'no' ? 'Forside' : 'Home', path: '/' },
+            { name: language === 'no' ? 'Prosjekter' : 'Projects', path: '/prosjekter' },
+            { name: 'NORRAQ Style', path: '/prosjekter/norraq-style' },
           ],
         },
         language
@@ -643,6 +713,10 @@ export default function App() {
       navigateToPath('/prosjekter/hentli', 'hentli', 'projects');
     } else if (projectId === 'vestlandsk-hjertesenter' || projectId === 'vestlandsk') {
       navigateToPath('/prosjekter/vestlandsk-hjertesenter', 'vestlandsk-hjertesenter', 'projects');
+    } else if (projectId === 'geton-scooters') {
+      navigateToPath('/prosjekter/geton-scooters', 'geton-scooters', 'projects');
+    } else if (projectId === 'norraq-style') {
+      navigateToPath('/prosjekter/norraq-style', 'norraq-style', 'projects');
     }
   };
 
@@ -695,7 +769,7 @@ export default function App() {
       navigateToPath('/prosjekter', 'projects-hub', 'projects');
     } else if (tab === 'services') {
       if (currentView === 'home') {
-        scrollToHomeSection('pricing-packages', 'services');
+        scrollToHomeSection('services', 'services');
       } else {
         navigateToPath('/tjenester', 'services-hub', 'services');
       }
@@ -709,7 +783,7 @@ export default function App() {
   };
 
   const handleScrollToExplore = () => {
-    const section = document.getElementById('software-systems');
+    const section = document.getElementById('services');
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
     }
@@ -718,8 +792,16 @@ export default function App() {
   const renderPage = () => {
     if (currentView === 'services-hub') {
       return (
-        <div className="min-h-screen bg-[#040816] text-white overflow-x-hidden">
-          <div className="sticky top-0 z-50 w-full bg-[#040816]/90 backdrop-blur-xl border-b border-white/10">
+        <div
+          className={`min-h-screen overflow-x-hidden transition-colors duration-300 ${
+            isLight ? 'bg-[#fafaf9] text-neutral-900' : 'bg-[#040816] text-white'
+          }`}
+        >
+          <div
+            className={`sticky top-0 z-50 w-full backdrop-blur-xl border-b ${
+              isLight ? 'bg-[#fafaf9]/95 border-[#e7e7e5]' : 'bg-[#040816]/90 border-white/10'
+            }`}
+          >
             <Navbar
               activeTab="services"
               onSelectTab={handleTabSelect}
@@ -728,12 +810,24 @@ export default function App() {
             />
           </div>
           <main>
-            <section className="pt-12 pb-6 px-4 sm:px-8 lg:px-12 xl:px-16 bg-[#040816] border-b border-white/10">
+            <section
+              className={`pt-12 pb-8 px-4 sm:px-8 lg:px-12 xl:px-16 border-b ${
+                isLight ? 'bg-[#fafaf9] border-[#e7e7e5]' : 'bg-[#040816] border-white/10'
+              }`}
+            >
               <div className="max-w-[1440px] mx-auto">
-                <span className="text-xs font-semibold tracking-[0.2em] text-cyan-300 uppercase block mb-3">
+                <span
+                  className={`text-xs font-semibold tracking-[0.2em] uppercase block mb-3 ${
+                    isLight ? 'text-sky-700' : 'text-cyan-300'
+                  }`}
+                >
                   {language === 'no' ? 'TJENESTEOVERSIKT · GETON AS' : 'SERVICE OVERVIEW · GETON AS'}
                 </span>
-                <h1 className="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight leading-[1.15] [text-wrap:balance] max-w-4xl">
+                <h1
+                  className={`text-3xl sm:text-5xl font-extrabold font-display tracking-tight leading-[1.15] [text-wrap:balance] max-w-4xl ${
+                    isLight ? 'text-neutral-900' : 'text-white'
+                  }`}
+                >
                   {language === 'no'
                     ? 'Våre tjenester innen web, apper, systemer og AI'
                     : 'Our Services Across Web, Mobile Apps, Systems & AI'}
@@ -756,8 +850,16 @@ export default function App() {
 
     if (currentView === 'projects-hub') {
       return (
-        <div className="min-h-screen bg-[#040816] text-white overflow-x-hidden">
-          <div className="sticky top-0 z-50 w-full bg-[#040816]/90 backdrop-blur-xl border-b border-white/10">
+        <div
+          className={`min-h-screen overflow-x-hidden transition-colors duration-300 ${
+            isLight ? 'bg-[#fafaf9] text-neutral-900' : 'bg-[#040816] text-white'
+          }`}
+        >
+          <div
+            className={`sticky top-0 z-50 w-full backdrop-blur-xl border-b ${
+              isLight ? 'bg-[#fafaf9]/95 border-[#e7e7e5]' : 'bg-[#040816]/90 border-white/10'
+            }`}
+          >
             <Navbar
               activeTab="projects"
               onSelectTab={handleTabSelect}
@@ -766,12 +868,24 @@ export default function App() {
             />
           </div>
           <main>
-            <section className="pt-12 pb-8 px-4 sm:px-8 lg:px-12 xl:px-16 bg-[#040816] border-b border-white/10">
+            <section
+              className={`pt-12 pb-8 px-4 sm:px-8 lg:px-12 xl:px-16 border-b ${
+                isLight ? 'bg-[#fafaf9] border-[#e7e7e5]' : 'bg-[#040816] border-white/10'
+              }`}
+            >
               <div className="max-w-[1440px] mx-auto">
-                <span className="text-xs font-semibold tracking-[0.2em] text-cyan-300 uppercase block mb-3">
+                <span
+                  className={`text-xs font-semibold tracking-[0.2em] uppercase block mb-3 ${
+                    isLight ? 'text-sky-700' : 'text-cyan-300'
+                  }`}
+                >
                   {language === 'no' ? 'KUNDECASER & PROSJEKTER' : 'PROJECTS & CASE STUDIES'}
                 </span>
-                <h1 className="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight leading-[1.15] [text-wrap:balance] max-w-4xl">
+                <h1
+                  className={`text-3xl sm:text-5xl font-extrabold font-display tracking-tight leading-[1.15] [text-wrap:balance] max-w-4xl ${
+                    isLight ? 'text-neutral-900' : 'text-white'
+                  }`}
+                >
                   {language === 'no'
                     ? 'Utvalgte prosjekter levert av Geton AS'
                     : 'Selected Digital Platforms Engineered by Geton AS'}
@@ -780,19 +894,14 @@ export default function App() {
             </section>
             <ProjectsShowcaseSection
               onInspectProject={(project) => {
-                if (
-                  project.id === 'frakt360' ||
-                  project.id === 'swallet' ||
-                  project.id === 'hentli' ||
-                  project.id === 'vestlandsk-hjertesenter'
-                ) {
+                if (project.isFullCaseStudy) {
                   navigateToProject(project.id);
                   return;
                 }
                 setSelectedService({
                   id: project.id,
                   title: `${project.title} — ${project.client}`,
-                  subtitle: `${project.industry} (${project.year}) · ${project.metrics}`,
+                  subtitle: `${project.industry} · ${project.metrics}`,
                   description: project.description,
                   features: [
                     ...project.keyFeatures,
@@ -881,6 +990,30 @@ export default function App() {
       );
     }
 
+    if (currentView === 'geton-scooters') {
+      return (
+        <GetonScootersCaseStudyPage
+          onBack={navigateBackToHome}
+          onNavigateToProject={navigateToProject}
+          onNavigateToTab={handleTabSelect}
+          onNavigateToService={navigateToService}
+          onStartProject={() => openInquiry()}
+        />
+      );
+    }
+
+    if (currentView === 'norraq-style') {
+      return (
+        <NorraqStyleCaseStudyPage
+          onBack={navigateBackToHome}
+          onNavigateToProject={navigateToProject}
+          onNavigateToTab={handleTabSelect}
+          onNavigateToService={navigateToService}
+          onStartProject={() => openInquiry()}
+        />
+      );
+    }
+
     if (currentView === 'about') {
       return (
         <AboutPage
@@ -954,10 +1087,10 @@ export default function App() {
             : 'bg-[#040714] text-white selection:bg-cyan-500 selection:text-black'
         }`}
       >
-        {/* HERO SECTION (Always preserves crisp atmospheric dark video & glassmorphism) */}
+        {/* 1. HERO SECTION (Atmospheric Video Canvas + Product Visuals) */}
         <div
           id="hero-section"
-          className="min-h-[100dvh] w-full relative flex flex-col justify-between overflow-x-hidden select-none bg-gradient-to-b from-[#060b1e] via-[#050d26] to-[#060e28] text-white"
+          className="min-h-[92dvh] lg:min-h-[100dvh] w-full relative flex flex-col justify-between overflow-x-hidden select-none bg-gradient-to-b from-[#060b1e] via-[#050d26] to-[#060e28] text-white"
         >
           {/* Full-bleed Video Background Layer */}
           <div className="absolute inset-0 w-full h-full overflow-hidden z-0 pointer-events-none">
@@ -975,13 +1108,14 @@ export default function App() {
             >
               <source src={VIDEO_URL} type="video/mp4" />
             </video>
+            <div className="absolute inset-0 bg-[#040816]/45" />
           </div>
 
           <div
-            className="absolute bottom-0 left-0 right-0 h-32 sm:h-40 bg-gradient-to-t from-[#060e28] via-[#060e28]/60 to-transparent pointer-events-none z-10"
+            className="absolute bottom-0 left-0 right-0 h-28 sm:h-36 bg-gradient-to-t from-[#040816] via-[#040816]/65 to-transparent pointer-events-none z-10"
           />
 
-          {/* 1. TOP NAVIGATION BAR */}
+          {/* TOP NAVIGATION BAR */}
           <div className="relative z-30">
             <Navbar
               activeTab={activeTab}
@@ -992,80 +1126,56 @@ export default function App() {
             />
           </div>
 
-          {/* 2. MAIN HERO CONTENT AREA */}
-          <main className="relative z-20 flex-1 w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex flex-col justify-start lg:justify-center items-start pt-2 pb-6 sm:py-6 lg:py-10">
-            <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8 xl:gap-14">
-              <div className="w-full lg:w-auto shrink-0 flex justify-start animate-in fade-in slide-in-from-left-6 duration-700">
+          {/* MAIN HERO CONTENT AREA */}
+          <main className="relative z-20 flex-1 w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex flex-col justify-center items-start py-6 sm:py-8 lg:py-12">
+            <div className="w-full flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-10">
+              <div className="w-full lg:max-w-2xl flex justify-start animate-in fade-in slide-in-from-left-6 duration-700">
                 <HeroCard
                   onStartProject={() => openInquiry()}
-                  onExploreServices={() => scrollToHomeSection('pricing-packages', 'services')}
-                  onSelectService={(service) => {
-                    if (service.serviceSlug) {
-                      navigateToService(service.serviceSlug);
-                    } else {
-                      setSelectedService(service);
-                    }
-                  }}
+                  onExploreServices={() => scrollToHomeSection('projects', 'projects')}
                 />
               </div>
 
-              <div className="hidden lg:flex items-center justify-end shrink-0 ml-auto pr-2 xl:pr-6 animate-in fade-in slide-in-from-right-6 duration-700">
+              {/* Geton Gaming Studio Badge (Desktop Right Position matching original hero) */}
+              <div
+                id="gaming-studio-badge"
+                className="hidden lg:flex items-center justify-end shrink-0 ml-auto pr-2 xl:pr-6 animate-in fade-in slide-in-from-right-6 duration-700"
+              >
                 <FloatingBadge onClick={() => setIsGetonGameOpen(true)} />
               </div>
             </div>
           </main>
 
-          {/* 3. HERO FOOTER */}
-          <div className="relative z-20 w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 pb-6 pt-2 sm:pb-8 sm:pt-4 flex items-center justify-between gap-4">
-            <ScrollIndicator onClick={handleScrollToExplore} />
-            <div className="lg:hidden shrink-0">
-              <FloatingBadge
-                onClick={() => setIsGetonGameOpen(true)}
-                className="!px-3.5 !py-2 scale-95 origin-right"
-              />
+          {/* HERO FOOTER (Responsive on mobile phones so FloatingBadge & ScrollIndicator both fit cleanly) */}
+          <div className="relative z-20 w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 pb-5 sm:pb-6 pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4">
+            <div className="lg:hidden w-full sm:w-auto max-w-full">
+              <div id="gaming-studio-badge-mobile" className="w-fit max-w-full">
+                <FloatingBadge onClick={() => setIsGetonGameOpen(true)} className="max-w-full" />
+              </div>
             </div>
+            <ScrollIndicator onClick={handleScrollToExplore} />
           </div>
         </div>
 
-        {/* LAZY-LOADED BELOW-THE-FOLD SECTIONS FOR FAST INITIAL PAINT */}
+        {/* LAZY-LOADED HOMEPAGE SECTIONS */}
         <Suspense fallback={<div className="min-h-[400px]" />}>
-          {/* SECOND SECTION: CREATIVE SOFTWARE & ARCHITECTURE */}
-          <SoftwareShowcaseSection
-            onScheduleReview={() => openInquiry('Webapplikasjoner og systemutvikling')}
+          {/* SECTION 2: OUR SERVICES (6-card overview) */}
+          <HomeServicesSection
             onNavigateToService={navigateToService}
+            onViewAllServices={() => navigateToPath('/tjenester', 'services-hub', 'services')}
           />
 
-          {/* THIRD SECTION: SERVICES & TAILORED SOLUTIONS */}
-          <PricingPackagesSection
-            onSelectPackage={(pkgName) => openInquiry(pkgName)}
-            onNavigateToService={navigateToService}
-          />
-
-          {/* FOURTH SECTION: TRUST & CREDIBILITY */}
-          <DigitalSolutionsSection
-            onGetStarted={() => openInquiry()}
-            onSelectCapability={navigateToCapability}
-          />
-
-          {/* FIFTH SECTION: DEVELOPMENT PROCESS */}
-          <ProcessRouteSection onScheduleReview={() => openInquiry()} />
-
-          {/* SIXTH SECTION: PROJECT PORTFOLIO */}
+          {/* SECTION 3: SELECTED PROJECTS / CASE STUDIES */}
           <ProjectsShowcaseSection
             onInspectProject={(project) => {
-              if (
-                project.id === 'frakt360' ||
-                project.id === 'swallet' ||
-                project.id === 'hentli' ||
-                project.id === 'vestlandsk-hjertesenter'
-              ) {
+              if (project.isFullCaseStudy) {
                 navigateToProject(project.id);
                 return;
               }
               setSelectedService({
                 id: project.id,
                 title: `${project.title} — ${project.client}`,
-                subtitle: `${project.industry} (${project.year}) · ${project.metrics}`,
+                subtitle: `${project.industry} · ${project.metrics}`,
                 description: project.description,
                 features: [
                   ...project.keyFeatures,
@@ -1073,7 +1183,32 @@ export default function App() {
                 ],
               });
             }}
+            onViewAllProjects={() => navigateToPath('/prosjekter', 'projects-hub', 'projects')}
             onStartProject={() => openInquiry()}
+          />
+
+          {/* SECTION 4: WHY CHOOSE GETON? */}
+          <DigitalSolutionsSection
+            onGetStarted={() => openInquiry()}
+            onSelectCapability={navigateToCapability}
+          />
+
+          {/* SECTION 5: OUR DEVELOPMENT PROCESS */}
+          <ProcessRouteSection />
+
+          {/* SECTION 7: INSIGHTS (Top 3 Articles + View All) */}
+          <HomeInsightsSection
+            onSelectArticle={(articleId) => {
+              setActiveArticleId(articleId);
+              navigateToPath(`/artikler/${articleId}`, 'article', 'blogs');
+            }}
+            onViewAllArticles={() => navigateToPath('/artikler', 'insights', 'blogs')}
+          />
+
+          {/* SECTION 8: FINAL CONTACT SECTION */}
+          <HomeContactSection
+            onStartProject={() => openInquiry()}
+            onContactPage={() => navigateToPath('/kontakt', 'contact', 'contact')}
           />
         </Suspense>
 

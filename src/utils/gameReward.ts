@@ -3,9 +3,10 @@
 // never from mutable React state, localStorage high scores, or URL parameters.
 
 export const REWARD_SCORE_TARGET = 1000;
+export const MAX_SCORE = 3000;
 const MIN_TICKS_REQUIRED = 950; // ~16s+ of simulated physics ticks minimum
 const MIN_REAL_DURATION_MS = 15000; // Prevents accelerated-clock speedhacks
-const MAX_PLAUSIBLE_PTS_PER_SEC = 110;
+const MAX_PLAUSIBLE_PTS_PER_SEC = 135;
 
 type CollectKind = 'coin' | 'gem' | 'star';
 
@@ -23,6 +24,7 @@ export interface VerifiedRunSnapshot {
   simulatedSec: number;
   ticks: number;
   eligibleForReward: boolean;
+  reachedMaxScore: boolean;
 }
 
 export interface VerifiedClaimProof {
@@ -104,13 +106,13 @@ export function createGameRunSession(): GameRunSession {
 
   const computeVerifiedScore = (): number => {
     const distancePoints = Math.floor(distancePx / 56);
-    return distancePoints + bonusScore;
+    return Math.min(MAX_SCORE, distancePoints + bonusScore);
   };
 
   return {
     recordTick(dt: number, speedPxPerSec: number) {
       const safeDt = Math.max(0.001, Math.min(0.05, dt));
-      const safeSpeed = Math.max(0, Math.min(420, speedPxPerSec));
+      const safeSpeed = Math.max(0, Math.min(460, speedPxPerSec));
       ticks += 1;
       simulatedSec += safeDt;
       distancePx += safeSpeed * safeDt;
@@ -166,6 +168,7 @@ export function createGameRunSession(): GameRunSession {
         simulatedSec,
         ticks,
         eligibleForReward,
+        reachedMaxScore: verifiedScore >= MAX_SCORE,
       };
     },
 

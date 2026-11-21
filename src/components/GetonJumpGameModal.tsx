@@ -24,12 +24,27 @@ import { useLanguage } from '../context/LanguageContext.tsx';
 import {
   createGameRunSession,
   GameRunSession,
+  MAX_SCORE,
   REWARD_SCORE_TARGET,
   VerifiedClaimProof,
 } from '../utils/gameReward.ts';
+import { submitContactInquiry, formatContactSubmitError } from '../utils/contactSubmit.ts';
 
-type GameState = 'TITLE_MENU' | 'PLAYING' | 'CELEBRATION' | 'GAME_OVER' | 'CLAIM_FORM';
-type ObstacleKind = 'patrol' | 'hopper' | 'firewall' | 'bird' | 'fireball';
+type GameState =
+  | 'TITLE_MENU'
+  | 'PLAYING'
+  | 'CELEBRATION'
+  | 'MAX_VICTORY'
+  | 'GAME_OVER'
+  | 'CLAIM_FORM';
+type ObstacleKind =
+  | 'patrol'
+  | 'hopper'
+  | 'firewall'
+  | 'bird'
+  | 'fireball'
+  | 'soldier'
+  | 'bullet';
 type CollectibleKind = 'coin' | 'gem' | 'star';
 
 interface GetonJumpGameModalProps {
@@ -67,6 +82,10 @@ interface Obstacle {
   patrolDir: number;
   patrolRange: number;
   hopVy: number;
+  fireTimer?: number;
+  hasFired?: boolean;
+  callout?: string;
+  bulletSpeedMult?: number;
 }
 
 interface Collectible {
@@ -124,11 +143,12 @@ const PLAYER_HEIGHT = 42;
 const MAX_LIVES = 3;
 
 const BASE_SPEED = 198;
-const MAX_SPEED = 325;
+const MAX_SPEED = 395;
 const GRAVITY = 1520;
 const JUMP_VELOCITY = -620;
 const DOUBLE_JUMP_VELOCITY = -560;
 const HIGH_SCORE_STORAGE_KEY = 'geton_gaming_studio_best_v3';
+const SOLDIER_CALLOUTS = ['PEW!', 'HALT!', 'DUCK!', 'FIRE!', 'NO BUGS!'];
 
 // Fire trap cycle timing (seconds): dormant -> warning telegraph -> active flame -> cooldown
 const TRAP_DORMANT_END = 0.95;
@@ -192,6 +212,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
     company: '',
     details: '',
   });
+  const [honeypot, setHoneypot] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -200,6 +221,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
   const rafRef = useRef<number | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const gameStateRef = useRef<GameState>('TITLE_MENU');
+  const returnStateRef = useRef<GameState>('GAME_OVER');
   const soundEnabledRef = useRef(true);
   const bestScoreRef = useRef(bestScore);
   const languageRef = useRef(language);
@@ -224,6 +246,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
       setGameState('TITLE_MENU');
       setSubmitSuccess(false);
       setSubmitError(null);
+      setHoneypot('');
       setVerifiedProof(null);
       setProjectType(language === 'no' ? 'Nettside' : 'Website');
     }
@@ -244,6 +267,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
     speed: BASE_SPEED,
     runCycle: 0,
     unlockedMilestoneInRun: false,
+    reachedMaxCapInRun: false,
     patternCooldown: 0.9,
     fireballCooldown: 3.4,
     gridOffset: 0,
@@ -260,7 +284,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
   });
 
   const playTone = useCallback(
-    (type: 'jump' | 'double' | 'drop' | 'gem' | 'unlock' | 'hit' | 'gameover') => {
+    (type: 'jump' | 'double' | 'drop' | 'gem' | 'pew' | 'unlock' | 'hit' | 'gameover') => {
       if (!soundEnabledRef.current || typeof window === 'undefined') return;
       try {
         const AudioCtx =
@@ -333,6 +357,14 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
           osc.start(now);
           osc.stop(now + 0.16);
+        } else if (type === 'pew') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(760, now);
+          osc.frequency.exponentialRampToValueAtTime(210, now + 0.1);
+          gain.gain.setValueAtTime(0.045, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+          osc.start(now);
+          osc.stop(now + 0.11);
         } else if (type === 'hit') {
           osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(210, now);
@@ -423,6 +455,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
       speed: BASE_SPEED,
       runCycle: 0,
       unlockedMilestoneInRun: false,
+      reachedMaxCapInRun: false,
       patternCooldown: 0.8,
       fireballCooldown: 4.5,
       gridOffset: 0,
@@ -478,6 +511,8 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
   }, [playTone]);
 
   const openClaimForm = useCallback(async () => {
+    returnStateRef.current =
+      gameStateRef.current === 'CLAIM_FORM' ? returnStateRef.current : gameStateRef.current;
     setSubmitSuccess(false);
     setSubmitError(null);
     setIsVerifyingClaim(true);
@@ -504,7 +539,11 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
   }, []);
 
   const triggerJump = useCallback(() => {
-    if (gameStateRef.current === 'CLAIM_FORM' || gameStateRef.current === 'CELEBRATION') {
+    if (
+      gameStateRef.current === 'CLAIM_FORM' ||
+      gameStateRef.current === 'CELEBRATION' ||
+      gameStateRef.current === 'MAX_VICTORY'
+    ) {
       return;
     }
     if (
@@ -545,14 +584,71 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
     }
   }, [playTone]);
 
-  // Spawn creative platform + hazard + reward patterns scaled by current stage (1..4)
-  const spawnCreativePattern = useCallback((stage: number) => {
+  // Spawn creative platform + hazard + reward + sparse firing soldier patterns scaled by stage (1..5)
+  const spawnCreativePattern = useCallback((stage: number, currentScore: number) => {
     const sim = simRef.current;
     const roll = Math.random();
     const startX = LOGICAL_WIDTH + 40;
+    const activeSoldiers = sim.obstacles.filter((o) => o.kind === 'soldier').length;
+    const maxSoldiersAllowed = stage >= 4 ? 2 : 1;
+    const canSpawnSoldier = currentScore >= 120 && activeSoldiers < maxSoldiersAllowed;
 
-    if (roll < 0.24) {
-      // Pattern 1: Elevated platform with fire trap below OR on platform + sky gems
+    if (canSpawnSoldier && roll >= 0.76) {
+      // Pattern 5: Comedic Firing Trooper on ground (or elevated sentry platform in Stage 3+)
+      const elevatedSentry = stage >= 3 && Math.random() > 0.5;
+      const soldierSurfaceY = elevatedSentry ? GROUND_Y - 78 : GROUND_Y;
+      if (elevatedSentry) {
+        sim.platforms.push({
+          id: nextPlatformIdRef.current++,
+          x: startX - 24,
+          y: soldierSurfaceY,
+          width: 132,
+          height: 14,
+        });
+      }
+
+      sim.obstacles.push({
+        x: startX + 24,
+        originX: startX + 24,
+        y: soldierSurfaceY - 40,
+        baseY: soldierSurfaceY - 40,
+        width: 34,
+        height: 40,
+        kind: 'soldier',
+        passed: false,
+        phase: Math.random() * Math.PI * 2,
+        patrolDir: -1,
+        patrolRange: 18,
+        hopVy: 0,
+        fireTimer: stage >= 4 ? 0.45 + Math.random() * 0.25 : 0.72 + Math.random() * 0.3,
+        hasFired: false,
+        callout: SOLDIER_CALLOUTS[Math.floor(Math.random() * SOLDIER_CALLOUTS.length)],
+      });
+
+      // Reward star above the soldier for clean overhead dodge
+      sim.collectibles.push({
+        x: startX + 38,
+        y: soldierSurfaceY - 98,
+        radius: 11,
+        kind: stage >= 3 ? 'star' : 'gem',
+        collected: false,
+        bobOffset: 0.6,
+      });
+
+      if (stage >= 4 && Math.random() > 0.45) {
+        sim.fireTraps.push({
+          x: startX + 125,
+          y: GROUND_Y,
+          width: 32,
+          cycleTimer: 0.8,
+          passed: false,
+        });
+      }
+      return;
+    }
+
+    if (roll < 0.22) {
+      // Pattern 1: Elevated platform with fire trap below OR patrol guard + sky gems
       const platW = 148 + Math.random() * 34;
       const platY = GROUND_Y - (stage >= 2 && Math.random() > 0.45 ? 128 : 78);
       sim.platforms.push({
@@ -576,7 +672,6 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
         });
       }
 
-      // Ground patrol or ground fire trap beneath platform
       if (stage >= 2 && Math.random() > 0.4) {
         sim.fireTraps.push({
           x: startX + platW * 0.5 - 16,
@@ -601,7 +696,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
           hopVy: 0,
         });
       }
-    } else if (roll < 0.48) {
+    } else if (roll < 0.44) {
       // Pattern 2: Ground Fire Trap / Firewall + arc of collectible gems over it
       if (stage >= 2 && Math.random() > 0.35) {
         sim.fireTraps.push({
@@ -612,7 +707,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
           passed: false,
         });
       } else {
-        const fwHeight = 46 + Math.min(18, stage * 4);
+        const fwHeight = 46 + Math.min(24, stage * 4.5);
         sim.obstacles.push({
           x: startX,
           originX: startX,
@@ -637,8 +732,8 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
         collected: false,
         bobOffset: 0.5,
       });
-    } else if (roll < 0.72) {
-      // Pattern 3: Two-tier platform staircase with a Star gem + Fire Trap on lower tier
+    } else if (roll < 0.64) {
+      // Pattern 3: Two-tier platform staircase with Star gem + Fire Trap on lower tier
       const p1Y = GROUND_Y - 78;
       const p2Y = GROUND_Y - 140;
       sim.platforms.push({
@@ -1342,6 +1437,91 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
         ctx.beginPath();
         ctx.arc(0, 0, 11.5, 0, Math.PI * 2);
         ctx.fill();
+      } else if (obs.kind === 'soldier') {
+        // Comedic Cyber Trooper aiming & firing toward left
+        const x = obs.x;
+        const y = obs.y;
+        const marchBob = Math.sin(nowMs * 0.015 + obs.phase) * 1.8;
+        const telegraph = !obs.hasFired && (obs.fireTimer ?? 1) < 0.36;
+
+        ctx.translate(x + obs.width / 2, y + obs.height + marchBob);
+
+        // Tactical boots
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.roundRect(-10, -7, 8, 7, 2);
+        ctx.roundRect(2, -7, 8, 7, 2);
+        ctx.fill();
+
+        // Uniform body
+        const bodyGrad = ctx.createLinearGradient(-10, -27, 10, -7);
+        bodyGrad.addColorStop(0, '#475569');
+        bodyGrad.addColorStop(1, '#1e293b');
+        ctx.fillStyle = bodyGrad;
+        ctx.beginPath();
+        ctx.roundRect(-10, -27, 20, 21, 5);
+        ctx.fill();
+
+        // Tactical chest stripe
+        ctx.fillStyle = '#f43f5e';
+        ctx.fillRect(-8, -21, 16, 3);
+
+        // Blaster rifle pointed LEFT
+        ctx.fillStyle = '#020617';
+        ctx.beginPath();
+        ctx.roundRect(-24, -22, 19, 5.5, 2);
+        ctx.fill();
+        ctx.fillStyle = telegraph ? '#fde047' : '#fb7185';
+        ctx.beginPath();
+        ctx.arc(-24.5, -19.2, telegraph ? 3.5 : 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Oversized helmet + glowing goggles
+        ctx.fillStyle = '#334155';
+        ctx.beginPath();
+        ctx.arc(0, -32, 10.5, Math.PI * 0.85, Math.PI * 2.15);
+        ctx.fill();
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath();
+        ctx.roundRect(-11, -35, 22, 7.5, 3);
+        ctx.fill();
+        // Funny glowing visor eyes
+        ctx.fillStyle = '#fb7185';
+        ctx.fillRect(-9, -33.5, 6, 3.2);
+        ctx.fillRect(-1.5, -33.5, 5, 3.2);
+
+        // Funny speech bubble before firing
+        if (telegraph && obs.callout) {
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.roundRect(-24, -56, 48, 15, 6);
+          ctx.fill();
+          ctx.fillStyle = '#0f172a';
+          ctx.font = '800 8.5px Plus Jakarta Sans, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(obs.callout, 0, -48.5);
+        }
+      } else if (obs.kind === 'bullet') {
+        // Bright laser/plasma shot fired by soldier
+        const cx = obs.x + obs.width / 2;
+        const cy = obs.y + obs.height / 2;
+        ctx.translate(cx, cy);
+
+        // Tracer glow tail
+        const bTrail = ctx.createLinearGradient(-12, 0, 18, 0);
+        bTrail.addColorStop(0, 'rgba(244, 63, 94, 0.95)');
+        bTrail.addColorStop(0.55, 'rgba(251, 146, 60, 0.7)');
+        bTrail.addColorStop(1, 'rgba(251, 146, 60, 0)');
+        ctx.fillStyle = bTrail;
+        ctx.beginPath();
+        ctx.roundRect(-10, -3.5, 28, 7, 4);
+        ctx.fill();
+
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.roundRect(-11, -2.8, 15, 5.6, 3);
+        ctx.fill();
       } else {
         // Animated Flapping Sky Bird / Cyber Falcon
         const cx = obs.x + obs.width / 2;
@@ -1466,13 +1646,30 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
         const snapshotBefore = runSessionRef.current?.getSnapshot();
         const currentScore = snapshotBefore?.verifiedScore ?? 0;
 
-        // Progressive stage calibration (1..4) so 1000 points feels earned yet fair
+        // Progressive 5-stage calibration: reaching 3,000 points requires genuine skill
         const stage =
-          currentScore >= 850 ? 4 : currentScore >= 550 ? 3 : currentScore >= 250 ? 2 : 1;
+          currentScore >= 2150
+            ? 5
+            : currentScore >= 1400
+            ? 4
+            : currentScore >= 800
+            ? 3
+            : currentScore >= 350
+            ? 2
+            : 1;
         setStageLevel(stage);
 
-        const targetMaxSpeed = stage === 4 ? MAX_SPEED : stage === 3 ? 285 : stage === 2 ? 250 : 220;
-        sim.speed = Math.min(targetMaxSpeed, sim.speed + dt * (stage >= 3 ? 5.2 : 3.5));
+        const targetMaxSpeed =
+          stage === 5
+            ? MAX_SPEED
+            : stage === 4
+            ? 352
+            : stage === 3
+            ? 305
+            : stage === 2
+            ? 258
+            : 222;
+        sim.speed = Math.min(targetMaxSpeed, sim.speed + dt * (stage >= 4 ? 7.2 : stage >= 3 ? 5.2 : 3.6));
 
         sim.runCycle += dt * (sim.speed / BASE_SPEED);
         sim.gridOffset += sim.speed * dt;
@@ -1530,12 +1727,21 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
           sim.jumpsUsed = 0;
         }
 
-        // Spawn Creative Multi-Tier Patterns
+        // Spawn Creative Multi-Tier Patterns & Firing Soldiers
         sim.patternCooldown -= dt;
         if (sim.patternCooldown <= 0) {
-          spawnCreativePattern(stage);
-          const baseGap = stage === 1 ? 1.55 : stage === 2 ? 1.38 : stage === 3 ? 1.24 : 1.12;
-          sim.patternCooldown = baseGap + Math.random() * 0.55;
+          spawnCreativePattern(stage, currentScore);
+          const baseGap =
+            stage === 1
+              ? 1.54
+              : stage === 2
+              ? 1.34
+              : stage === 3
+              ? 1.16
+              : stage === 4
+              ? 0.96
+              : 0.8;
+          sim.patternCooldown = baseGap + Math.random() * (stage >= 4 ? 0.36 : 0.52);
         }
 
         // Spawn Horizontal Blazing Fireballs in Stage 3+
@@ -1563,7 +1769,12 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
               patrolRange: 0,
               hopVy: 0,
             });
-            sim.fireballCooldown = stage === 4 ? 2.1 + Math.random() * 1.4 : 2.9 + Math.random() * 1.5;
+            sim.fireballCooldown =
+              stage === 5
+                ? 1.55 + Math.random() * 1.05
+                : stage === 4
+                ? 2.0 + Math.random() * 1.25
+                : 2.8 + Math.random() * 1.4;
           }
         }
 
@@ -1600,9 +1811,19 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
         }
         sim.fireTraps = sim.fireTraps.filter((t) => t.x + t.width > -50);
 
-        // Update Obstacles & Moving Enemies
+        // Update Obstacles, Soldiers & Fired Projectiles
+        const newBullets: Obstacle[] = [];
         for (const obs of sim.obstacles) {
-          const speedMult = obs.kind === 'fireball' ? 1.38 : obs.kind === 'bird' ? 1.14 : 1.0;
+          const speedMult =
+            obs.kind === 'bullet'
+              ? obs.bulletSpeedMult ?? (stage >= 5 ? 1.72 : 1.55)
+              : obs.kind === 'fireball'
+              ? stage >= 5
+                ? 1.48
+                : 1.38
+              : obs.kind === 'bird'
+              ? 1.15
+              : 1.0;
           obs.x -= sim.speed * speedMult * dt;
           obs.originX -= sim.speed * speedMult * dt;
 
@@ -1635,6 +1856,44 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                 gravity: 40,
               });
             }
+          } else if (obs.kind === 'soldier') {
+            if (!obs.hasFired && obs.x < LOGICAL_WIDTH - 34 && obs.x > PLAYER_X + 120) {
+              obs.fireTimer = (obs.fireTimer ?? 0.65) - dt;
+              if (obs.fireTimer <= 0) {
+                obs.hasFired = true;
+                newBullets.push({
+                  x: obs.x - 16,
+                  originX: obs.x - 16,
+                  y: obs.y + 15,
+                  baseY: obs.y + 15,
+                  width: 22,
+                  height: 8,
+                  kind: 'bullet',
+                  passed: false,
+                  phase: 0,
+                  patrolDir: 0,
+                  patrolRange: 0,
+                  hopVy: 0,
+                  bulletSpeedMult: stage >= 5 ? 1.72 : stage >= 4 ? 1.62 : 1.52,
+                });
+                spawnParticles(obs.x - 12, obs.y + 18, ['#fde047', '#fb7185', '#fb923c'], 8, 120);
+                playTone('pew');
+              }
+            }
+          } else if (obs.kind === 'bullet') {
+            if (Math.random() < 0.5) {
+              sim.particles.push({
+                x: obs.x + obs.width,
+                y: obs.y + obs.height * 0.5,
+                vx: 35,
+                vy: (Math.random() - 0.5) * 30,
+                life: 0.18,
+                maxLife: 0.18,
+                color: '#fb7185',
+                size: 1.8,
+                gravity: 20,
+              });
+            }
           }
 
           if (!obs.passed && obs.x + obs.width < PLAYER_X - PLAYER_HALF_W) {
@@ -1642,8 +1901,9 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
             runSessionRef.current?.recordObstacleClear();
           }
 
-          const oPadX = obs.kind === 'bird' || obs.kind === 'fireball' ? 5 : 4;
-          const oPadY = obs.kind === 'bird' || obs.kind === 'fireball' ? 5 : 4;
+          const oPadX =
+            obs.kind === 'bird' || obs.kind === 'fireball' || obs.kind === 'bullet' ? 4 : 4;
+          const oPadY = obs.kind === 'bullet' ? 2 : obs.kind === 'bird' || obs.kind === 'fireball' ? 4 : 4;
           if (
             pRight > obs.x + oPadX &&
             pLeft < obs.x + obs.width - oPadX &&
@@ -1652,6 +1912,9 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
           ) {
             tookDamage = true;
           }
+        }
+        if (newBullets.length > 0) {
+          sim.obstacles.push(...newBullets);
         }
         sim.obstacles = sim.obstacles.filter((o) => o.x + o.width > -60);
 
@@ -1785,6 +2048,29 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
             }
             gameStateRef.current = 'CELEBRATION';
             setGameState('CELEBRATION');
+          } else if (!sim.reachedMaxCapInRun && snap.reachedMaxScore) {
+            sim.reachedMaxCapInRun = true;
+            playTone('unlock');
+            spawnParticles(
+              PLAYER_X,
+              sim.playerFeetY - 24,
+              ['#fbbf24', '#34d399', '#38bdf8', '#ffffff'],
+              40,
+              300,
+              200
+            );
+            if (MAX_SCORE > bestScoreRef.current) {
+              setBestScore(MAX_SCORE);
+              bestScoreRef.current = MAX_SCORE;
+              setIsNewBest(true);
+              try {
+                localStorage.setItem(HIGH_SCORE_STORAGE_KEY, String(MAX_SCORE));
+              } catch {
+                // Ignore
+              }
+            }
+            gameStateRef.current = 'MAX_VICTORY';
+            setGameState('MAX_VICTORY');
           }
         }
       } else {
@@ -1847,7 +2133,9 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
         triggerFastDrop();
       } else if (
         e.key === 'Enter' &&
-        (gameStateRef.current === 'TITLE_MENU' || gameStateRef.current === 'GAME_OVER')
+        (gameStateRef.current === 'TITLE_MENU' ||
+          gameStateRef.current === 'GAME_OVER' ||
+          gameStateRef.current === 'MAX_VICTORY')
       ) {
         e.preventDefault();
         resetAndStartGame();
@@ -1867,23 +2155,24 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
     verifiedProof?.valid || currentSnap?.eligibleForReward
   );
   const displayVerifiedScore = verifiedProof?.telemetry.score ?? currentSnap?.verifiedScore ?? score;
+  const activeGoal = isRunVerifiedEligible ? MAX_SCORE : REWARD_SCORE_TARGET;
   const progressPercent = Math.min(
     100,
-    Math.round(((currentSnap?.verifiedScore ?? score) / REWARD_SCORE_TARGET) * 100)
+    Math.round(((currentSnap?.verifiedScore ?? score) / activeGoal) * 100)
   );
 
   const studioSubtitle =
     language === 'no'
-      ? 'Spill og få rabatt på prosjektet ditt'
-      : 'Play & Get a Project Discount';
+      ? `Spill og få 5 % rabatt på prosjektet ditt (maks ${MAX_SCORE} p)`
+      : `Play & win a 5% project discount (max ${MAX_SCORE} pts)`;
   const studioPrimaryCta =
-    language === 'no' ? 'Få prosjektrabatt' : 'Get Project Discount';
+    language === 'no' ? 'Spill & vinn 5 % rabatt' : 'Play & Win 5% Discount';
   const unlockHeading =
     language === 'no'
-      ? 'Gratulerer! Du har låst opp en prosjektrabatt!'
-      : "Congratulations! You've unlocked a project discount!";
+      ? 'Gratulerer! Du vant 5 % prosjektrabatt!'
+      : 'Congratulations! You won a 5% project discount!';
   const claimBtnLabel =
-    language === 'no' ? 'Krev rabatten din' : 'Claim Your Discount';
+    language === 'no' ? 'Send prosjektinfo (5 % rabatt)' : 'Send Project Info (5% Off)';
 
   const projectTypeOptions =
     language === 'no'
@@ -1892,63 +2181,72 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
 
   const handleClaimSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setSubmitError(null);
 
+    if (honeypot.trim() !== '') {
+      setSubmitSuccess(true);
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.name.trim()) {
+      setSubmitError(language === 'no' ? 'Vennligst oppgi navnet ditt.' : 'Please enter your name.');
+      return;
+    }
+    if (!emailRegex.test(formData.email.trim())) {
+      setSubmitError(
+        language === 'no' ? 'Vennligst oppgi en gyldig e-postadresse.' : 'Please enter a valid email address.'
+      );
+      return;
+    }
+    if (formData.details.trim().length < 5) {
+      setSubmitError(
+        language === 'no'
+          ? 'Beskriv kort prosjektet ditt (minst 5 tegn).'
+          : 'Please describe your project briefly (at least 5 characters).'
+      );
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
-      // Always re-run anti-tamper integrity verification at submission time
       const proof = runSessionRef.current
         ? await runSessionRef.current.verifyAndIssueProof()
         : null;
       const validDiscount = Boolean(proof?.valid);
       const claimScoreVal = proof?.telemetry.score ?? displayVerifiedScore;
 
-      const response = await fetch(
-        'https://formsubmit.co/ajax/contact@getontechs.com',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-          body: JSON.stringify({
-            _subject: validDiscount
-              ? `[5% RABATT VERIFISERT – ${claimScoreVal} poeng] Geton Gaming Studio: ${formData.company || formData.name}`
-              : `[Geton Gaming Studio – ${claimScoreVal} poeng] Forespørsel: ${formData.company || formData.name}`,
-            _replyto: formData.email,
-            _template: 'table',
-            _honey: '',
-            Kilde: 'Geton Gaming Studio',
-            Verifisert_Poengsum: `${claimScoreVal} poeng`,
-            Rabatt_Status: validDiscount
-              ? `VERIFISERT – 5 % prosjektrabatt (${proof!.token})`
-              : `Ikke kvalifisert (krevd ${REWARD_SCORE_TARGET} verifiserte poeng i aktiv runde)`,
-            Verifiserings_Token: validDiscount ? proof!.token : 'Ikke aktivert',
-            Proof_Digest_SHA256: validDiscount ? proof!.digest : 'N/A',
-            Spilltid_Sekunder: String(proof?.telemetry.durationSec ?? 0),
-            Hindringer_Passert: String(proof?.telemetry.cleared ?? clearedCount),
-            Objekter_Samlet: String(proof?.telemetry.collected ?? gemsCount),
-            Prosjekttype: projectType,
-            Navn: formData.name,
-            Epost: formData.email,
-            Telefon: formData.phone || 'Ikke oppgitt',
-            Bedrift: formData.company || 'Ikke oppgitt',
-            Prosjektbeskrivelse: formData.details,
-          }),
-        }
-      );
+      const result = await submitContactInquiry({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        projectType,
+        message: formData.details,
+        honeypot,
+        source: 'geton_gaming_studio',
+        gameProof: proof
+          ? {
+              score: claimScoreVal,
+              eligible: validDiscount,
+              token: validDiscount ? proof.token : '',
+              digest: validDiscount ? proof.digest : '',
+              durationSec: proof.telemetry.durationSec,
+              cleared: proof.telemetry.cleared,
+              collected: proof.telemetry.collected,
+            }
+          : null,
+      });
 
-      if (!response.ok) {
-        throw new Error('Submission failed');
+      if (!result.ok) {
+        throw new Error(result.error || 'Submission failed');
       }
 
       setSubmitSuccess(true);
-    } catch {
-      setSubmitError(
-        language === 'no'
-          ? 'Kunne ikke sende skjemaet automatisk akkurat nå. Bruk knappen under for å sende med e-post.'
-          : 'Could not submit automatically right now. Use the button below to send via email.'
-      );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : undefined;
+      setSubmitError(formatContactSubmitError(msg, language));
     } finally {
       setIsSubmitting(false);
     }
@@ -1977,35 +2275,35 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-3xl rounded-3xl bg-[#070f24] border border-cyan-400/40 shadow-[0_0_70px_rgba(6,182,212,0.28)] overflow-hidden text-white my-auto"
+        className="relative w-full max-w-3xl rounded-2xl sm:rounded-3xl bg-[#070f24] border border-cyan-400/40 shadow-[0_0_70px_rgba(6,182,212,0.28)] overflow-hidden text-white my-auto max-h-[94dvh] flex flex-col"
       >
         {/* Top Game HUD Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-5 py-3.5 border-b border-white/10 bg-[#050b1c]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/25 to-purple-600/30 border border-cyan-400/50 flex items-center justify-center shadow-sm">
-              <Gamepad2 className="w-5 h-5 text-cyan-200" strokeWidth={2.2} aria-hidden="true" />
+        <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 px-3.5 sm:px-5 py-3 border-b border-white/10 bg-[#050b1c] shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-cyan-500/25 to-purple-600/30 border border-cyan-400/50 flex items-center justify-center shadow-sm shrink-0">
+              <Gamepad2 className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-200" strokeWidth={2.2} aria-hidden="true" />
             </div>
-            <div>
+            <div className="min-w-0">
               <h2
                 id="geton-game-title"
-                className="font-display text-sm sm:text-base font-extrabold text-white leading-none"
+                className="font-display text-sm sm:text-base font-extrabold text-white leading-none truncate"
               >
                 Geton Gaming Studio
               </h2>
-              <p className="text-[11px] text-cyan-300 mt-0.5">{studioSubtitle}</p>
+              <p className="text-[11px] text-cyan-300 mt-0.5 truncate">{studioSubtitle}</p>
             </div>
           </div>
 
           {/* Live Lives, Score, Combo & Discount Meter */}
-          <div className="flex items-center gap-3 sm:gap-4 text-xs tabular-nums">
+          <div className="flex items-center gap-2.5 sm:gap-4 text-xs tabular-nums">
             {/* 3 Hearts Lives */}
-            <div className="flex items-center gap-1" aria-label={`Lives: ${lives} of ${MAX_LIVES}`}>
+            <div className="flex items-center gap-0.5 sm:gap-1" aria-label={`Lives: ${lives} of ${MAX_LIVES}`}>
               {Array.from({ length: MAX_LIVES }).map((_, idx) => {
                 const alive = idx < lives;
                 return (
                   <Heart
                     key={idx}
-                    className={`w-4 h-4 transition-all duration-200 ${
+                    className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-all duration-200 ${
                       alive
                         ? 'text-rose-500 fill-rose-500 drop-shadow-[0_0_6px_rgba(244,63,94,0.6)]'
                         : 'text-slate-600 fill-transparent'
@@ -2020,7 +2318,10 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                 {language === 'no' ? 'Poeng' : 'Score'}
               </span>
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-white text-sm">{score}</span>
+                <span className="font-bold text-white text-sm">
+                  {score}
+                  <span className="text-[10px] font-normal text-slate-400">/{MAX_SCORE}</span>
+                </span>
                 {comboMultiplier > 1 && (
                   <span className="px-1.5 py-0.5 rounded bg-purple-500/25 border border-purple-400/50 text-[10px] font-extrabold text-purple-200">
                     ×{comboMultiplier}
@@ -2029,7 +2330,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
               </div>
             </div>
 
-            <div className="hidden xs:block">
+            <div className="hidden sm:block">
               <span className="text-slate-400 uppercase tracking-wider text-[10px] block">
                 {language === 'no' ? 'Rekord' : 'Best'}
               </span>
@@ -2039,18 +2340,18 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
               </span>
             </div>
 
-            {/* Progress to 1,000 pts Discount Target */}
-            <div className="hidden sm:flex flex-col min-w-[126px]">
+            {/* Progress to 1,000 pts Discount Target -> 3,000 Max Cap */}
+            <div className="hidden sm:flex flex-col min-w-[136px]">
               <div className="flex items-center justify-between text-[10px] font-semibold">
                 <span className={isRunVerifiedEligible ? 'text-emerald-300' : 'text-cyan-200'}>
                   {isRunVerifiedEligible
                     ? language === 'no'
-                      ? 'RABATT LÅST OPP!'
-                      : 'DISCOUNT UNLOCKED!'
+                      ? '5% RABATT VUNNET!'
+                      : '5% OFF WON!'
                     : `Lv ${stageLevel}`}
                 </span>
                 <span className="text-slate-300">
-                  {Math.min(score, REWARD_SCORE_TARGET)}/{REWARD_SCORE_TARGET}
+                  {isRunVerifiedEligible ? `${score}/${MAX_SCORE}` : `${score}/${REWARD_SCORE_TARGET}`}
                 </span>
               </div>
               <div className="w-full h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
@@ -2071,10 +2372,11 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
               <button
                 type="button"
                 onClick={openClaimForm}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white text-[11px] sm:text-xs font-bold transition-colors cursor-pointer"
               >
                 <Gift className="w-3.5 h-3.5" />
-                <span>{claimBtnLabel}</span>
+                <span className="hidden sm:inline">{claimBtnLabel}</span>
+                <span className="sm:hidden">{language === 'no' ? '5% Rabatt' : '5% Off'}</span>
               </button>
             )}
             <button
@@ -2096,15 +2398,40 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
           </div>
         </div>
 
+        {/* Compact Mobile Milestone Bar */}
+        {gameState !== 'CLAIM_FORM' && (
+          <div className="sm:hidden px-3.5 py-1.5 bg-[#050b1c] border-b border-white/10 flex items-center justify-between gap-3 text-[10px] shrink-0">
+            <span className={isRunVerifiedEligible ? 'font-bold text-emerald-300' : 'font-semibold text-cyan-200'}>
+              {isRunVerifiedEligible
+                ? language === 'no'
+                  ? `5 % rabatt sikret! Mål maks ${MAX_SCORE} p`
+                  : `5% discount won! Max target ${MAX_SCORE}`
+                : language === 'no'
+                ? `Mål: ${REWARD_SCORE_TARGET} p for 5 % rabatt (Nivå ${stageLevel})`
+                : `Goal: ${REWARD_SCORE_TARGET} pts for 5% off (Lv ${stageLevel})`}
+            </span>
+            <div className="w-20 h-1.5 rounded-full bg-white/10 overflow-hidden shrink-0">
+              <div
+                className={`h-full rounded-full transition-all duration-300 ${
+                  isRunVerifiedEligible ? 'bg-emerald-400' : 'bg-cyan-400'
+                }`}
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          </div>
+        )}
+
         {/* STAGE OR VERIFIED CLAIM SCHEMA */}
         {gameState === 'CLAIM_FORM' ? (
-          <div className="p-5 sm:p-7 bg-[#070f24] max-h-[78vh] overflow-y-auto">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+          <div className="p-4 sm:p-7 bg-[#070f24] overflow-y-auto flex-1">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-5">
               <button
                 type="button"
                 onClick={() => {
-                  gameStateRef.current = 'GAME_OVER';
-                  setGameState('GAME_OVER');
+                  const backState =
+                    returnStateRef.current === 'PLAYING' ? 'GAME_OVER' : returnStateRef.current;
+                  gameStateRef.current = backState;
+                  setGameState(backState);
                 }}
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-300 hover:text-white transition-colors cursor-pointer"
               >
@@ -2229,7 +2556,17 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleClaimSubmit} className="space-y-4">
+              <form onSubmit={handleClaimSubmit} className="space-y-4" noValidate>
+                <input
+                  type="text"
+                  name="_honey"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="hidden"
+                />
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 mb-2">
                     {language === 'no' ? 'Hva ønsker du å bygge?' : 'What would you like to build?'}
@@ -2379,33 +2716,41 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
             )}
           </div>
         ) : (
-          /* Interactive Game Arena + Responsive Touch Controls */
-          <div>
-            <div className="relative bg-[#050b1d] select-none">
+          /* Interactive Game Arena + Non-clipping Mobile Overlays + Touch Controls */
+          <div className="flex flex-col min-h-0 overflow-y-auto">
+            <div
+              className={`relative bg-[#050b1d] select-none ${
+                gameState !== 'PLAYING' ? 'min-h-[290px] sm:min-h-0' : ''
+              }`}
+            >
               <canvas
                 ref={canvasRef}
                 onPointerDown={(e) => {
                   e.preventDefault();
                   triggerJump();
                 }}
-                className="w-full h-auto block cursor-pointer touch-manipulation"
-                style={{ aspectRatio: `${LOGICAL_WIDTH} / ${LOGICAL_HEIGHT}` }}
+                className={`cursor-pointer touch-manipulation block ${
+                  gameState !== 'PLAYING'
+                    ? 'absolute inset-0 w-full h-full object-cover sm:static sm:h-auto'
+                    : 'w-full h-auto'
+                }`}
+                style={gameState === 'PLAYING' ? { aspectRatio: `${LOGICAL_WIDTH} / ${LOGICAL_HEIGHT}` } : undefined}
               />
 
               {/* Title Menu Overlay */}
               {gameState === 'TITLE_MENU' && (
-                <div className="absolute inset-0 bg-[#050b1d]/80 backdrop-blur-[2px] flex flex-col items-center justify-center p-5 text-center">
-                  <div className="max-w-lg space-y-3">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-200 text-[11px] font-bold tracking-wide">
-                      <Flame className="w-3.5 h-3.5 text-amber-300" />
+                <div className="relative sm:absolute sm:inset-0 bg-[#050b1d]/84 backdrop-blur-[2px] flex flex-col items-center justify-center p-4 sm:p-5 text-center min-h-[290px] sm:min-h-0">
+                  <div className="max-w-lg space-y-2.5 sm:space-y-3">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-200 text-[10px] sm:text-[11px] font-bold tracking-wide">
+                      <Flame className="w-3.5 h-3.5 text-amber-300 shrink-0" />
                       <span>
                         {language === 'no'
-                          ? `3 liv · Plattformer · Ildkuler & Feller · Nå ${REWARD_SCORE_TARGET} poeng`
-                          : `3 Lives · Platforms · Fireballs & Traps · Reach ${REWARD_SCORE_TARGET} pts`}
+                          ? `Soldater · Ildfeller · 5 % rabatt ved ${REWARD_SCORE_TARGET} p · Maks ${MAX_SCORE} p`
+                          : `Troopers · Fire Traps · 5% off at ${REWARD_SCORE_TARGET} pts · Max ${MAX_SCORE} pts`}
                       </span>
                     </div>
 
-                    <h3 className="text-2xl sm:text-4xl font-display font-extrabold text-white tracking-tight">
+                    <h3 className="text-xl sm:text-4xl font-display font-extrabold text-white tracking-tight">
                       Geton Gaming Studio
                     </h3>
 
@@ -2415,15 +2760,15 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
 
                     <p className="text-xs text-slate-300 leading-relaxed max-w-md mx-auto">
                       {language === 'no'
-                        ? 'Hopp opp på lysende plattformer, unngå ildfeller, ildkuler, patruljerende bots og fugler, og bygg komboer med krystaller for å nå 1 000 poeng!'
-                        : 'Leap onto elevated neon platforms, dodge periodic fire traps, fireballs, patrolling bots and drones, and chain gems to hit 1,000 points!'}
+                        ? 'Unngå skytende soldater, ildfeller og ildkuler! Nå 1 000 poeng for å vinne 5 % prosjektrabatt, eller test deg mot toppscoren på 3 000.'
+                        : 'Dodge firing troopers, flame traps, and fireballs! Hit 1,000 pts to win a 5% project discount, or push all the way to the 3,000 pt max cap.'}
                     </p>
 
-                    <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+                    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2.5 sm:gap-3 pt-1">
                       <button
                         type="button"
                         onClick={resetAndStartGame}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white btn-cyan-gradient shadow-lg cursor-pointer hover:scale-[1.03] active:scale-[0.98] transition-all whitespace-nowrap"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-bold text-white btn-cyan-gradient shadow-lg cursor-pointer hover:scale-[1.03] active:scale-[0.98] transition-all whitespace-nowrap"
                       >
                         <Play className="w-4 h-4 fill-white" />
                         <span>{studioPrimaryCta}</span>
@@ -2432,7 +2777,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                       <button
                         type="button"
                         onClick={openClaimForm}
-                        className="inline-flex items-center gap-1.5 px-4 py-3 rounded-full text-xs font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/20 transition-all cursor-pointer whitespace-nowrap"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-3 rounded-full text-xs font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/20 transition-all cursor-pointer whitespace-nowrap"
                       >
                         <span>
                           {language === 'no' ? 'Send forespørsel' : 'Project Inquiry'}
@@ -2444,29 +2789,36 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                 </div>
               )}
 
-              {/* 1,000-Point Discount Milestone Celebration Screen */}
+              {/* 1,000-Point 5% Discount Milestone Celebration Screen */}
               {gameState === 'CELEBRATION' && (
-                <div className="absolute inset-0 bg-[#050b1d]/86 backdrop-blur-md flex flex-col items-center justify-center p-5 text-center animate-in fade-in zoom-in-95 duration-200">
-                  <div className="max-w-lg space-y-4">
-                    <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center mx-auto text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.4)]">
-                      <Sparkles className="w-7 h-7" />
+                <div className="relative sm:absolute sm:inset-0 bg-[#050b1d]/88 backdrop-blur-md flex flex-col items-center justify-center p-4 sm:p-5 text-center min-h-[290px] sm:min-h-0 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="max-w-lg space-y-3 sm:space-y-4">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center mx-auto text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.4)]">
+                      <Sparkles className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
 
-                    <h3 className="text-2xl sm:text-3xl font-display font-extrabold text-white tracking-tight">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/25 border border-emerald-400/60 text-emerald-200 text-[11px] font-extrabold tracking-wide uppercase">
+                      <Gift className="w-3.5 h-3.5" />
+                      <span>
+                        {language === 'no' ? '5 % PROSJEKTRABATT LÅST OPP' : '5% PROJECT DISCOUNT UNLOCKED'}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl sm:text-3xl font-display font-extrabold text-white tracking-tight">
                       {unlockHeading}
                     </h3>
 
                     <p className="text-xs sm:text-sm text-slate-200 max-w-md mx-auto leading-relaxed">
                       {language === 'no'
-                        ? `Fantastisk prestasjon! Du har nådd ${score} verifiserte poeng med ${lives} liv igjen.`
-                        : `Incredible run! You reached ${score} verified points with ${lives} ${lives === 1 ? 'life' : 'lives'} remaining.`}
+                        ? `Du har nådd ${score} verifiserte poeng med ${lives} liv igjen. Send prosjektinfo med 5 % rabatt nå, eller spill videre mot maksgrense ${MAX_SCORE} poeng!`
+                        : `You reached ${score} verified pts with ${lives} ${lives === 1 ? 'life' : 'lives'} left. Send your project info with 5% off now, or keep playing toward ${MAX_SCORE} pts!`}
                     </p>
 
-                    <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+                    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2.5 sm:gap-3 pt-1">
                       <button
                         type="button"
                         onClick={openClaimForm}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.45)] hover:scale-[1.03] active:scale-[0.98] transition-all cursor-pointer"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.45)] hover:scale-[1.03] active:scale-[0.98] transition-all cursor-pointer"
                       >
                         <Gift className="w-4 h-4" />
                         <span>{claimBtnLabel}</span>
@@ -2475,10 +2827,63 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                       <button
                         type="button"
                         onClick={continueAfterCelebration}
-                        className="inline-flex items-center gap-1.5 px-5 py-3 rounded-full text-xs sm:text-sm font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/20 transition-all cursor-pointer"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/25 transition-all cursor-pointer"
                       >
                         <Play className="w-3.5 h-3.5" />
-                        <span>{language === 'no' ? 'Spill videre' : 'Keep Playing'}</span>
+                        <span>
+                          {language === 'no'
+                            ? `Fortsett spillet (maks ${MAX_SCORE} p)`
+                            : `Continue Playing (Max ${MAX_SCORE})`}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 3,000-Point Max Cap Victory Overlay */}
+              {gameState === 'MAX_VICTORY' && (
+                <div className="relative sm:absolute sm:inset-0 bg-[#050b1d]/90 backdrop-blur-md flex flex-col items-center justify-center p-4 sm:p-5 text-center min-h-[290px] sm:min-h-0 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="max-w-lg space-y-3 sm:space-y-4">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-400/20 border border-amber-300/60 flex items-center justify-center mx-auto text-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.4)]">
+                      <Trophy className="w-6 h-6 sm:w-7 sm:h-7" />
+                    </div>
+
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-300/50 text-amber-200 text-[11px] font-extrabold tracking-wide uppercase">
+                      {language === 'no'
+                        ? `MAKSPOENG OPPNÅDD · ${MAX_SCORE} / ${MAX_SCORE}`
+                        : `MAX SCORE ACHIEVED · ${MAX_SCORE} / ${MAX_SCORE}`}
+                    </div>
+
+                    <h3 className="text-xl sm:text-3xl font-display font-extrabold text-white tracking-tight">
+                      {language === 'no'
+                        ? 'Du fullførte hele Geton-utfordringen!'
+                        : 'You conquered the entire Geton Challenge!'}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-slate-200 max-w-md mx-auto leading-relaxed">
+                      {language === 'no'
+                        ? `Utrolig kontroll gjennom soldater og elite-nivåer! Din verifiserte 5 % prosjektrabatt med ${MAX_SCORE} toppscore er klar til å sendes.`
+                        : `Incredible reflexes through troopers and elite waves! Your verified 5% project discount with a ${MAX_SCORE}-pt max score is ready to claim.`}
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2.5 sm:gap-3 pt-1">
+                      <button
+                        type="button"
+                        onClick={openClaimForm}
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.45)] cursor-pointer"
+                      >
+                        <Gift className="w-4 h-4" />
+                        <span>{claimBtnLabel}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={resetAndStartGame}
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/20 cursor-pointer"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>{language === 'no' ? 'Spill på nytt' : 'Play Again'}</span>
                       </button>
                     </div>
                   </div>
@@ -2487,11 +2892,11 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
 
               {/* Game Over Overlay */}
               {gameState === 'GAME_OVER' && (
-                <div className="absolute inset-0 bg-[#050b1d]/86 backdrop-blur-sm flex flex-col items-center justify-center p-5 text-center animate-in fade-in duration-150">
-                  <div className="max-w-lg space-y-3.5">
+                <div className="relative sm:absolute sm:inset-0 bg-[#050b1d]/88 backdrop-blur-sm flex flex-col items-center justify-center p-4 sm:p-5 text-center min-h-[290px] sm:min-h-0 animate-in fade-in duration-150">
+                  <div className="max-w-lg space-y-3 sm:space-y-3.5">
                     {isRunVerifiedEligible ? (
-                      <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-xs font-bold">
-                        <Gift className="w-3.5 h-3.5" />
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-[11px] sm:text-xs font-bold">
+                        <Gift className="w-3.5 h-3.5 shrink-0" />
                         <span>{unlockHeading}</span>
                       </div>
                     ) : isNewBest ? (
@@ -2501,8 +2906,8 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                     ) : (
                       <div className="text-xs font-medium text-cyan-200">
                         {language === 'no'
-                          ? `${Math.max(0, REWARD_SCORE_TARGET - score)} poeng igjen til prosjektrabatt!`
-                          : `${Math.max(0, REWARD_SCORE_TARGET - score)} pts away from your project discount!`}
+                          ? `${Math.max(0, REWARD_SCORE_TARGET - score)} poeng igjen til 5 % prosjektrabatt!`
+                          : `${Math.max(0, REWARD_SCORE_TARGET - score)} pts away from your 5% project discount!`}
                       </div>
                     )}
 
@@ -2510,12 +2915,15 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                       {language === 'no' ? 'Runden er over' : 'Game Over'}
                     </h3>
 
-                    <div className="flex items-center justify-center gap-6 text-xs sm:text-sm text-slate-300 tabular-nums">
+                    <div className="flex items-center justify-center gap-5 sm:gap-6 text-xs sm:text-sm text-slate-300 tabular-nums">
                       <div>
                         <span className="text-slate-400 block text-[11px]">
                           {language === 'no' ? 'Poengsum' : 'Final Score'}
                         </span>
-                        <span className="text-xl font-extrabold text-white">{score}</span>
+                        <span className="text-xl font-extrabold text-white">
+                          {score}
+                          <span className="text-xs text-slate-400 font-normal">/{MAX_SCORE}</span>
+                        </span>
                       </div>
                       <div className="h-8 w-[1px] bg-white/15" />
                       <div>
@@ -2537,11 +2945,11 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-center gap-3 pt-1.5">
+                    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2.5 sm:gap-3 pt-1.5">
                       <button
                         type="button"
                         onClick={resetAndStartGame}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold text-white btn-cyan-gradient cursor-pointer hover:scale-[1.03] active:scale-[0.98] transition-all whitespace-nowrap"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold text-white btn-cyan-gradient cursor-pointer hover:scale-[1.03] active:scale-[0.98] transition-all whitespace-nowrap"
                       >
                         <RotateCcw className="w-4 h-4" />
                         <span>{language === 'no' ? 'Spill igjen' : 'Play Again'}</span>
@@ -2551,7 +2959,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                         <button
                           type="button"
                           onClick={openClaimForm}
-                          className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-400 border border-emerald-300/40 shadow-md transition-all cursor-pointer whitespace-nowrap"
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-400 border border-emerald-300/40 shadow-md transition-all cursor-pointer whitespace-nowrap"
                         >
                           <Gift className="w-4 h-4" />
                           <span>{claimBtnLabel}</span>
@@ -2560,7 +2968,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                         <button
                           type="button"
                           onClick={openClaimForm}
-                          className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold text-white bg-white/12 hover:bg-white/18 border border-white/25 transition-all cursor-pointer whitespace-nowrap"
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold text-white bg-white/12 hover:bg-white/18 border border-white/25 transition-all cursor-pointer whitespace-nowrap"
                         >
                           <span>
                             {language === 'no' ? 'Send forespørsel' : 'Contact Studio'}
@@ -2575,21 +2983,21 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
             </div>
 
             {/* Responsive Mobile & Quick Touch Controls */}
-            <div className="px-4 sm:px-5 py-2.5 bg-[#060d20] border-t border-white/10 flex items-center justify-between gap-3">
+            <div className="px-3.5 sm:px-5 py-2 sm:py-2.5 bg-[#060d20] border-t border-white/10 flex items-center justify-between gap-2.5 sm:gap-3 shrink-0">
               <div className="text-[11px] text-slate-400 hidden sm:block">
                 {language === 'no'
-                  ? `Hopp (2×): Mellomrom / W / Pil opp · Slipp ned: S / Pil ned · Mål: ${REWARD_SCORE_TARGET} poeng`
-                  : `Jump (2×): Space / W / Up · Fast Drop: S / Down · Target: ${REWARD_SCORE_TARGET} pts`}
+                  ? `Hopp (2×): Mellomrom / W / Pil opp · Slipp ned: S / Pil ned · Mål: ${REWARD_SCORE_TARGET} p (5% rabatt) · Maks: ${MAX_SCORE} p`
+                  : `Jump (2×): Space / W / Up · Fast Drop: S / Down · Goal: ${REWARD_SCORE_TARGET} pts (5% off) · Max: ${MAX_SCORE} pts`}
               </div>
 
-              <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+              <div className="flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto justify-end">
                 <button
                   type="button"
                   onPointerDown={(e) => {
                     e.preventDefault();
                     triggerFastDrop();
                   }}
-                  className="flex-1 sm:flex-initial min-h-[42px] px-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] active:scale-95 border border-white/15 text-xs font-bold text-slate-200 flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation select-none"
+                  className="flex-1 sm:flex-initial min-h-[40px] sm:min-h-[42px] px-3.5 sm:px-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] active:scale-95 border border-white/15 text-xs font-bold text-slate-200 flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation select-none"
                 >
                   <ArrowDown className="w-4 h-4 text-purple-300" />
                   <span>{language === 'no' ? 'Slipp ned' : 'Drop'}</span>
@@ -2600,7 +3008,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
                     e.preventDefault();
                     triggerJump();
                   }}
-                  className="flex-1 sm:flex-initial min-h-[42px] px-5 rounded-xl bg-gradient-to-r from-cyan-500/80 to-indigo-600/80 hover:from-cyan-500 hover:to-indigo-500 active:scale-95 border border-cyan-300/40 text-xs font-bold text-white flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation select-none shadow-sm"
+                  className="flex-1 sm:flex-initial min-h-[40px] sm:min-h-[42px] px-4 sm:px-5 rounded-xl bg-gradient-to-r from-cyan-500/80 to-indigo-600/80 hover:from-cyan-500 hover:to-indigo-500 active:scale-95 border border-cyan-300/40 text-xs font-bold text-white flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation select-none shadow-sm"
                 >
                   <ArrowUp className="w-4 h-4" />
                   <span>{language === 'no' ? 'Hopp (2×)' : 'Jump (2×)'}</span>
@@ -2611,7 +3019,7 @@ export const GetonJumpGameModal: React.FC<GetonJumpGameModalProps> = ({
         )}
 
         {/* Footer Legend */}
-        <div className="px-4 sm:px-5 py-2.5 bg-[#040816] border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
+        <div className="px-3.5 sm:px-5 py-2 sm:py-2.5 bg-[#040816] border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 shrink-0">
           <span>
             {language === 'no'
               ? 'Geton Gaming Studio · Verifisert antijuks-poengtelling'

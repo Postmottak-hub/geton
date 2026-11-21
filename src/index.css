@@ -67,6 +67,91 @@
   animation: pulseGlow 4s ease-in-out infinite;
 }
 
+@keyframes lineBeamX {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(400%);
+    opacity: 0;
+  }
+}
+
+@keyframes lineBeamY {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(450%);
+    opacity: 0;
+  }
+}
+
+.animate-line-beam-x {
+  animation: lineBeamX 2.2s linear infinite;
+}
+
+.animate-line-beam-y {
+  animation: lineBeamY 2.2s linear infinite;
+}
+
+@keyframes stepIconGlow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(14, 165, 233, 0);
+  }
+  16% {
+    transform: scale(1.1);
+    box-shadow: 0 0 22px rgba(14, 165, 233, 0.72), 0 0 0 4px rgba(56, 189, 248, 0.25);
+  }
+  34% {
+    transform: scale(1);
+    box-shadow: 0 0 6px rgba(14, 165, 233, 0.2);
+  }
+}
+
+.animate-step-icon-0 {
+  animation: stepIconGlow 2.2s ease-out infinite;
+  animation-delay: 0.05s;
+}
+.animate-step-icon-1 {
+  animation: stepIconGlow 2.2s ease-out infinite;
+  animation-delay: 0.56s;
+}
+.animate-step-icon-2 {
+  animation: stepIconGlow 2.2s ease-out infinite;
+  animation-delay: 1.07s;
+}
+.animate-step-icon-3 {
+  animation: stepIconGlow 2.2s ease-out infinite;
+  animation-delay: 1.58s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-line-beam-x,
+  .animate-line-beam-y,
+  .animate-step-icon-0,
+  .animate-step-icon-1,
+  .animate-step-icon-2,
+  .animate-step-icon-3 {
+    animation: none;
+  }
+}
+
 /* ============================================================================
    MODERN NORDIC LIGHT MODE (html.theme-light)
    Inspired by DigitalSolutionsSection (#fafaf9 / #f4f3f0 / #ffffff / #171717)
@@ -105,13 +190,13 @@ html.theme-light footer > div[class*="h-\[2px\]"] {
 }
 
 /* 2. Alternating Warm Nordic Canvas Bands (#fafaf9 Alabaster vs #f4f3f0 Warm Stone) */
-html.theme-light :where(.bg-\[\#03050c\]),
-html.theme-light :where(.bg-\[\#040714\]),
-html.theme-light :where(.bg-\[\#040816\]),
-html.theme-light :where(.bg-\[\#030712\]),
-html.theme-light :where(.bg-\[\#030612\]),
-html.theme-light :where(.bg-\[\#050b1d\]:not(#hero-section):not(#geton-game-modal *)),
-html.theme-light :where(.bg-\[\#060c1e\]),
+html.theme-light :where(.bg-\[\#03050c\]:not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#040714\]:not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#040816\]:not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#030712\]:not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#030612\]:not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#050b1d\]:not(#hero-section):not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#060c1e\]:not(#geton-game-modal):not(#geton-game-modal *)),
 html.theme-light #software-systems {
   background-color: #fafaf9 !important;
   background-image: none !important;
@@ -119,13 +204,13 @@ html.theme-light #software-systems {
 
 html.theme-light #pricing-packages,
 html.theme-light #development-route,
-html.theme-light :where(.bg-\[\#050b1c\]:not(#geton-game-modal *)),
-html.theme-light :where(.bg-\[\#060c1d\]),
-html.theme-light :where(.bg-\[\#060c1f\]),
-html.theme-light :where(.bg-\[\#060c20\]),
-html.theme-light :where(.bg-\[\#060c20\]\/70),
-html.theme-light :where(.bg-\[\#071024\]),
-html.theme-light :where([class*="from-\[\#080f2d\]"]),
+html.theme-light :where(.bg-\[\#050b1c\]:not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#060c1d\]:not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#060c1f\]:not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#060c20\]:not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#060c20\]\/70:not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-\[\#071024\]:not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where([class*="from-\[\#080f2d\]"]:not(#geton-game-modal):not(#geton-game-modal *)),
 html.theme-light footer.bg-\[\#020512\] {
   background-color: #f4f3f0 !important;
   background-image: none !important;
@@ -170,11 +255,11 @@ html.theme-light :where([class*="from-\[\#121238\]"]) {
 }
 
 /* Secondary Translucent Surface Panels */
-html.theme-light :where(.bg-white\/\[0\.02\]:not(#hero-section *):not(#geton-game-modal *)),
-html.theme-light :where(.bg-white\/\[0\.03\]:not(#hero-section *):not(#geton-game-modal *)),
-html.theme-light :where(.bg-white\/\[0\.04\]:not(#hero-section *):not(#geton-game-modal *)),
-html.theme-light :where(.bg-white\/\[0\.05\]:not(#hero-section *):not(#geton-game-modal *)),
-html.theme-light :where(.bg-white\/\[0\.06\]:not(#hero-section *):not(#geton-game-modal *)) {
+html.theme-light :where(.bg-white\/\[0\.02\]:not(#hero-section *):not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-white\/\[0\.03\]:not(#hero-section *):not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-white\/\[0\.04\]:not(#hero-section *):not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-white\/\[0\.05\]:not(#hero-section *):not(#geton-game-modal):not(#geton-game-modal *)),
+html.theme-light :where(.bg-white\/\[0\.06\]:not(#hero-section *):not(#geton-game-modal):not(#geton-game-modal *)) {
   background-color: #ffffff !important;
   border-color: #e7e7e5 !important;
 }
@@ -789,12 +874,59 @@ html.theme-light textarea::placeholder {
   color: #737373 !important;
 }
 
+/* Keep untouched FloatingBadge crisp and high-contrast on Light Mode */
+html.theme-light #gaming-studio-badge button,
+html.theme-light #gaming-studio-badge-mobile button {
+  background-color: rgba(7, 13, 34, 0.94) !important;
+  border-color: rgba(34, 211, 238, 0.5) !important;
+  color: #ffffff !important;
+}
+html.theme-light #gaming-studio-badge button .text-white,
+html.theme-light #gaming-studio-badge-mobile button .text-white {
+  color: #ffffff !important;
+}
+html.theme-light #gaming-studio-badge button .text-slate-200,
+html.theme-light #gaming-studio-badge-mobile button .text-slate-200 {
+  color: #e2e8f0 !important;
+}
+html.theme-light #gaming-studio-badge button .text-cyan-200,
+html.theme-light #gaming-studio-badge-mobile button .text-cyan-200 {
+  color: #a5f3fc !important;
+}
+html.theme-light #gaming-studio-badge button .text-emerald-300,
+html.theme-light #gaming-studio-badge-mobile button .text-emerald-300 {
+  color: #6ee7b7 !important;
+}
+html.theme-light #gaming-studio-badge button .text-amber-300,
+html.theme-light #gaming-studio-badge-mobile button .text-amber-300 {
+  color: #fcd34d !important;
+}
+
+/* Guarantee #geton-game-modal remains atmospheric dark inside Light Mode */
+html.theme-light #geton-game-modal > div {
+  background-color: #070f24 !important;
+  color: #ffffff !important;
+}
+html.theme-light #geton-game-modal .bg-\[\#050b1c\],
+html.theme-light #geton-game-modal .bg-\[\#050b1d\] {
+  background-color: #050b1c !important;
+}
+html.theme-light #geton-game-modal .bg-\[\#060d20\] {
+  background-color: #060d20 !important;
+}
+html.theme-light #geton-game-modal .bg-\[\#040816\] {
+  background-color: #040816 !important;
+}
+
 /* 9. Rendering Performance Optimization for Below-the-Fold Sections */
+#services,
 #software-systems,
 #pricing-packages,
 #digital-solutions,
 #development-route,
-#projects {
+#projects,
+#insights,
+#contact-cta {
   content-visibility: auto;
   contain-intrinsic-size: 1px 850px;
 }

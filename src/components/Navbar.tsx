@@ -158,7 +158,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="w-full relative z-40 transition-all duration-300">
-      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-4 sm:py-5 flex items-center justify-between gap-4">
+      <div className="w-full max-w-[1440px] mx-auto px-3.5 sm:px-8 lg:px-12 xl:px-16 py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-4">
         {/* Brand Zone */}
         <a
           href="/"
@@ -352,20 +352,20 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Mobile & Tablet Header Controls */}
-        <div className="flex lg:hidden items-center gap-2">
+        <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 shrink-0">
           <LanguageSwitcher size="sm" forceDarkSurface={forceDarkSurface} />
           <ThemeSwitcher size="sm" forceDarkSurface={forceDarkSurface} />
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
-            className={`p-2 sm:p-2.5 rounded-2xl border backdrop-blur-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-all cursor-pointer ${
+            className={`min-w-[40px] min-h-[40px] sm:min-w-[44px] sm:min-h-[44px] flex items-center justify-center rounded-xl sm:rounded-2xl border backdrop-blur-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-all cursor-pointer ${
               isLightBar
                 ? 'text-neutral-800 hover:text-neutral-950 bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.06)]'
                 : 'text-slate-100 hover:text-white bg-white/[0.08] hover:bg-white/[0.14] border-cyan-400/30 shadow-[0_0_15px_rgba(6,182,212,0.25)]'
             }`}
             aria-label={language === 'no' ? 'Åpne meny' : 'Open mobile navigation menu'}
           >
-            <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+            <Menu className="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -381,27 +381,27 @@ export const Navbar: React.FC<NavbarProps> = ({
           }`}
         >
           <div
-            className={`relative z-10 w-full px-5 py-5 flex items-center justify-between border-b backdrop-blur-md ${
+            className={`relative z-10 w-full px-4 sm:px-5 py-3.5 sm:py-4 flex items-center justify-between gap-2 border-b backdrop-blur-md ${
               isLight
                 ? 'border-slate-200 bg-white/80'
                 : 'border-cyan-500/20 bg-black/30'
             }`}
           >
-            <GetonLogo size="large" />
-            <div className="flex items-center gap-2">
+            <GetonLogo size="default" />
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <LanguageSwitcher size="sm" />
               <ThemeSwitcher size="sm" />
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`p-2 rounded-2xl border transition-all cursor-pointer ${
+                className={`min-w-[40px] min-h-[40px] sm:min-w-[44px] sm:min-h-[44px] flex items-center justify-center rounded-xl sm:rounded-2xl border transition-all cursor-pointer ${
                   isLight
                     ? 'text-slate-700 hover:text-slate-950 bg-slate-100 border-slate-200'
                     : 'text-cyan-300 hover:text-white bg-cyan-950/60 border-cyan-400/40'
                 }`}
                 aria-label={language === 'no' ? 'Lukk meny' : 'Close mobile navigation menu'}
               >
-                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                <X className="w-5 h-5" />
               </button>
             </div>
           </div>

@@ -20,24 +20,24 @@ export const GetonLogo: React.FC<GetonLogoProps> = ({
 
   const iconDimensions =
     size === 'large'
-      ? 'w-7 h-9 sm:w-8 sm:h-10'
+      ? 'w-6 h-8 sm:w-8 sm:h-10'
       : size === 'small'
       ? 'w-5 h-6'
       : 'w-6 h-8 sm:w-7 sm:h-9';
 
   const textClasses =
     size === 'large'
-      ? 'text-[26px] sm:text-[30px]'
+      ? 'text-[21px] sm:text-[30px]'
       : size === 'small'
       ? 'text-[19px]'
       : 'text-2xl';
 
   const dividerHeight =
-    size === 'large' ? 'h-5 sm:h-6' : size === 'small' ? 'h-3.5' : 'h-4 sm:h-5';
+    size === 'large' ? 'h-4 sm:h-6' : size === 'small' ? 'h-3.5' : 'h-4 sm:h-5';
 
   const asClasses =
     size === 'large'
-      ? 'text-[11px] sm:text-xs'
+      ? 'text-[10px] sm:text-xs'
       : size === 'small'
       ? 'text-[9px]'
       : 'text-[10px]';
@@ -114,7 +114,7 @@ export const GetonLogo: React.FC<GetonLogoProps> = ({
 
       {/* Cohesive Creative Wordmark */}
       {showText && (
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           <span
             className={`font-display ${textClasses} font-extrabold tracking-[-0.03em] flex items-baseline leading-none transition-colors ${
               isLight ? 'text-slate-950' : 'text-white'
@@ -146,7 +146,7 @@ export const GetonLogo: React.FC<GetonLogoProps> = ({
           />
 
           <span
-            className={`${asClasses} font-display font-bold tracking-[0.24em] uppercase leading-none transition-colors ${
+            className={`${asClasses} font-display font-bold tracking-[0.16em] sm:tracking-[0.24em] uppercase leading-none transition-colors ${
               isLight ? 'text-slate-700' : 'text-cyan-100/90'
             }`}
           >

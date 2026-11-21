@@ -11,6 +11,8 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+const LANG_STORAGE_KEY = 'geton_lang_v2';
+
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     try {
@@ -20,27 +22,20 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         if (queryLang === 'en') return 'en';
         if (queryLang === 'nb' || queryLang === 'no') return 'no';
       }
-      const saved = localStorage.getItem('geton_lang') as Language;
+      const saved = localStorage.getItem(LANG_STORAGE_KEY) as Language;
       if (saved === 'no' || saved === 'en') {
         return saved;
-      }
-      // Check browser navigator language
-      if (typeof navigator !== 'undefined' && navigator.language) {
-        const navLang = navigator.language.toLowerCase();
-        if (navLang.startsWith('nb') || navLang.startsWith('nn') || navLang.startsWith('no')) {
-          return 'no';
-        }
       }
     } catch {
       // Fallback
     }
-    return 'no'; // Default to Norwegian as requested for Norwegian studio
+    return 'no';
   });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     try {
-      localStorage.setItem('geton_lang', lang);
+      localStorage.setItem(LANG_STORAGE_KEY, lang);
       document.documentElement.lang = lang === 'no' ? 'nb' : 'en';
       if (typeof window !== 'undefined') {
         const url = new URL(window.location.href);

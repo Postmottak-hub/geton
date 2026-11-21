@@ -41,7 +41,7 @@ export const ConsentBanner: React.FC = () => {
   return (
     <aside
       aria-label={language === 'no' ? 'Informasjonskapsler og personvern' : 'Cookies and privacy'}
-      className={`fixed bottom-4 left-4 right-4 sm:right-auto sm:left-6 sm:max-w-sm z-40 rounded-2xl backdrop-blur-xl border p-4 animate-in fade-in slide-in-from-bottom-4 duration-300 ${
+      className={`fixed bottom-3 left-3 right-3 sm:bottom-5 sm:right-auto sm:left-6 sm:max-w-sm z-40 rounded-2xl backdrop-blur-xl border p-3.5 sm:p-4 animate-in fade-in slide-in-from-bottom-4 duration-300 ${
         isLight
           ? 'bg-white/95 border-slate-200 text-slate-800 shadow-[0_14px_40px_rgba(15,23,42,0.12)]'
           : 'bg-[#070d20]/95 border-cyan-400/25 text-slate-200 shadow-[0_12px_40px_rgba(0,0,0,0.65)]'

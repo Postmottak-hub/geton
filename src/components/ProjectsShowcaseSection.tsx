@@ -1,218 +1,237 @@
-import React, { useState, useRef } from 'react';
-import {
-  ArrowLeft,
-  ArrowRight,
-  ExternalLink,
-  Sparkles,
-  ChevronRight,
-  CheckCircle2,
-  Calendar,
-  Building,
-  ShieldCheck,
-  ArrowUpRight,
-} from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext.tsx';
+import { useTheme } from '../context/ThemeContext.tsx';
+import { trackEvent } from '../utils/analytics.ts';
 
 export interface ProjectCaseStudy {
   id: string;
   title: string;
   subtitle: string;
-  tags: { label: string; color: string }[];
   client: string;
   industry: string;
-  year: string;
   metrics: string;
   description: string;
+  problemSolvedNo: string;
+  problemSolvedEn: string;
+  contributionNo: string;
+  contributionEn: string;
   keyFeatures: string[];
   techStack: string[];
   imageSrc: string;
+  category: 'mobile' | 'web' | 'fintech' | 'logistics' | 'iot';
   isFullCaseStudy?: boolean;
 }
 
 interface ProjectsShowcaseSectionProps {
   onInspectProject: (project: ProjectCaseStudy) => void;
   onStartProject?: () => void;
+  onViewAllProjects?: () => void;
+  compactMode?: boolean;
 }
 
 export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = ({
   onInspectProject,
   onStartProject,
+  onViewAllProjects,
+  compactMode = false,
 }) => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [activeFilter, setActiveFilter] = useState<'all' | 'mobile' | 'web' | 'fintech'>('all');
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // EXACTLY 4 FLAGSHIP PROJECTS WITH PREMIUM IMAGES (User requested 4 cards total)
   const projectsData: ProjectCaseStudy[] = [
-    // 1. Frakt360 (Flagship Logistics Platform)
     {
       id: 'frakt360',
       title: 'Frakt360',
       subtitle:
         language === 'no'
-          ? 'En komplett fraktplattform for moderne norske bedrifter – booking, sporing, etiketter og retur'
-          : 'A complete Norwegian logistics platform for modern businesses – booking, tracking, labels and returns',
-      tags: [
-        { label: 'App', color: 'bg-blue-600 text-white' },
-        { label: language === 'no' ? 'Nettside' : 'Web', color: 'bg-cyan-600 text-white' },
-        { label: language === 'no' ? 'Logistikk' : 'Logistics', color: 'bg-emerald-600 text-white' },
-      ],
+          ? 'Komplett digital fraktplattform for moderne norske bedrifter'
+          : 'Complete digital logistics platform for modern Norwegian businesses',
       client: 'Frakt360 / Geton',
       industry: language === 'no' ? 'Logistikk & E-handel' : 'Logistics & E-commerce',
-      year: '2026',
-      metrics: 'PostNord · Bring · Ongoing WMS',
+      metrics: 'PostNord · Bring · WMS',
       description:
         language === 'no'
-          ? 'Frakt360 samler hele logistikkflyten i én digital plattform: opprett forsendelser, sammenlign fraktpriser, skriv ut Zebra-etiketter, følg leveringer i sanntid og automatiser ordreflyt fra Shopify, WooCommerce og Mystore.'
-          : 'Frakt360 brings the logistics workflow together in one digital platform: create shipments, compare carrier rates, generate Zebra shipping labels, follow deliveries in real-time, and automate e-commerce orders from Shopify, WooCommerce and Mystore.',
+          ? 'Frakt360 samler booking, prissammenligning, Zebra-etiketter, sanntidssporing og retur i én plattform koblet til Shopify og WooCommerce.'
+          : 'Frakt360 unifies shipment booking, carrier rates, Zebra label printing, live tracking, and returns in one platform connected to e-commerce stores.',
+      problemSolvedNo:
+        'Eliminerer manuell frakthåndtering og splittede transportørportaler for nettbutikker og lager.',
+      problemSolvedEn:
+        'Eliminates fragmented carrier portals and manual order entry for growing e-commerce teams.',
+      contributionNo:
+        'Designet og utviklet fullstack webplattform, mobilflyt, API-integrasjoner og automatisert etikettutskrift.',
+      contributionEn:
+        'Designed and built the web platform, mobile tools, carrier APIs, and automated printing pipelines.',
       keyFeatures: [
-        language === 'no'
-          ? 'Ordre → Fraktvalg → Booking → Etikett → Sporing → Levering → Faktura'
-          : 'Order → Carrier Rate → Booking → Zebra Label → Tracking → Delivery',
-        language === 'no'
-          ? 'Direkte PostNord og Bring API-integrasjoner'
-          : 'Direct PostNord and Bring carrier REST integrations',
-        language === 'no'
-          ? 'Shopify, WooCommerce og Mystore e-handelskobling'
-          : 'Shopify, WooCommerce and Mystore e-commerce sync',
-        language === 'no'
-          ? 'Automatisk Zebra etikettutskrift og Ongoing WMS lagerkobling'
-          : 'Automated Zebra printing & Ongoing WMS warehouse integration',
-        language === 'no'
-          ? 'Sanntids sporingstelemetri og QR-basert returflyt'
-          : 'Real-time telemetry tracking & QR-based returns',
+        'Ordre → Fraktvalg → Booking → Etikett → Sporing → Levering',
+        'PostNord & Bring API',
+        'Shopify, WooCommerce & Ongoing WMS',
       ],
-      techStack: ['React 19', 'Next.js', 'React Native', 'Node.js', 'PostgreSQL', 'Carrier APIs'],
+      techStack: ['React 19', 'Next.js', 'React Native', 'Node.js', 'PostgreSQL'],
       imageSrc: '/assets/aistudio/Frakt360__Komplett_norsk_fraktplattform_6546bb91.webp',
+      category: 'logistics',
       isFullCaseStudy: true,
     },
-
-    // 2. Swallet (Fintech & Subscription Platform)
     {
       id: 'swallet',
       title: 'Swallet',
       subtitle:
         language === 'no'
-          ? 'Full kontroll på abonnementer og faste utgifter – samle, forstå og spar penger hver måned'
-          : 'One place to understand, manage and reduce your subscriptions and recurring expenses',
-      tags: [
-        { label: 'App', color: 'bg-purple-600 text-white' },
-        { label: 'Fintech', color: 'bg-blue-600 text-white' },
-        { label: 'Open Banking', color: 'bg-emerald-600 text-white' },
-      ],
+          ? 'Fintech-plattform for full oversikt over abonnementer og faste utgifter'
+          : 'Fintech platform for managing subscriptions and recurring household costs',
       client: 'Swallet / Geton',
-      industry: language === 'no' ? 'Fintech & Personlig Økonomi' : 'Fintech & Personal Finance',
-      year: '2026',
-      metrics: 'PSD2 · BankID · 4 320 kr/år spart',
+      industry: language === 'no' ? 'Fintech & Økonomi' : 'Fintech & Personal Finance',
+      metrics: 'PSD2 · BankID · Abonnement',
       description:
         language === 'no'
-          ? 'Swallet er en norsk fintech-plattform som gir forbrukere full oversikt over abonnementer, faste utgifter og muligheter til å spare penger gjennom lisensiert Open Banking (PSD2).'
-          : 'Swallet is a Norwegian personal-finance platform designed to give consumers a clearer picture of their subscriptions, recurring expenses and opportunities to save money through Open Banking.',
+          ? 'Swallet kobler seg sikkert til bankkontoen via Open Banking (PSD2), identifiserer faste trekk automatisk og viser smartere alternativer.'
+          : 'Swallet connects via licensed Open Banking (PSD2), detects recurring subscriptions automatically, and surfaces better alternatives.',
+      problemSolvedNo:
+        'Gjør skjulte abonnementer og løpende utgifter synlige uten manuell budsjettføring.',
+      problemSolvedEn:
+        'Makes hidden recurring subscriptions visible without manual spreadsheet tracking.',
+      contributionNo:
+        'Konsept, UX/UI-design, BankID-sikkerhetsflyt, Open Banking-integrasjon og mobilapp.',
+      contributionEn:
+        'Product concept, UX/UI, BankID security flow, Open Banking data pipeline, and mobile app.',
       keyFeatures: [
-        language === 'no'
-          ? 'Se hva du betaler → Forstå utgifter → Finn alternativer → Spar penger'
-          : 'See what you pay → Understand expenses → Discover alternatives → Save money',
-        language === 'no'
-          ? 'Automatisk abonnementsoversikt via Open Banking (PSD2)'
-          : 'Automated subscription discovery via PSD2 Open Banking',
-        language === 'no'
-          ? '«Få bedre tilbud» markedsplass for strøm, forsikring og telecom'
-          : 'Marketplace for power, telecom, and insurance savings',
-        language === 'no'
-          ? 'Personlig forbruksinnsikt med estimert årlig besparelse (4 320 kr/år)'
-          : 'Consumer financial analytics with estimated annual savings',
-        language === 'no'
-          ? 'Strenge personvernrutiner og kryptert BankID-tilkobling'
-          : 'Strict data privacy and encrypted BankID verification',
+        'Automatisk abonnementsdeteksjon via PSD2',
+        'Markedsplass for strøm, mobil og forsikring',
+        'BankID og sikker kryptering',
       ],
-      techStack: ['React 19', 'Next.js', 'React Native', 'Node.js', 'PSD2 API', 'BankID', 'PostgreSQL'],
+      techStack: ['React Native', 'Next.js', 'Node.js', 'PSD2 Open Banking', 'BankID'],
       imageSrc: '/assets/aistudio/Swallet_Fintech_Case_Study_Showcase_302711d7.webp',
+      category: 'fintech',
       isFullCaseStudy: true,
     },
-
-    // 3. Hentli (Local Delivery & Mobility Platform)
     {
       id: 'hentli',
       title: 'Hentli',
       subtitle:
         language === 'no'
-          ? 'Lokal levering, redesignet fra bunnen – kartbasert markedsplass som kobler leveringsbehov med sjåfører i sanntid'
-          : 'Local delivery, reimagined – map-based delivery marketplace connecting delivery demand with available drivers',
-      tags: [
-        { label: 'App', color: 'bg-purple-600 text-white' },
-        { label: language === 'no' ? 'Kart & Sanntid' : 'Maps & Real-time', color: 'bg-indigo-600 text-white' },
-        { label: language === 'no' ? 'Markedsplass' : 'Marketplace', color: 'bg-emerald-600 text-white' },
-      ],
+          ? 'Kartbasert leveringsapp med kunde- og sjåførflyt i én løsning'
+          : 'Map-based delivery marketplace unifying customer and driver journeys',
       client: 'Hentli / Geton',
-      industry: language === 'no' ? 'Logistikk & Mobilitet' : 'Logistics & On-Demand Delivery',
-      year: '2026',
-      metrics: 'Kartbasert matching · iOS & Android',
+      industry: language === 'no' ? 'Mobilitet & Lokal Frakt' : 'Mobility & Local Delivery',
+      metrics: 'iOS & Android · Sanntidskart',
       description:
         language === 'no'
-          ? 'Hentli forvandler lokal frakt til en åpen markedsplass: kunder publiserer leveringsoppdrag, og sjåfører oppdager og aksepterer dem direkte i det levende kartet. Én felles app med to skreddersydde opplevelser for kunde og sjåfør.'
-          : 'Hentli turns local deliveries into an open marketplace: customers publish jobs, nearby drivers discover them on an interactive map, and the right driver delivers. One app combining customer and driver flows.',
+          ? 'Hentli lar privatpersoner og bedrifter legge ut lokale fraktoppdrag, mens tilgjengelige sjåfører aksepterer oppdrag direkte i kartet.'
+          : 'Hentli enables local delivery matching in real time, pairing live map discovery with seamless dual workflows for customers and drivers.',
+      problemSolvedNo:
+        'Forenkler lokal punkt-til-punkt-transport som tidligere krevde kostbare budtjenester.',
+      problemSolvedEn:
+        'Simplifies rapid local transport matching between senders and nearby available drivers.',
+      contributionNo:
+        'Komplett design og apputvikling for iOS og Android med sanntidskart, push-varsler og oppgjør.',
+      contributionEn:
+        'End-to-end iOS and Android design and engineering with live GPS mapping and notifications.',
       keyFeatures: [
-        language === 'no'
-          ? 'Kunde- og sjåføropplevelse i én og samme applikasjon'
-          : 'Customer and driver experiences inside one application',
-        language === 'no'
-          ? 'Interaktiv kartmatching med sanntids GPS-ruting'
-          : 'Interactive map-based matching with real-time GPS routing',
-        language === 'no'
-          ? 'Friksjonsfri innlogging med mobilnummer og OTP'
-          : 'Frictionless onboarding using mobile number and OTP',
-        language === 'no'
-          ? 'Sub-sekunds push-varsler gjennom hele leveringsreisen'
-          : 'Instant push notifications throughout the delivery lifecycle',
-        language === 'no'
-          ? 'Fotobevis ved levering og automatisert oppgjør'
-          : 'Photographic proof of delivery and automated payout',
+        'Kunde- og sjåføropplevelse i samme app',
+        'Sanntids kartmatching og GPS-sporing',
+        'Fotobevis og automatisk oppgjør',
       ],
-      techStack: ['React Native', 'TypeScript', 'Node.js', 'Mapbox / Google Maps', 'WebSockets', 'PostgreSQL'],
+      techStack: ['React Native', 'TypeScript', 'Node.js', 'WebSockets', 'PostgreSQL'],
       imageSrc: '/assets/aistudio/Hentli__Two_Experiences__One_App_706526e8.png',
+      category: 'mobile',
       isFullCaseStudy: true,
     },
-
-    // 4. Vestlandsk Hjertesenter (Cardiology Specialist Clinic in Bergen)
     {
       id: 'vestlandsk-hjertesenter',
       title: 'Vestlandsk Hjertesenter',
       subtitle:
         language === 'no'
-          ? 'Spesialistklinikk for hjerte- og karsykdommer i Bergen – digital pasientportal, timebooking og medisinsk veiledning'
-          : 'Premier cardiology specialist clinic in Bergen – digital patient portal, appointment booking and clinical advice',
-      tags: [
-        { label: language === 'no' ? 'Kardiologi' : 'Healthcare', color: 'bg-teal-600 text-white' },
-        { label: language === 'no' ? 'Nettside' : 'Web Portal', color: 'bg-sky-600 text-white' },
-        { label: 'Timebooking', color: 'bg-emerald-600 text-white' },
-      ],
+          ? 'Pasientvennlig nettside og timebooking for spesialistklinikk i Bergen'
+          : 'Patient-focused web platform and online booking for Bergen cardiology clinic',
       client: 'Vestlandsk Hjertesenter AS',
-      industry: language === 'no' ? 'Spesialisthelsetjeneste' : 'Cardiology & Healthcare',
-      year: '2026',
-      metrics: 'vestlandskhjertesenter.no · Timebooking',
+      industry: language === 'no' ? 'Helse & Spesialistklinikk' : 'Healthcare & Cardiology',
+      metrics: 'Nettside · Timebooking · SEO',
       description:
         language === 'no'
-          ? 'Vestlandsk Hjertesenter tilbyr spesialisert kardiologisk utredning i Bergen. Geton utviklet en trygghetsvekkende skandinavisk nettside og digital pasientportal med direkte timebooking, oversikt over hjerteundersøkelser og lokal SEO.'
-          : 'Vestlandsk Hjertesenter provides specialist cardiovascular diagnostics in Bergen. Geton built a reassuring Scandinavian web platform featuring online appointment booking, diagnostic catalogs, and local SEO.',
+          ? 'Moderne, skandinavisk nettside med tydelig oversikt over hjerteundersøkelser, pasientveiledere og friksjonsfri digital timebooking.'
+          : 'Calm Scandinavian healthcare website showcasing cardiac diagnostics, patient guides, and frictionless online booking.',
+      problemSolvedNo:
+        'Gir pasienter trygg informasjon og mulighet til å bestille time på nett på under ett minutt.',
+      problemSolvedEn:
+        'Gives patients clear diagnostic information and sub-minute online appointment booking.',
+      contributionNo:
+        'Skreddersydd nettdesign, responsiv frontend, bookingintegrasjon og lokal søkemotoroptimalisering.',
+      contributionEn:
+        'Custom web design, responsive engineering, booking flow, and regional SEO architecture.',
       keyFeatures: [
-        language === 'no'
-          ? 'Direkte digital timebooking for pasienter på nett'
-          : 'Direct online appointment booking for patients',
-        language === 'no'
-          ? 'Komplett oversikt: Ekkokardiografi, Arbeids-EKG, 24t Holter & blodtrykk'
-          : 'Comprehensive diagnostic catalog: Echo, Stress ECG, 24h Holter',
-        language === 'no'
-          ? 'Pedagogiske pasientveiledere for forberedelse før undersøkelser'
-          : 'Patient preparation guides and clear fee transparency',
-        language === 'no'
-          ? 'Strenge personvernrutiner og helsedata-sikkerhet (GDPR)'
-          : 'Strict medical data security and GDPR compliance',
-        language === 'no'
-          ? 'Optimalisert lokal SEO for Bergen og Vestland fylke'
-          : 'Optimized regional search presence across Western Norway',
+        'Direkte digital timebooking for pasienter',
+        'Tydelig oversikt over kardiologiske tjenester',
+        'Optimalisert for Bergen og Vestland',
       ],
-      techStack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Booking API', 'SEO Engine'],
+      techStack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Booking API'],
       imageSrc: '/assets/images/vestlandsk_hjertesenter_mockup_1793710496839.webp',
+      category: 'web',
+      isFullCaseStudy: true,
+    },
+    {
+      id: 'geton-scooters',
+      title: 'Geton Scooters',
+      subtitle:
+        language === 'no'
+          ? 'Fra mobilapp til komplett IoT-plattform for elsparkesykler'
+          : 'From mobile app to a live IoT e-scooter mobility platform',
+      client: 'Geton AS (Sotra)',
+      industry: language === 'no' ? 'IoT, MQTT & Mobilitet' : 'IoT, MQTT & Mobility',
+      metrics: 'iOS & Android · MQTT · Geofencing',
+      description:
+        language === 'no'
+          ? 'Digital mikromobilitetsplattform som kobler iOS- og Android-app, sanntidskart og geofencing («Outside Zone») med fysiske elsparkesykler via IoT og MQTT.'
+          : 'Micro-mobility platform connecting iOS and Android apps, live GPS maps, and geofencing (“Outside Zone”) with physical e-scooters via IoT and MQTT telemetry.',
+      problemSolvedNo:
+        'Samler kart, QR-skanning, leiepass og toveis enhetskommunikasjon i én sammenhengende tjeneste.',
+      problemSolvedEn:
+        'Unifies vehicle discovery, QR unlock, passes, and bidirectional hardware messaging in one flow.',
+      contributionNo:
+        'Apputvikling for iOS og Android, geofencing-logikk, MQTT publish/subscribe-kobling og reell utleiedrift på Sotra.',
+      contributionEn:
+        'Mobile app engineering for iOS & Android, geofencing zones, MQTT messaging, and live fleet ops at Sotra.',
+      keyFeatures: [
+        'Kartvisning, geofencing & «Outside Zone»-varsling',
+        'IoT-telemetri med lettvekts MQTT publish/subscribe',
+        'Geton Pass & fullført tur med tilbakemelding',
+      ],
+      techStack: ['iOS & Android', 'IoT', 'MQTT', 'Geofencing', 'Backend API'],
+      imageSrc: '/assets/aistudio/Geton_Scooters_IoT_Mobility_Case_Study_84e80f94.png',
+      category: 'iot',
+      isFullCaseStudy: true,
+    },
+    {
+      id: 'norraq-style',
+      title: 'NORRAQ Style',
+      subtitle:
+        language === 'no'
+          ? 'Digital plattform som kobler modeller, studenter, frisører og salonger'
+          : 'Digital beauty-tech platform connecting models, students, stylists, and salons',
+      client: 'NORRAQ Style',
+      industry: language === 'no' ? 'Beauty Tech & Plattform' : 'Beauty Tech & Platform',
+      metrics: 'Matching · Booking · Chat',
+      description:
+        language === 'no'
+          ? 'NORRAQ Style gjør det enklere for studenter, lærlinger, frisører og salonger å finne riktige modeller gjennom smart søk, booking og privat chat.'
+          : 'NORRAQ Style helps beauty students, apprentices, stylists, and salons connect with suitable models through smart search, booking, and private chat.',
+      problemSolvedNo:
+        'Erstatter tidkrevende leting i sosiale medier med strukturert modellmatching og tydelig bookingflyt.',
+      problemSolvedEn:
+        'Replaces fragmented social media searches with structured model matching and clear booking workflows.',
+      contributionNo:
+        'Konseptuell produktstruktur for fire brukerroller, geografisk søk, bookingflyt, chat og verifisering.',
+      contributionEn:
+        'Multi-role product design covering discovery filters, structured requests, private chat, and trust flows.',
+      keyFeatures: [
+        'Smart søk og geografisk matching for behandlinger',
+        'Rollebaserte profiler og strukturert bookingflyt',
+        'Privat chat, varsler, verifisering og vurderinger',
+      ],
+      techStack: ['Plattformdesign', 'Geo-Matching', 'Booking', 'Privat Chat', 'Verifisering'],
+      imageSrc: '/assets/aistudio/NORRAQ_Style__Fra_matching_til_booking_00b2d200.png',
+      category: 'web',
       isFullCaseStudy: true,
     },
   ];
@@ -221,116 +240,125 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
     activeFilter === 'all'
       ? projectsData
       : activeFilter === 'mobile'
-      ? projectsData.filter((p) => p.id === 'frakt360' || p.id === 'swallet' || p.id === 'hentli')
+      ? projectsData.filter(
+          (p) =>
+            p.id === 'frakt360' ||
+            p.id === 'swallet' ||
+            p.id === 'hentli' ||
+            p.id === 'geton-scooters' ||
+            p.id === 'norraq-style'
+        )
       : activeFilter === 'web'
-      ? projectsData.filter((p) => p.id === 'frakt360' || p.id === 'swallet' || p.id === 'vestlandsk-hjertesenter')
-      : projectsData.filter((p) => p.id === 'frakt360' || p.id === 'swallet');
+      ? projectsData.filter(
+          (p) =>
+            p.id === 'frakt360' ||
+            p.id === 'swallet' ||
+            p.id === 'vestlandsk-hjertesenter' ||
+            p.id === 'norraq-style'
+        )
+      : projectsData.filter(
+          (p) =>
+            p.id === 'frakt360' ||
+            p.id === 'swallet' ||
+            p.id === 'geton-scooters' ||
+            p.id === 'hentli'
+        );
 
   const filterOptions = [
-    { id: 'all', label: language === 'no' ? 'Alle prosjekter (4)' : 'All Projects (4)' },
+    { id: 'all', label: language === 'no' ? 'Alle (6)' : 'All (6)' },
     { id: 'mobile', label: language === 'no' ? 'Mobilapper' : 'Mobile Apps' },
     { id: 'web', label: language === 'no' ? 'Web & Plattformer' : 'Web & Platforms' },
-    { id: 'fintech', label: language === 'no' ? 'Fintech & Logistikk' : 'Fintech & Logistics' },
+    { id: 'fintech', label: language === 'no' ? 'Fintech, IoT & Logistikk' : 'Fintech, IoT & Logistics' },
   ];
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 380;
-      scrollContainerRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth',
-      });
-    }
-  };
 
   return (
     <section
       id="projects"
-      className="w-full py-28 sm:py-36 bg-[#fafaf9] text-neutral-900 relative z-30 transition-colors duration-300 overflow-hidden border-t border-b border-neutral-200/80"
+      aria-labelledby="projects-heading"
+      className={`w-full py-16 sm:py-24 lg:py-28 relative z-20 transition-colors duration-300 border-b ${
+        isLight
+          ? 'bg-[#f4f3f0] text-neutral-900 border-neutral-200/80'
+          : 'bg-[#050b1d] text-white border-white/10'
+      }`}
     >
-      {/* 
-        CREATIVE LIGHT SCANDINAVIAN VISUAL DEPTH:
-        - Warm white textured field
-        - Micro dot matrix pattern
-        - Gentle blurred ambient warmth
-      */}
-      <div
-        className="absolute inset-0 opacity-[0.035] pointer-events-none"
-        style={{
-          backgroundImage: `radial-gradient(#000000 1px, transparent 1px)`,
-          backgroundSize: '32px 32px',
-        }}
-      />
-      <div className="absolute -top-24 right-1/4 w-96 h-96 bg-amber-100/40 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/4 w-[420px] h-[420px] bg-sky-100/40 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 relative z-10">
-        
-        {/* ========================================================
-            SECTION HEADER (Creative Nordic Editorial Typography)
-        ======================================================== */}
-        <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-16">
-          <div className="flex items-center justify-center gap-2 text-xs font-semibold tracking-[0.22em] text-neutral-500 uppercase mb-4">
-            <span>
-              {language === 'no'
-                ? 'VÅRE PROSJEKTER • 4 UTVALGTE CASE STUDIES'
-                : 'OUR PROJECTS • 4 FEATURED CASE STUDIES'}
+      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16">
+        {/* Header Row */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10 sm:mb-12">
+          <div className="max-w-2xl">
+            <span
+              className={`text-xs font-semibold tracking-[0.2em] uppercase block mb-3 ${
+                isLight ? 'text-sky-700' : 'text-cyan-300'
+              }`}
+            >
+              {language === 'no' ? 'UTVALGTE PROSJEKTER' : 'SELECTED CASE STUDIES'}
             </span>
+            <h2
+              id="projects-heading"
+              className={`text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight leading-[1.12] [text-wrap:balance] ${
+                isLight ? 'text-neutral-900' : 'text-white'
+              }`}
+            >
+              {language === 'no' ? 'Fra idé til digitale produkter' : 'From idea to digital products'}
+            </h2>
+            <p
+              className={`mt-4 text-base sm:text-lg leading-relaxed max-w-xl ${
+                isLight ? 'text-neutral-600' : 'text-slate-300'
+              }`}
+            >
+              {language === 'no'
+                ? 'Utforsk et utvalg digitale løsninger, mobilapper og plattformer vi har jobbet med.'
+                : 'Explore a selection of digital products, mobile apps, and platforms we have engineered.'}
+            </p>
           </div>
 
-          <h2 className="text-3xl xs:text-4xl sm:text-5xl lg:text-[54px] font-display font-extrabold text-neutral-900 tracking-tight leading-[1.12] [text-wrap:balance]">
-            {language === 'no' ? 'Våre tidligere prosjekter' : 'Our Selected Projects'}
-          </h2>
-
-          <p className="mt-5 text-base sm:text-lg text-neutral-600 leading-relaxed font-normal max-w-2xl mx-auto [text-wrap:balance]">
-            {language === 'no'
-              ? 'Vi har hatt gleden av å samarbeide med en rekke forskjellige bedrifter og bransjer, og tilbyr web- og apputvikling som kombinerer elegant design med høy ytelse og funksjonalitet.'
-              : 'We have had the pleasure of partnering with ambitious businesses across industries, delivering web and mobile solutions that marry Scandinavian design with high performance.'}
-          </p>
+          {/* Filter Tabs */}
+          <div className="flex flex-wrap items-center gap-2">
+            {filterOptions.map((filter) => {
+              const isActive = activeFilter === filter.id;
+              return (
+                <button
+                  key={filter.id}
+                  type="button"
+                  onClick={() => setActiveFilter(filter.id as typeof activeFilter)}
+                  className={`px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer border min-h-[38px] ${
+                    isActive
+                      ? isLight
+                        ? 'bg-neutral-900 text-white border-neutral-900 shadow-sm'
+                        : 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-[0_0_16px_rgba(34,211,238,0.3)]'
+                      : isLight
+                      ? 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-100'
+                      : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Filter Pills Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mb-12 sm:mb-16">
-          {filterOptions.map((filter) => {
-            const isActive = activeFilter === filter.id;
-            return (
-              <button
-                key={filter.id}
-                onClick={() => setActiveFilter(filter.id as any)}
-                className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                  isActive
-                    ? 'bg-neutral-900 text-white shadow-sm scale-[1.02]'
-                    : 'bg-white hover:bg-neutral-100 text-neutral-700 border border-neutral-200/80 shadow-xs'
-                }`}
-              >
-                {filter.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* ========================================================
-            EXACTLY 4 LARGE CREATIVE CARDS (User request: "TOTAL WILL BE 4")
-            - Desktop: 4 equal columns side-by-side
-            - Tablet & Mobile: Touch-scrollable with carousel controls
-            - High-fidelity realistic studio images matching reference
-        ======================================================== */}
-        <div
-          ref={scrollContainerRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7 pb-4"
-        >
+        {/* Balanced 1/2/3-Column Responsive Grid for 6 Case Studies */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
           {filteredProjects.map((project) => (
-            <div
+            <article
               key={project.id}
-              onClick={() => onInspectProject(project)}
-              className="group relative rounded-[28px] p-4 bg-white border border-[#e7e7e5] hover:border-neutral-300 transition-all duration-300 flex flex-col justify-between shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_45px_-10px_rgba(0,0,0,0.08)] hover:-translate-y-2 cursor-pointer"
+              onClick={() => {
+                trackEvent('project_card_click', { project: project.id, location: 'projects_grid' });
+                onInspectProject(project);
+              }}
+              className={`group rounded-3xl overflow-hidden border transition-all duration-300 flex flex-col justify-between cursor-pointer ${
+                isLight
+                  ? 'bg-white border-[#e7e7e5] hover:border-neutral-400 shadow-[0_6px_28px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_45px_-10px_rgba(0,0,0,0.09)] hover:-translate-y-1'
+                  : 'bg-[#081026]/90 border-white/10 hover:border-cyan-400/50 shadow-[0_8px_32px_rgba(0,0,0,0.35)] hover:-translate-y-1'
+              }`}
             >
               <div>
-                {/* 
-                  TOP IMAGE CONTAINER:
-                  - Full uncropped 16:9 showcase frame (object-contain so zero UI edges are cut)
-                */}
-                <div className="relative w-full aspect-video rounded-[20px] overflow-hidden bg-neutral-100 border border-neutral-200/70 shadow-xs mb-4">
+                {/* Full Uncropped Case Study Mockup Frame */}
+                <div
+                  className={`aspect-video w-full overflow-hidden border-b ${
+                    isLight ? 'bg-neutral-100 border-neutral-200/80' : 'bg-[#040816] border-white/10'
+                  }`}
+                >
                   <img
                     src={project.imageSrc}
                     alt={`${project.title} — ${project.industry}`}
@@ -338,60 +366,87 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
                     height={720}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-contain group-hover:scale-[1.03] transition-transform duration-500 ease-out"
+                    className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-500"
                   />
                 </div>
 
-                {/* Tags + Year Row (placed below image so the full showcase artwork stays unobstructed) */}
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    {project.tags.map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full shadow-xs ${tag.color}`}
-                      >
-                        {tag.label}
-                      </span>
-                    ))}
-                  </div>
-                  <span className="text-[11px] font-semibold text-neutral-400 tabular-nums shrink-0">
-                    {project.year}
-                  </span>
-                </div>
-
-                {/* Unboxed Metadata Kicker */}
-                <div className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase mb-1">
-                  {project.industry}
-                </div>
-
-                {/* Project Title */}
-                <h3 className="text-xl font-bold font-display text-neutral-900 group-hover:text-black transition-colors mb-1.5">
-                  {project.title}
-                </h3>
-
-                {/* Subtitle / Description */}
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal line-clamp-2 mb-3">
-                  {project.subtitle}
-                </p>
-
-                {/* Technologies */}
-                <div className="flex flex-wrap gap-1 mb-3">
-                  {project.techStack.slice(0, 3).map((tech) => (
-                    <span
-                      key={tech}
-                      className="text-[10px] font-medium px-2 py-0.5 rounded bg-neutral-100 text-neutral-600 border border-neutral-200"
-                    >
-                      {tech}
+                {/* Case Study Details */}
+                <div className="p-5 sm:p-6 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
+                    <span className={isLight ? 'text-sky-700' : 'text-cyan-300'}>
+                      {project.industry}
                     </span>
-                  ))}
+                    <span className={isLight ? 'text-neutral-500 font-medium' : 'text-slate-400 font-medium'}>
+                      {project.metrics}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3
+                      className={`text-xl sm:text-2xl font-display font-extrabold mb-1.5 transition-colors ${
+                        isLight
+                          ? 'text-neutral-900 group-hover:text-black'
+                          : 'text-white group-hover:text-cyan-200'
+                      }`}
+                    >
+                      {project.title}
+                    </h3>
+                    <p
+                      className={`text-sm leading-relaxed ${
+                        isLight ? 'text-neutral-700' : 'text-slate-200'
+                      }`}
+                    >
+                      {project.description}
+                    </p>
+                  </div>
+
+                  {/* Structured Concise Breakdown (Challenge & Delivery) */}
+                  <div
+                    className={`grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t text-xs ${
+                      isLight ? 'border-neutral-100 text-neutral-600' : 'border-white/10 text-slate-300'
+                    }`}
+                  >
+                    <div>
+                      <span
+                        className={`font-bold uppercase tracking-wider text-[10px] block mb-1 ${
+                          isLight ? 'text-neutral-400' : 'text-slate-400'
+                        }`}
+                      >
+                        {language === 'no' ? 'Utfordring' : 'Challenge'}
+                      </span>
+                      <p className="leading-relaxed">
+                        {language === 'no' ? project.problemSolvedNo : project.problemSolvedEn}
+                      </p>
+                    </div>
+                    <div>
+                      <span
+                        className={`font-bold uppercase tracking-wider text-[10px] block mb-1 ${
+                          isLight ? 'text-neutral-400' : 'text-slate-400'
+                        }`}
+                      >
+                        {language === 'no' ? 'Getons leveranse' : 'Geton Delivery'}
+                      </span>
+                      <p className="leading-relaxed">
+                        {language === 'no' ? project.contributionNo : project.contributionEn}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Bottom Card Row: Tech Metric + Circular Arrow Button */}
-              <div className="pt-4 border-t border-neutral-100 flex items-center justify-between mt-2">
-                <div className="text-[11px] font-medium text-neutral-500 truncate max-w-[170px]">
-                  {project.metrics}
-                </div>
+              {/* Clean Footer Action Row */}
+              <div
+                className={`px-5 sm:px-6 py-4 border-t flex items-center justify-between gap-3 ${
+                  isLight ? 'border-neutral-100 bg-neutral-50/60' : 'border-white/10 bg-white/[0.02]'
+                }`}
+              >
+                <span
+                  className={`text-xs font-medium truncate ${
+                    isLight ? 'text-neutral-500' : 'text-slate-400'
+                  }`}
+                >
+                  {project.techStack.slice(0, 3).join(' · ')}
+                </span>
 
                 <a
                   href={`/prosjekter/${project.id}`}
@@ -400,47 +455,65 @@ export const ProjectsShowcaseSection: React.FC<ProjectsShowcaseSectionProps> = (
                     e.stopPropagation();
                     onInspectProject(project);
                   }}
-                  aria-label={`${language === 'no' ? 'Åpne prosjekt' : 'Open project'} ${project.title}`}
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-neutral-900 group-hover:bg-black text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 group-hover:translate-x-0.5 transition-all"
+                  className={`inline-flex items-center gap-1.5 text-xs font-bold shrink-0 transition-colors ${
+                    isLight
+                      ? 'text-neutral-900 group-hover:text-sky-700'
+                      : 'text-cyan-300 group-hover:text-cyan-200'
+                  }`}
                 >
-                  <ArrowRight className="w-4 h-4" />
+                  <span>{language === 'no' ? 'Se prosjektet' : 'View project'}</span>
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
                 </a>
               </div>
-            </div>
+            </article>
           ))}
         </div>
 
-        {/* ========================================================
-            BOTTOM STATUS BAR:
-            - Demonstrates the 4 featured productions
-            - Clean proposal CTA button
-        ======================================================== */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-neutral-200/80 mt-10">
-          <div className="text-xs sm:text-sm text-neutral-500 font-medium text-center sm:text-left">
-            {language === 'no' ? (
-              <>
-                Viser <strong>4 utvalgte produksjoner</strong> innen logistikk, fintech, eiendom og e-handel
-              </>
-            ) : (
-              <>
-                Showing <strong>4 featured case studies</strong> in logistics, fintech, real estate, and e-commerce
-              </>
+        {/* Clean Bottom Action Strip */}
+        {(onViewAllProjects || onStartProject) && !compactMode && (
+          <div
+            className={`mt-10 pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-4 ${
+              isLight ? 'border-neutral-200' : 'border-white/10'
+            }`}
+          >
+            {onViewAllProjects && (
+              <a
+                href="/prosjekter"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onViewAllProjects();
+                }}
+                className={`inline-flex items-center gap-2 text-sm font-semibold transition-colors ${
+                  isLight
+                    ? 'text-neutral-800 hover:text-sky-700'
+                    : 'text-slate-200 hover:text-cyan-300'
+                }`}
+              >
+                <span>
+                  {language === 'no'
+                    ? 'Se fullstendig prosjektoversikt'
+                    : 'View complete portfolio'}
+                </span>
+                <ArrowUpRight className="w-4 h-4" />
+              </a>
             )}
-          </div>
 
-          <div className="flex items-center gap-3">
             {onStartProject && (
               <button
+                type="button"
                 onClick={onStartProject}
-                className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-black text-white text-xs sm:text-sm font-semibold transition-all shadow-sm hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 rounded-full text-sm font-semibold text-white btn-cyan-gradient inline-flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>{language === 'no' ? 'Start et prosjekt med oss' : 'Start a project with us'}</span>
-                <ArrowUpRight className="w-4 h-4" />
+                <span>
+                  {language === 'no'
+                    ? 'Har du et lignende prosjekt?'
+                    : 'Planning a similar product?'}
+                </span>
+                <ArrowRight className="w-4 h-4" />
               </button>
             )}
           </div>
-        </div>
-
+        )}
       </div>
     </section>
   );

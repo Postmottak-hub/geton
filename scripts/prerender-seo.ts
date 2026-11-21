@@ -82,8 +82,8 @@ function buildJsonLd(route: StaticRouteMeta): string {
       {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-        opens: '08:30',
-        closes: '16:30',
+        opens: '08:00',
+        closes: '16:00',
       },
     ],
     address: {
@@ -260,10 +260,10 @@ function collectRoutes(): StaticRouteMeta[] {
       title: 'Nettsider, Apper og Systemutvikling | Geton',
       description:
         'Geton utvikler moderne nettsider, mobilapper og skreddersydde webapplikasjoner. Fra idé til lansering. Kontakt oss for et uforpliktende tilbud.',
-      eyebrow: 'CREATIVE DIGITAL SOLUTIONS · GETON AS',
-      h1: 'Vi utvikler digitale løsninger som skaper vekst',
+      eyebrow: 'GETON AS · PROGRAMVARE & DESIGN',
+      h1: 'Digitale løsninger som driver bedriften din fremover.',
       lead:
-        'Fra idé til ferdig produkt. Geton utvikler moderne nettsider, mobilapper og skreddersydde systemer som hjelper bedrifter med å vokse, effektivisere og lykkes digitalt.',
+        'Vi utvikler moderne nettsider, mobilapper, AI-løsninger og skreddersydd programvare – fra idé til lansering.',
       includeInSitemap: true,
       sitemapPriority: '1.0',
       sitemapChangefreq: 'weekly',
@@ -276,7 +276,7 @@ function collectRoutes(): StaticRouteMeta[] {
         },
         {
           heading: 'Kundecaser & Prosjekter',
-          text: 'Se hvordan vi har utviklet Frakt360, Swallet, Hentli og Vestlandsk Hjertesenter fra idé til produksjon.',
+          text: 'Se utvalgte prosjekter inkludert Frakt360, Swallet, Hentli, Vestlandsk Hjertesenter, Geton Scooters og NORRAQ Style.',
           href: '/prosjekter',
           linkLabel: 'Utforsk prosjekter',
         },
@@ -323,11 +323,11 @@ function collectRoutes(): StaticRouteMeta[] {
       canonicalPath: '/prosjekter',
       title: 'Prosjekter & Kundecaser | Nettsider, Apper & Programvare | Geton AS',
       description:
-        'Se utvalgte digitale produkter utviklet av Geton AS: Frakt360 logistikkplattform, Swallet fintech-økosystem, Hentli mobilapp og Vestlandsk Hjertesenter.',
+        'Se utvalgte digitale produkter utviklet av Geton AS: Frakt360, Swallet, Hentli, Vestlandsk Hjertesenter, Geton Scooters og NORRAQ Style.',
       eyebrow: 'KUNDECASER & PROSJEKTER · GETON AS',
       h1: 'Utvalgte prosjekter levert av Geton AS',
       lead:
-        'Utforsk virkelige plattformer, mobilapper og fagsystemer vi har bygget for norske selskaper — med full kildekode-eierskap og dokumentert effekt.',
+        'Utforsk digitale løsninger, mobilapper og plattformer utviklet for norske og nordiske virksomheter.',
       includeInSitemap: true,
       sitemapPriority: '0.9',
       sitemapChangefreq: 'weekly',
@@ -359,6 +359,18 @@ function collectRoutes(): StaticRouteMeta[] {
           text: 'Moderne spesialistklinikk-nettside med digital timebooking og lokal SEO i Bergen.',
           href: '/prosjekter/vestlandsk-hjertesenter',
           linkLabel: 'Se Vestlandsk Hjertesenter case study',
+        },
+        {
+          heading: 'Geton Scooters — IoT, MQTT & Mobilapp',
+          text: 'Elsparkesykkelplattform med mobilapp, kart, geofencing og IoT-telemetri utprøvd på Sotra.',
+          href: '/prosjekter/geton-scooters',
+          linkLabel: 'Se Geton Scooters case study',
+        },
+        {
+          heading: 'NORRAQ Style — Digital plattform for skjønnhetsbransjen',
+          text: 'Smart matching, strukturerte profiler, booking og privat chat for modeller, studenter og salonger.',
+          href: '/prosjekter/norraq-style',
+          linkLabel: 'Se NORRAQ Style case study',
         },
       ],
     },
@@ -450,7 +462,7 @@ function collectRoutes(): StaticRouteMeta[] {
       sections: [
         {
           heading: 'Kontoradresse & Google Maps',
-          text: 'Trollhaugmyra 15, 5353 Straume (Øygarden / Bergen). Åpent mandag til fredag 08:30–16:30.',
+          text: 'Trollhaugmyra 15, 5353 Straume (Øygarden / Bergen). Åpent mandag til fredag 08.00–16.00.',
           href: 'https://maps.google.com/?q=Trollhaugmyra+15,+5353+Straume,+Norway',
           linkLabel: 'Åpne i Google Maps',
         },
@@ -620,6 +632,28 @@ function collectRoutes(): StaticRouteMeta[] {
       lead:
         'Tillitsvekkende og brukervennlig nettside med digital timebestilling, WCAG-tilgjengelighet og sterk lokal SEO i Bergen.',
       ogImage: '/assets/images/vestlandsk_hjertesenter_mockup_1793710496839.webp',
+    },
+    {
+      path: '/prosjekter/geton-scooters',
+      name: 'Geton Scooters',
+      title: 'Geton Scooters – IoT, MQTT og apputvikling | Geton AS',
+      description:
+        'Se hvordan Geton AS utviklet en elsparkesykkelplattform med mobilapp, kart, IoT, MQTT og geofencing – fra idé til drift.',
+      h1: 'Geton Scooters: Fra mobilapp til en IoT-plattform',
+      lead:
+        'Digital mikromobilitetsplattform med iOS- og Android-app, live kart, geofencing («Outside Zone») og IoT-kommunikasjon via MQTT – utprøvd på Sotra.',
+      ogImage: '/assets/aistudio/Geton_Scooters_IoT_Mobility_Case_Study_84e80f94.png',
+    },
+    {
+      path: '/prosjekter/norraq-style',
+      name: 'NORRAQ Style',
+      title: 'NORRAQ Style – Digital plattform for skjønnhetsbransjen | Geton AS',
+      description:
+        'Se hvordan NORRAQ Style samler modeller, studenter, lærlinger og skjønnhetsaktører i én løsning med smart matching, booking og chat.',
+      h1: 'NORRAQ Style – En smartere digital plattform for skjønnhetsbransjen',
+      lead:
+        'Digital plattform som kobler frisørstudenter, lærlinger, stylister, salonger og modeller gjennom smart matching, bookingforespørsler og privat chat.',
+      ogImage: '/assets/aistudio/NORRAQ_Style__Fra_matching_til_booking_00b2d200.png',
     },
   ];
 

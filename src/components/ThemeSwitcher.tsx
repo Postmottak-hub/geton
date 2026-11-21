@@ -44,7 +44,9 @@ export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({
     : 'Switch to light mode';
 
   const sizeClasses =
-    size === 'sm' ? 'h-8 px-2.5 text-[11px] gap-1.5' : 'h-9 px-3 text-xs gap-2';
+    size === 'sm'
+      ? 'h-8 px-2 sm:px-2.5 text-[11px] gap-1 sm:gap-1.5'
+      : 'h-9 px-3 text-xs gap-2';
 
   const iconClasses = size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4';
 
